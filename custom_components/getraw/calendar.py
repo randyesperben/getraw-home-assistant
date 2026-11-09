@@ -1,4 +1,4 @@
-"""RAW's Workouts calendar: past workouts and the days a routine is due (contract 6).
+"""RAW's Workouts calendar: past workouts and the days a routine is due (``entities.md``).
 
 Past workouts come from the summary's ``calendar`` with their times; a planned
 day has no time, so it is an all-day event on the phone's local date. With

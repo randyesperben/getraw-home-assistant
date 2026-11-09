@@ -1,4 +1,4 @@
-"""RAW: one device per RAW account, fed by the phone's sealed posts (ADR 0173)."""
+"""RAW: one device per RAW account, fed by the phone's sealed posts."""
 
 from __future__ import annotations
 
@@ -25,7 +25,8 @@ PLATFORMS: Final = [
     Platform.SENSOR,
 ]
 
-# No message for this long raises a repair, unless the phone said it paused (P-M8).
+# No message for this long raises a repair, unless the phone said it paused: a pause
+# is the person's choice, not a fault.
 SILENCE: Final = timedelta(days=14)
 
 
@@ -41,7 +42,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: RawConfigEntry) -> None:
     entry.runtime_data = runtime
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     # Only now: a rest's end due while the platforms load would otherwise ring
-    # before the event entity listens (AUDIT-L2-3 C2).
+    # before the event entity listens.
     runtime.arm()
     raw_webhook.async_register(hass, entry)
     await cloudhook.async_setup(hass, entry)
@@ -60,8 +61,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: RawConfigEntry) -> None
     """Write the replay guard now, so a reload never forgets the last seconds.
 
     The timers and the webhook stop first, while the entities still listen:
-    nothing then rings to no one or writes the guard after its last write
-    (AUDIT-L2-3 C2, AUDIT-L2-2 M1).
+    nothing then rings to no one or writes the guard after its last write.
     """
     runtime = entry.runtime_data
     runtime.stop()

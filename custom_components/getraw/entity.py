@@ -1,4 +1,4 @@
-"""What every RAW entity shares (contract 6, ``entities.md``).
+"""What every RAW entity shares (``entities.md``).
 
 One device per RAW account; each entity reads the runtime when it is told
 something changed. An entity under a health category is unavailable while the
@@ -64,7 +64,7 @@ def device_info(entry: RawConfigEntry) -> DeviceInfo:
     """«RAW Randy»: the account's one device, renamed by the phone's ``hello``.
 
     Named from the phone, never from the entry's title, which the person may
-    have renamed (AUDIT-L2-2 M10).
+    have renamed.
     """
     return DeviceInfo(
         identifiers={(DOMAIN, entry.unique_id or entry.entry_id)},

@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://getraw.fit/contracts/home_assistant/ha_summary.schema.json",
   "title": "HaSummary",
-  "description": "The history summary (L2): Home's today and the next 13 days, the month, the last workout, the calendar's past workouts and the health categories that are on. Written by HaSummarySync when its content changes, read by the integration, which picks the day whose date is today in time_zone, so Today's plan, the week and the streak turn at midnight without the phone, and show unknown past the last day. The envelope keys are contract 1's (README).",
+  "description": "The history summary: Home's today and the next 13 days, the month, the last workout, the calendar's past workouts and the health categories that are on. Written by HaSummarySync when its content changes, read by the integration, which picks the day whose date is today in time_zone, so Today's plan, the week and the streak turn at midnight without the phone, and show unknown past the last day. The envelope keys, schema_version to categories, are the ones every phone message carries, as in ha_state.schema.json.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -63,7 +63,7 @@
       "maxLength": 64
     },
     "weight_unit": {
-      "description": "The person's weight unit in RAW, for HA to suggest on weight sensors (S-I1).",
+      "description": "The person's weight unit in RAW, for HA to suggest on weight sensors, which HA reads only when it first creates the entity.",
       "enum": [
         "kg",
         "lb"

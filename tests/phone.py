@@ -116,7 +116,7 @@ class Phone:
 
 
 def event_of(type_: str, occurred: datetime, started: int = 1_762_700_000_000) -> dict[str, Any]:
-    """One event with contract 1's id: started_at ms, type, occurred_at ms."""
+    """One event with the phone's id: started_at ms, type, occurred_at ms."""
     occurred_ms = round(occurred.timestamp() * 1000)
     return {
         "event_id": f"{started}:{type_}:{occurred_ms}",
@@ -142,7 +142,7 @@ SET = "0199fd1c-8a40-7b2e-9c41-5d2a7e1f0c13"
 
 
 def workout(**changes: Any) -> dict[str, Any]:
-    """A live workout shaped as contract 1's ``ha_state/active`` fixture, started at STARTED."""
+    """A live workout shaped as the ``ha_state/active`` fixture, started at STARTED."""
     last = dt_util.utcnow()
     live: dict[str, Any] = {
         "phase": "active",
@@ -197,7 +197,7 @@ def resting(seconds: float, **changes: Any) -> dict[str, Any]:
 
 
 def summary_fixture(name: str) -> dict[str, Any]:
-    """A summary fixture of contracts/home_assistant, its envelope left for the phone to stamp."""
+    """A summary fixture, its envelope left for the phone to stamp."""
     body = load(FIXTURES / "ha_summary" / f"{name}.json")
     for key in ("schema_version", "kind", "account_ref", "revision", "phone_now"):
         body.pop(key)

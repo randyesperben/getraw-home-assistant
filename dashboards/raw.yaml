@@ -1,7 +1,8 @@
 # A sample RAW dashboard. Settings › Dashboards › Add dashboard › New dashboard from scratch,
 # open it, then ⋮ › Edit dashboard › ⋮ › Raw configuration editor, paste this file and save.
 # Every entity id below starts with raw_alex_: replace raw_alex with your RAW device's
-# (Settings › Devices & services › RAW: Strength Training › your device).
+# (Settings › Devices & services › RAW: Strength Training › your device). Each tile shows
+# the entity's own name, since the heading above it already says whose it is.
 title: Training
 views:
   - title: Training
@@ -21,10 +22,14 @@ views:
                 show_state: true
           - type: tile
             entity: binary_sensor.raw_alex_workout
+            name:
+              type: entity
             grid_options:
               columns: 12
           - type: tile
             entity: sensor.raw_alex_current_exercise
+            name:
+              type: entity
             visibility: &training
               - condition: state
                 entity: binary_sensor.raw_alex_workout
@@ -33,12 +38,18 @@ views:
               columns: 12
           - type: tile
             entity: sensor.raw_alex_current_set
+            name:
+              type: entity
             visibility: *training
           - type: tile
             entity: sensor.raw_alex_sets_done
+            name:
+              type: entity
             visibility: *training
           - type: tile
             entity: sensor.raw_alex_rest_end
+            name:
+              type: entity
             visibility:
               - condition: state
                 entity: binary_sensor.raw_alex_resting
@@ -47,9 +58,13 @@ views:
               columns: 12
           - type: tile
             entity: sensor.raw_alex_workout_volume
+            name:
+              type: entity
             visibility: *training
           - type: tile
             entity: sensor.raw_alex_latest_record
+            name:
+              type: entity
             visibility: *training
 
       - type: grid
@@ -59,20 +74,34 @@ views:
             icon: mdi:calendar-week
           - type: tile
             entity: sensor.raw_alex_today
+            name:
+              type: entity
             grid_options:
               columns: 12
           - type: tile
             entity: sensor.raw_alex_next_routine
+            name:
+              type: entity
           - type: tile
             entity: sensor.raw_alex_next_routine_date
+            name:
+              type: entity
           - type: tile
             entity: sensor.raw_alex_training_days_this_week
+            name:
+              type: entity
           - type: tile
             entity: sensor.raw_alex_weekly_goal
+            name:
+              type: entity
           - type: tile
             entity: binary_sensor.raw_alex_weekly_goal_met
+            name:
+              type: entity
           - type: tile
             entity: sensor.raw_alex_weeks_in_a_row
+            name:
+              type: entity
 
       - type: grid
         cards:
@@ -81,22 +110,32 @@ views:
             icon: mdi:history
           - type: tile
             entity: sensor.raw_alex_last_workout
+            name:
+              type: entity
             grid_options:
               columns: 12
           - type: tile
             entity: sensor.raw_alex_last_workout_duration
+            name:
+              type: entity
           - type: tile
             entity: sensor.raw_alex_workouts_this_month
+            name:
+              type: entity
           - type: tile
             entity: sensor.raw_alex_records_this_month
+            name:
+              type: entity
           - type: tile
             entity: sensor.raw_alex_workouts_all_time
+            name:
+              type: entity
           - type: statistics-graph
             title: Workouts per month
             entities:
               - sensor.raw_alex_workouts_this_month
             stat_types:
-              - max
+              - change
             period: month
             days_to_show: 365
             chart_type: bar
@@ -110,8 +149,12 @@ views:
             icon: mdi:human
           - type: tile
             entity: sensor.raw_alex_body_weight
+            name:
+              type: entity
           - type: tile
             entity: sensor.raw_alex_body_fat
+            name:
+              type: entity
           - type: history-graph
             title: Body weight
             hours_to_show: 2160

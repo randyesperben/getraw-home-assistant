@@ -1,18 +1,19 @@
 """The replay guard: what Home Assistant already applied, kept across restarts.
 
 Per entry, in a ``Store`` (``.storage/getraw.<entry id>``): the highest revision
-applied per sequence (contract 1: ``live`` and ``summary``), the event ids seen
+applied per sequence (``live`` and ``summary``), the event ids seen
 lately, the phone's clock offset, when the phone was last heard, and the last
 ``bye``. Restore data is written only every 15 minutes, so a power cut would roll
 it back that far and let a captured message apply twice; the store is saved 2 s
-after a change and at stop (the plan audit's A-M5, F-I9).
+after a change and at stop, since a write per post would wear the SD card many
+Home Assistant hosts run on.
 
 The same store keeps the last live state and summary applied (``view``), so
 the entities, the timers and the calendar show the same after a restart as
 before it, in one write with the guard.
 
 A new pairing (another webhook id) starts a clean guard, so a phone whose clock
-runs behind the last one's is never ignored (A-M4).
+runs behind the last one's is never ignored.
 """
 
 from __future__ import annotations
@@ -126,15 +127,16 @@ class ReplayGuard:
         """Record a message that opened and is this entry's; True when it is newer.
 
         Only a newer message counts as the phone heard: a replay of an old one
-        moves nothing (AUDIT-L2-2 M3).
+        moves nothing.
 
         The clock offset is the smallest receipt minus ``phone_now`` this pairing
         has seen, and only a newer message may lower it. It never goes up: a
         newer message held back on the way would otherwise make itself look
-        young and fire its events late (AUDIT-L2-2 I1, the coordinator's call
-        of 2026-11-09). A phone clock moved back over 2 minutes then loses its
-        events and shows its times early until the next pairing, which starts a
-        clean guard (ADR 0173); ``clocks_apart`` says when that happened.
+        young and fire its events late. The cost, accepted because the fix (Home
+        Assistant's own time in every ack) would change both sides for a rare
+        case: a phone clock moved back over 2 minutes then loses its events and
+        shows its times early until the next pairing, which starts a clean guard;
+        ``clocks_apart`` says when that happened.
         """
         newer = self.is_newer(sequence, revision)
         if not newer:
@@ -155,8 +157,8 @@ class ReplayGuard:
     def clocks_apart(self) -> bool:
         """Whether the last newer messages all say the clocks moved apart since pairing.
 
-        The offset stays where it is (AUDIT-L2-2 I1 holds); only showing the
-        QR code again starts a clean one (AUDIT-L2-3 M1).
+        The offset stays where it is, so a held-back message still cannot fire
+        late; only showing the QR code again starts a clean one.
         """
         return self._apart >= CLOCK_APART_MESSAGES
 

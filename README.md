@@ -8,6 +8,8 @@ a rest ends, and ask your voice assistant how long you have left.
 RAW sends everything straight from your phone to your Home Assistant. Nothing passes through
 RAW's servers, and the integration is free.
 
+![RAW's sample dashboard in Home Assistant: the workout in progress, the week and a year of workouts per month.](images/dashboard.png)
+
 ## What you need
 
 - Home Assistant 2026.11 or later.
@@ -33,10 +35,11 @@ RAW's servers, and the integration is free.
 2. RAW opens and lists what it will send. Tap **Connect**.
 3. Back in Home Assistant, select **Continue**.
 
-Your Home Assistant now has a device named «RAW» and your name, with the entities below.
+Your Home Assistant now has a device named after you, such as “RAW Alex”, with the entities below.
 
-Setting this up on the same phone you scan with? Select **Open in RAW** under the code. If RAW
-does not open, copy that link and paste it in RAW under **Profile › Settings › Home Assistant**.
+Setting this up on the phone that has RAW? Select **Open in RAW** above the code. If RAW does
+not open, long-press or right-click that link, copy it, and paste it in RAW under **Profile ›
+Settings › Home Assistant**.
 
 On iPhone, RAW asks for permission to use the local network the first time. If you said no,
 turn it on in the iPhone's **Settings › RAW › Local Network** and tap Connect again.
@@ -49,7 +52,7 @@ exercise, Current set, Sets done, Rest end, Workout volume and Latest record.
 **One event entity, Workout events,** which fires `workout_started`, `set_completed`,
 `exercise_changed`, `rest_started`, `rest_adjusted`, `rest_skipped`, `rest_ended`, `record`,
 `workout_finishing`, `workout_finished`, `workout_discarded`, `workout_abandoned` and `test`.
-Home Assistant rings `rest_ended` itself, so it arrives on time with the phone locked. Build
+Home Assistant fires `rest_ended` itself, so it arrives on time with the phone locked. Build
 automations on it with the **Event received** trigger. In RAW, **Profile › Settings › Home Assistant ›
 Send a test** fires `test`, so you can try an automation before a workout.
 
@@ -57,8 +60,9 @@ Send a test** fires `test`, so you can try an automation before a workout.
 goal met, Weeks in a row, Last workout, Workouts this month, Records this month, Workouts all
 time, and a **Workouts** calendar with your past workouts and planned days.
 
-**Your health data, if you allow it:** body weight, body fat and measurements, the effort and
-feeling of your last workout, saved volume and workout notes. Each category is a switch in RAW
+**Your health data and titles, if you allow them:** workout and routine titles, body weight,
+body fat and measurements, the effort and feeling of your last workout, saved volume and workout
+notes. Each category is a switch in RAW
 under **Profile › Settings › Home Assistant**. While a switch is off, its entities show as unavailable.
 
 Weights and lengths come in kilograms and centimetres, shown in the units you use in RAW. Some
@@ -83,7 +87,7 @@ For the rest timer, create the timer helper first: **Settings › Devices & serv
 Create helper › Timer**.
 
 Two people training? Create a **Binary sensor group** helper with each person's Workout sensor,
-and use it wherever you mean «anyone is training».
+and use it wherever you mean “anyone is training”.
 
 ## A sample dashboard
 
@@ -93,9 +97,9 @@ editor, paste the file, and replace `raw_alex` with the start of your own entity
 
 ## Voice
 
-Home Assistant's own assistant answers «what is» questions about entities you expose: go to
+Home Assistant's own assistant answers “what is” questions about entities you expose: go to
 **Settings › Voice assistants › Expose** and add the RAW entities you want, such as Rest end and
-Sets done. RAW exposes none by default. Then ask «What is Alex's rest end?».
+Sets done. RAW exposes none by default. Then ask “What is RAW Alex sets done?”, or give an entity an alias in its settings and ask by that.
 
 For your own sentences, add a file `custom_sentences/en/raw.yaml` to your configuration folder:
 
@@ -131,8 +135,8 @@ words.
 
 - RAW sends your data from your phone to your Home Assistant, sealed with a key only the two of
   them hold. Nothing passes through RAW's servers.
-- Everyone who can open your Home Assistant sees your routine and exercise names and your
-  records, even with discreet mode on in RAW.
+- Everyone who can open your Home Assistant sees your exercise names and your records, and your
+  routine names while Titles is on, even with discreet mode on in RAW.
 - Home Assistant keeps the history of each entity (10 days by default, longer for long-term
   statistics) and puts it in its backups. Deleting your RAW account does not delete what your
   Home Assistant already holds.
@@ -147,8 +151,8 @@ words.
   certificate. After a renewal, RAW keeps working through Home Assistant Cloud or your external
   URL; on your local network alone, show the QR code again.
 - **Stop sending for a while:** in RAW, turn off **Send to Home Assistant**.
-- **Remove it:** delete the integration in Home Assistant. RAW then says «Disconnected in Home
-  Assistant».
+- **Remove it:** delete the integration in Home Assistant. RAW then says “Disconnected in Home
+  Assistant”.
 
 ## Support
 

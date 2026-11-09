@@ -99,7 +99,7 @@ triggers:
 conditions:
   - condition: time
     weekday: !input days
-  # «off» only: «unknown» means there is no weekly goal in RAW, and «unavailable»
+  # “off” only: “unknown” means there is no weekly goal in RAW, and “unavailable”
   # that RAW has not sent its summary yet.
   - condition: state
     entity_id: !input goal_met

@@ -1,4 +1,4 @@
-"""Names that are forever once released (contract 6, ADR 0173).
+"""Names that are forever once released (``entities.md``).
 
 The domain, every event type and every entity key become parts of users'
 automations, entity ids and statistics. A name here is added, never renamed or
@@ -11,7 +11,7 @@ from typing import Final
 
 DOMAIN: Final = "getraw"
 
-# What the phone writes (contract 1's `type`), then what Home Assistant fires
+# What the phone writes (an event's `type`), then what Home Assistant fires
 # itself: `rest_ended` at the rest's end, `workout_abandoned` at `abandoned_at`.
 PHONE_EVENT_TYPES: Final = (
     "workout_started",
@@ -29,7 +29,7 @@ PHONE_EVENT_TYPES: Final = (
 HOME_ASSISTANT_EVENT_TYPES: Final = ("rest_ended", "workout_abandoned")
 EVENT_TYPES: Final = PHONE_EVENT_TYPES + HOME_ASSISTANT_EVENT_TYPES
 
-# The config entry's data. The keys are base64url text (contract 3): `key` is
+# The config entry's data. The keys are base64url text (`seal.encode_key`): `key` is
 # the one the phone last confirmed, `next_key` one offered in acks until a post
 # sealed under it arrives.
 CONF_KEY: Final = "key"
@@ -39,7 +39,7 @@ CONF_DISPLAY_NAME: Final = "display_name"
 CONF_APP_VERSION: Final = "app_version"
 CONF_PLATFORM: Final = "platform"
 
-# The health categories (contract 1's `health` keys), each a switch on the phone.
+# The health categories (the keys of a message's `health`), each a switch on the phone.
 HEALTH_CATEGORIES: Final = (
     "titles",
     "effort",

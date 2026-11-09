@@ -3,7 +3,7 @@ blueprint:
   description: >-
     When RAW logs a personal record, lights the lights you pick in a colour for
     a few seconds and says the record aloud on a speaker, as RAW says it on the
-    phone («Personal record in Bench Press: 82.5 kilograms, 8 reps»). Pick
+    phone (“Personal record in Bench Press: 82.5 kilograms, 8 reps”). Pick
     lights, a speaker, or both.
   domain: automation
   author: RAW

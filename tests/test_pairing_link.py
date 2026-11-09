@@ -1,6 +1,6 @@
-"""The pairing link (contract 4): Home Assistant writes the fixtures byte for byte.
+"""The pairing link: Home Assistant writes the fixtures byte for byte.
 
-The phone reads them (L1). The reader below is the contract's README in code,
+The phone reads them. The reader below is the phone's reading rules in code,
 so every invalid fixture is proven invalid for the rule it names, and every
 valid one says what its fields claim.
 """
@@ -30,7 +30,7 @@ _URL = re.compile(r"https?://[^\s/?#]+\S*")
 
 
 def read_link(link: str) -> dict[str, Any]:
-    """The fields of a link, or ValueError, by the rules of its README.
+    """The fields of a link, or ValueError, by the phone's reading rules.
 
     Each error starts with the key it is about (``link`` for the link's own
     form), as each invalid fixture's ``field`` names it.
@@ -106,7 +106,7 @@ def test_home_assistant_writes_the_link_and_a_reader_gets_its_fields(
     "path", fixture_files("pairing_link/invalid"), ids=lambda p: p.stem
 )
 def test_every_invalid_link_is_refused_for_its_reason(path: Path) -> None:
-    """AUDIT-L2-1 M11: refused for the key its fixture names, never for another."""
+    """Refused for the key its fixture names, never for another."""
     case = load(path)
     with pytest.raises(ValueError, match=rf"^{case['field']}: "):
         read_link(case["link"])
@@ -137,7 +137,7 @@ _GOOD: dict[str, Any] = {
 def test_home_assistant_never_writes_a_link_no_phone_reads(
     change: dict[str, Any], field: str
 ) -> None:
-    """AUDIT-L2-1 M7: a bad setting fails the flow, never a QR code every phone refuses."""
+    """A bad setting fails the flow, never a QR code every phone refuses."""
     read_link(build_link(**_GOOD))
     with pytest.raises(ValueError, match=rf"^{field}: "):
         build_link(**(_GOOD | change))
@@ -165,7 +165,8 @@ def test_the_name_is_trimmed_and_cut_to_64_characters() -> None:
 def test_each_certificate_pins_its_leaf() -> None:
     folder = FIXTURES / "pairing_link" / "pins"
     pins = load(folder / "pins.json")["pins"]
-    # Every certificate has its pin and every pin its certificate (AUDIT-L2-1 M11).
+    # Every certificate has its pin and every pin its certificate, read from the
+    # folder itself rather than from a list copied here.
     certificates = {path.name for path in folder.glob("*.pem")}
     assert certificates, f"no certificates in {folder}"
     assert set(pins) == certificates

@@ -1,15 +1,15 @@
-"""RAW's sensors: the live workout, the history summary and health (contract 6).
+"""RAW's sensors: the live workout, the history summary and health (``entities.md``).
 
-Weights are stored in kilograms and lengths in centimetres («nunca» 9); each is
+Weights are stored in kilograms and lengths in centimetres, RAW's canonical units; each is
 shown in the person's unit in RAW, suggested to Home Assistant when the entity
 is first created. Home Assistant reads a suggested unit only then, so the
 sensors with a unit wait for the first summary, which carries the person's
-units, before they are added (S-I1).
+units, before they are added.
 
 No count is ``total_increasing``: deleting or editing a workout lowers it. A
 ``total`` keeps its ``last_reset`` while its period is the same day's week or
 month, across a new zone and a restart: the recorder starts a new cycle at any
-other value and would count the period again (AUDIT-L2-3 M5).
+other value and would count the period again.
 """
 
 from __future__ import annotations
@@ -82,15 +82,20 @@ def _instant(reading: Reading, *path: str) -> datetime | None:
     return parse_instant(reading.summary.part(*path))
 
 
-def _weight(key: str, **kwargs: Any) -> RawSensorDescription:
+def _weight(key: str, precision: int = 1, **kwargs: Any) -> RawSensorDescription:
     return RawSensorDescription(
         key=key,
         units="weight",
         device_class=SensorDeviceClass.WEIGHT,
         native_unit_of_measurement=UnitOfMass.KILOGRAMS,
-        suggested_display_precision=1,
+        suggested_display_precision=precision,
         **kwargs,
     )
+
+
+def _volume(key: str, **kwargs: Any) -> RawSensorDescription:
+    """A volume, the sum of weight × reps: whole kilograms, as RAW shows it («4,820 kg»)."""
+    return _weight(key, precision=0, **kwargs)
 
 
 def _month(key: str, **kwargs: Any) -> RawSensorDescription:
@@ -209,7 +214,7 @@ LIVE: tuple[RawSensorDescription, ...] = (
         entity_registry_enabled_default=False,
         value_fn=lambda r: r.live.at("stopwatch_started_at"),
     ),
-    _weight(
+    _volume(
         "workout_volume",
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda r: r.live.part("volume_kg"),
@@ -371,14 +376,14 @@ HEALTH: tuple[RawSensorDescription, ...] = (
             FEELINGS, r.summary.part("health", "effort", "last_workout", "feeling")
         ),
     ),
-    _weight(
+    _volume(
         "last_workout_volume",
         source="summary",
         category="saved_volume",
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda r: r.summary.part("health", "saved_volume", "last_workout_kg"),
     ),
-    _weight(
+    _volume(
         "volume_this_month",
         source="summary",
         category="saved_volume",

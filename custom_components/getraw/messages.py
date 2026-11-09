@@ -1,8 +1,8 @@
-"""What the phone posts and what Home Assistant answers (contracts 1 and 2, ADR 0173).
+"""What the phone posts and what Home Assistant answers.
 
 The reader is tolerant, as the TV's is: an unknown key or event type is ignored
 and only an unknown ``schema_version`` is refused. The phone's writers are held
-strict by the schemas in ``contracts/home_assistant/``; this module checks only
+strict by the messages' JSON schemas (``*.schema.json``); this module checks only
 what Home Assistant must trust before it acts on a message.
 """
 
@@ -37,7 +37,7 @@ MAX_EVENTS: Final = 20
 # (ha_ack.schema.json); a larger one would freeze its sequence until a re-pair.
 REVISION_MAX: Final = 2**53 - 1
 
-# A message is at most 64 000 UTF-8 bytes before the seal (contract 1); sealed
+# A message is at most 64 000 UTF-8 bytes before the seal; sealed
 # and in base64 that is about 85 400 bytes. Anything longer is not RAW's.
 MAX_BODY_BYTES: Final = 96 * 1024
 
@@ -207,7 +207,7 @@ def ack(
     pending: bool = False,
     reason: str | None = None,
 ) -> dict[str, Any]:
-    """The ack to ``message`` (contract 2): ``ok`` exactly when there is no reason."""
+    """The ack to ``message`` (``ha_ack.schema.json``): ``ok`` exactly when there is no reason."""
     answer: dict[str, Any] = {
         "schema_version": SCHEMA_VERSION,
         "ok": reason is None,

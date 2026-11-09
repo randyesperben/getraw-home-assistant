@@ -1,4 +1,4 @@
-"""The entry's webhook: open, check, apply, answer (contracts 1 to 3, ADR 0173).
+"""The entry's webhook: open, check, apply, answer.
 
 Home Assistant answers 200 to an unknown hook and to a handler that raises, so
 the phone counts a post delivered only when this handler answers with an ack
@@ -81,7 +81,7 @@ def title_for(entry: RawConfigEntry, display_name: str | None) -> str:
     """The entry's title for a phone named ``display_name``.
 
     Only the title RAW made follows the phone's name; one the person gave the
-    entry stays (AUDIT-L2-2 M10).
+    entry stays.
     """
     if entry.title != entry_title(entry.data.get(CONF_DISPLAY_NAME)):
         return entry.title
@@ -163,7 +163,7 @@ async def _async_handle(
 ) -> web.Response:
     # The body first: the keys and the runtime are read only once it is in, so
     # a post that began before a key's promotion or a reload cannot use the old
-    # ones (AUDIT-L2-2 I3).
+    # ones.
     body = await read_body(request)
     if body is None:
         return web.Response(status=413)
@@ -240,7 +240,7 @@ def _refuse_version(hass: HomeAssistant, entry: RawConfigEntry, message: Message
     """Show the entities unavailable while the phone writes a version this release cannot read.
 
     The repair asks to update the integration only when the phone is the newer
-    one (AUDIT-L2-2 M14); an older phone learns from the ack's ``reads`` that
+    one; an older phone learns from the ack's ``reads`` that
     RAW on the phone needs the update.
     """
     entry.runtime_data.refused_version = True
@@ -253,7 +253,7 @@ def _refuse_version(hass: HomeAssistant, entry: RawConfigEntry, message: Message
 def _phone_said(hass: HomeAssistant, entry: RawConfigEntry, message: Message) -> None:
     """What a newer message changes beyond the entities: the repairs, the phone's name.
 
-    Only a newer one: a replay of an old message clears no repair (AUDIT-L2-2 M3).
+    Only a newer one: a replay of an old message clears no repair.
     """
     runtime = entry.runtime_data
     if runtime.refused_version:

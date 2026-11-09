@@ -1,4 +1,4 @@
-# RAW's entities and events in Home Assistant (contract 6)
+# RAW's entities and events in Home Assistant
 
 One device per RAW account, named «RAW» and the person's name. Each key below is the entity's
 translation key and the end of its unique id, and its English or Spanish name builds its entity id
@@ -6,8 +6,8 @@ translation key and the end of its unique id, and its English or Spanish name bu
 and event types are forever once released. Names and states in both languages:
 `custom_components/getraw/translations/{en,es}.json`; event types: `custom_components/getraw/const.py`.
 
-«Off»: disabled by default. «Category»: the health switch it needs on the phone (contract 1's
-`health`); while that switch is off the entity is `unavailable`, from the next message that says so,
+«Off»: disabled by default. «Category»: the health switch it needs on the phone (a message's
+`health` key); while that switch is off the entity is `unavailable`, from the next message that says so,
 whichever kind it is. No event carries health (below). HA keeps a body's health only for the
 categories that body says are on, Saved volume only with Body weight. No count is
 `total_increasing`: deleting or editing a workout lowers it. The recorder keeps no workout notes or
@@ -93,12 +93,12 @@ from the summary's `weight_unit` when the entity is first created; lengths in cm
 
 | Type | Fired by |
 |---|---|
-| `workout_started`, `set_completed`, `exercise_changed`, `rest_started`, `rest_adjusted`, `rest_skipped`, `record`, `workout_finishing`, `workout_discarded`, `workout_finished` | the phone (contract 1 says which writer) |
+| `workout_started`, `set_completed`, `exercise_changed`, `rest_started`, `rest_adjusted`, `rest_skipped`, `record`, `workout_finishing`, `workout_discarded`, `workout_finished` | the phone, from the app or from a tap on its lock-screen card or rest notice |
 | `test` | the phone's «Send a test», so an automation can be built before a workout |
 | `rest_ended` | Home Assistant, at the rest's end (cancelled by a skip, the next set or the workout's end) |
 | `workout_abandoned` | Home Assistant, at `abandoned_at` |
 
-The event's attributes are its `data` (contract 1) and its `text`, never its `health`: HA shows the
+The event's attributes are its `data` (`tests/contracts/ha_event.schema.json`) and its `text`, never its `health`: HA shows the
 last event's attributes until the next event and restores them after a restart, so a switch turned
 off could not hide them. Every instant in `data` (`started_at`, `rest_started_at`, `ends_at`,
 `abandoned_at`) is on HA's clock, corrected by the phone's offset as `rest_end` and
@@ -112,6 +112,6 @@ ends a rest within 5 s of its end rings it then (the phone's own timer ran out f
 ## The lock screen's patch
 
 A `patch` moves only what its tap moved. The kept names, targets and texts stay while the exercise
-and set ids are the same and go to `unknown` when the tap moved past them (AUDIT-L1-1 I10), until
-Dart's next message. Each tap moves `last_activity_at` and `abandoned_at` by the same amount, so
-lock-screen sets with RAW closed keep the workout on.
+and set ids are the same and go to `unknown` when the tap moved past them, until Dart's next
+message, so HA never shows the old set's name or target. Each tap moves `last_activity_at` and
+`abandoned_at` by the same amount, so lock-screen sets with RAW closed keep the workout on.

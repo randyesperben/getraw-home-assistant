@@ -1,4 +1,4 @@
-"""The history summary read at a given moment (``ha_summary.schema.json``, ADR 0173).
+"""The history summary read at a given moment (``ha_summary.schema.json``).
 
 The phone sends today and the next 13 days, each as Home counts it on that day,
 and sends again only when something changes. So Home Assistant turns the day

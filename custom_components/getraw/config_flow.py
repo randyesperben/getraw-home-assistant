@@ -1,4 +1,4 @@
-"""Pairing: a QR code in Home Assistant, Connect in RAW (plan «Pairing», ADR 0173).
+"""Pairing: a QR code in Home Assistant, Connect in RAW.
 
 One entry per RAW account (its ``account_ref`` is the unique id), so a new phone,
 a reinstall or «Show the QR code again» re-pairs into the same device, entity ids
@@ -62,7 +62,7 @@ class RawConfigFlow(ConfigFlow, domain=DOMAIN):
     async def async_step_show_code(
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
-        """A fresh code and key for this entry's account, as pairing does (F-M8)."""
+        """A fresh code and key for this entry's account, as pairing does: never the key in use."""
         return await self._async_pair("show_code", user_input)
 
     async def async_step_rotate_key(
@@ -86,7 +86,7 @@ class RawConfigFlow(ConfigFlow, domain=DOMAIN):
         if self._hook.hello is not None:
             return await self.async_step_finish()
         if self._hook.take_other_account():
-            # Scanned by another account before Continue: say so now (AUDIT-L2-2 M13).
+            # Scanned by another account before Continue: say so now, not after the wait.
             self._error = "other_account"
             return self._show_code()
         self._waiting = self.hass.async_create_task(
@@ -179,7 +179,8 @@ class RawConfigFlow(ConfigFlow, domain=DOMAIN):
             CONF_NEXT_KEY: encode_key(new_key()),
             **phone_data(hook.hello),
         }
-        # Before the entry's setup registers this same id (F-C1).
+        # Before the entry's setup registers this same id: the flow's cleanup runs
+        # after that setup and must then leave the entry's handler alone.
         hook.release()
         entry = self.hass.config_entries.async_entry_for_domain_unique_id(
             DOMAIN, account_ref

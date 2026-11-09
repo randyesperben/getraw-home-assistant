@@ -43,7 +43,7 @@ def test_every_event_type_is_named() -> None:
 
 
 def test_home_assistant_reads_the_event_types_the_phone_writes() -> None:
-    """AUDIT-L2-1 M14: a type only one side names is an event no automation sees."""
+    """A type only one side names is an event no automation sees."""
     schema = json.loads((CONTRACTS / "ha_event.schema.json").read_text("utf-8"))
     written = {branch["properties"]["type"]["const"] for branch in schema["$defs"]["event"]["oneOf"]}
     assert written, "no event types in ha_event.schema.json"

@@ -1,4 +1,4 @@
-"""The pairing link Home Assistant shows as a QR code (contract 4, ADR 0173).
+"""The pairing link Home Assistant shows as a QR code.
 
 ``https://getraw.fit/ha#v=1&u=<url>&u=<url>&w=<webhook id>&k=<key>&i=<instance id>&p=<pin>&n=<name>``
 
@@ -8,7 +8,8 @@ webhook id the seal binds; ``k`` the single-use pairing key; ``i`` Home
 Assistant's instance id, which keys the phone's ``account_ref``; ``p`` the pin
 of Home Assistant's own TLS certificate, checked instead of the system's trust
 on every ``https`` ``u`` whose host is an IP address; ``n`` the name RAW shows.
-The rules a reader applies: ``contracts/home_assistant/fixtures/pairing_link/README.md``.
+The rules a reader applies: ``read_link`` in ``tests/test_pairing_link.py``, held to
+the fixtures in ``tests/contracts/fixtures/pairing_link/``.
 """
 
 from __future__ import annotations
@@ -50,8 +51,8 @@ def build_link(
 ) -> str:
     """The link, its keys always in this order and every value percent-encoded.
 
-    ValueError for anything the README's reader refuses, so Home Assistant
-    never shows a code no phone can read (AUDIT-L2-1 M7).
+    ValueError for anything the phone's reader refuses, so Home Assistant
+    never shows a code no phone can read.
     """
     _check(urls, webhook_id, instance_id, pin)
     shown = name.strip()[:NAME_MAX].strip() or FALLBACK_NAME

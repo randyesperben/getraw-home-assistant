@@ -6,11 +6,12 @@ keeps a timer for each: the rest's end (Home Assistant fires ``rest_ended``),
 ``abandoned_at`` (it fires ``workout_abandoned``) and midnight in the phone's
 zone (the summary's next day). The last live state and summary are kept in the
 entry's store, so a restart shows what was shown before it; the timers are armed
-only once the entities listen (AUDIT-L2-3 C2).
+only once the entities listen, so an end that passed while Home Assistant started
+still fires.
 
 Health a body carries for a category its own ``categories`` leaves off is
 dropped before anything is kept: the store goes into backups, so it holds only
-what the phone shares (AUDIT-L2-3 I1).
+what the phone shares.
 """
 
 from __future__ import annotations
@@ -112,9 +113,8 @@ class RawRuntime:
         """Whether ``source``'s figures for ``category`` may show.
 
         On only while that source's last list and every list received after it
-        say so: a switch turned off reaches HA in the next ``state`` (contract
-        1), and the summary's figures then hide too, before the next summary
-        comes (AUDIT-L2-3 I2).
+        say so: a switch turned off reaches HA in the next ``state``, and the
+        summary's figures then hide too, before the next summary comes.
         """
         sources = list(self._categories)
         if source not in sources:
@@ -140,7 +140,7 @@ class RawRuntime:
         """Show a message: ``body`` when it is newer, then fire ``fire``.
 
         The state goes first, so an automation triggered by an event reads the
-        state that event left (contract 1: an event carries the state after it).
+        state that event left (an ``event`` message carries the state after it).
         ``events`` are all the message's events, ``fire`` the fresh ones.
         """
         now = dt_util.utcnow()
@@ -239,7 +239,7 @@ def shares(category: str, categories: frozenset[str]) -> bool:
     """Whether a list of categories shares ``category``: Saved volume needs Body weight too.
 
     Saved volume counts the body weight in bodyweight sets, so it would tell
-    that weight with Body weight off (the plan's health table).
+    that weight with Body weight off.
     """
     return (
         category in HEALTH_CATEGORIES
@@ -269,7 +269,7 @@ async def zone_of(summary: dict[str, Any]) -> tzinfo | None:
 def _home_assistant_event(
     live: dict[str, Any], type_: str, key: str, data: dict[str, Any]
 ) -> Event | None:
-    """An event Home Assistant fires itself, its id built as contract 1's ids are."""
+    """An event Home Assistant fires itself, its id built as the phone builds its events' ids."""
     started = parse_instant(live.get("started_at"))
     at = parse_instant(live.get(key))
     if started is None or at is None:

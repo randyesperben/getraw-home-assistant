@@ -1,4 +1,4 @@
-"""The live workout's entities, the event entity and Home Assistant's own timers (contract 6)."""
+"""The live workout's entities, the event entity and Home Assistant's own timers (``entities.md``)."""
 
 from __future__ import annotations
 
@@ -110,7 +110,7 @@ async def test_a_health_category_turned_off_shows_nothing_of_it(
 async def test_the_event_entity_never_shows_health_across_a_switch_and_a_restart(
     hass: HomeAssistant, raw_client: TestClient
 ) -> None:
-    """AUDIT-L2-3 C1: HA keeps the last event's attributes and restores them, so none is health."""
+    """HA keeps the last event's attributes and restores them, so none is health."""
     phone, entry = await pair(hass, raw_client)
     # Built here: the contract's fixtures no longer carry health in events, and a
     # phone that still sends it must not show it either.
@@ -189,7 +189,7 @@ async def test_events_fire_in_order_with_their_data_and_text(
 async def test_event_times_are_on_home_assistants_clock_as_the_sensors_are(
     hass: HomeAssistant, raw_client: TestClient
 ) -> None:
-    """AUDIT-L2-3 M6: an automation on a rest's ends_at and one on Rest end agree."""
+    """An automation on a rest's ends_at and one on Rest end agree."""
     phone, _ = await pair(hass, raw_client, behind=timedelta(minutes=10))
     phone_clock = dt_util.utcnow() - phone.behind
     started, ends = instant(phone_clock), instant(phone_clock + timedelta(seconds=120))
@@ -211,7 +211,7 @@ async def test_event_times_are_on_home_assistants_clock_as_the_sensors_are(
 async def test_a_lock_screen_patch_keeps_only_what_still_describes_the_set(
     hass: HomeAssistant, raw_client: TestClient, freezer: FrozenDateTimeFactory
 ) -> None:
-    """AUDIT-L1-1 I10: a tap that moves the set or exercise leaves no old name or target."""
+    """A tap that moves the set or exercise leaves no old name or target."""
     phone, _ = await pair(hass, raw_client)
     await phone.post(_state(phone, workout()))
 
@@ -357,7 +357,7 @@ async def test_a_rest_end_due_while_home_assistant_starts_still_rings(
     freezer: FrozenDateTimeFactory,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """AUDIT-L2-3 C2: a cold start loads the platforms in the executor; the timers wait for them."""
+    """A cold start loads the platforms in the executor; the timers wait for them."""
     phone, entry = await pair(hass, raw_client)
     await phone.post(_state(phone, resting(30)))
     assert await hass.config_entries.async_unload(entry.entry_id)

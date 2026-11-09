@@ -1,4 +1,4 @@
-"""The URLs in the code and in every ack (contracts 2 and 4; the plan audit's F-I3, F-I4, F-I6)."""
+"""The URLs in the code and in every ack: local, pinned, external and cloud."""
 
 from __future__ import annotations
 
@@ -73,7 +73,7 @@ async def test_the_code_tries_the_internal_url_then_the_ip_address(
 async def test_plain_http_stays_on_the_local_network(
     hass: HomeAssistant, raw_client: TestClient, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """AUDIT-L2-1 M9, AUDIT-L2-2 M5 and M8: never a public host over HTTP, never the loopback."""
+    """Never a public host over HTTP, never the loopback."""
     await async_process_ha_core_config(
         hass,
         {
@@ -122,10 +122,10 @@ async def test_home_assistant_serving_tls_pins_the_certificate_it_serves(
     monkeypatch: pytest.MonkeyPatch,
     served_tls: tuple[bytes, ssl.SSLContext],
 ) -> None:
-    """The pin lets the phone check a certificate issued for a name (F-I3).
+    """The pin lets the phone check a certificate issued for a name.
 
     It hashes what the server hands out: the file on disk may have been renewed
-    since Home Assistant started and is not served until a restart (AUDIT-L2-2 M4).
+    since Home Assistant started and is not served until a restart.
     """
     served, context = served_tls
 
@@ -137,7 +137,7 @@ async def test_home_assistant_serving_tls_pins_the_certificate_it_serves(
     renewed = FIXTURES / "pairing_link" / "pins" / "full_chain.pem"
     monkeypatch.setattr(hass.config.api, "use_ssl", True)
     monkeypatch.setattr(hass.config.api, "port", port)
-    # Without raising=False: a rename in Home Assistant fails here (AUDIT-L2-2 M9).
+    # Without raising=False: a rename in Home Assistant fails here.
     monkeypatch.setattr(hass.http, "server_host", ["0.0.0.0"])
     monkeypatch.setattr(hass.http, "ssl_certificate", str(renewed))
     await async_process_ha_core_config(
@@ -216,7 +216,7 @@ async def test_pairing_again_retires_the_old_cloudhook(
 async def test_a_slow_cloud_never_stops_the_entry(
     hass: HomeAssistant, raw_client: TestClient, cloud: types.ModuleType
 ) -> None:
-    """AUDIT-L2-2 I5: hass_nabucasa's own timeout raises a bare TimeoutError."""
+    """hass_nabucasa's own timeout raises a bare TimeoutError."""
     cloud.async_get_or_create_cloudhook.side_effect = TimeoutError
     phone, entry = await pair(hass, raw_client)
     await hass.async_block_till_done()

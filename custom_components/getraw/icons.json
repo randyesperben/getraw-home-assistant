@@ -1,0 +1,114 @@
+{
+  "entity": {
+    "binary_sensor": {
+      "resting": {
+        "default": "mdi:timer-sand",
+        "state": {
+          "off": "mdi:timer-sand-empty"
+        }
+      },
+      "trained_today": {
+        "default": "mdi:calendar-check",
+        "state": {
+          "off": "mdi:calendar-blank"
+        }
+      },
+      "weekly_goal_met": {
+        "default": "mdi:flag-checkered",
+        "state": {
+          "off": "mdi:flag-outline"
+        }
+      }
+    },
+    "event": {
+      "events": {
+        "default": "mdi:bell-ring-outline"
+      }
+    },
+    "sensor": {
+      "phase": {
+        "default": "mdi:dumbbell",
+        "state": {
+          "resting": "mdi:timer-sand",
+          "finishing": "mdi:flag-checkered",
+          "idle": "mdi:sofa-outline"
+        }
+      },
+      "workout_title": {
+        "default": "mdi:format-title"
+      },
+      "current_exercise": {
+        "default": "mdi:weight-lifter"
+      },
+      "current_set": {
+        "default": "mdi:numeric"
+      },
+      "target_reps": {
+        "default": "mdi:repeat"
+      },
+      "last_time": {
+        "default": "mdi:history"
+      },
+      "next_set": {
+        "default": "mdi:skip-next-outline"
+      },
+      "sets_done": {
+        "default": "mdi:check-all"
+      },
+      "latest_record": {
+        "default": "mdi:trophy"
+      },
+      "todays_plan": {
+        "default": "mdi:calendar-today",
+        "state": {
+          "due": "mdi:calendar-clock",
+          "done": "mdi:calendar-check",
+          "rest": "mdi:sofa-outline",
+          "no_plan": "mdi:calendar-blank"
+        }
+      },
+      "next_routine": {
+        "default": "mdi:clipboard-list-outline"
+      },
+      "training_days_this_week": {
+        "default": "mdi:calendar-week"
+      },
+      "workouts_this_week": {
+        "default": "mdi:calendar-week"
+      },
+      "weekly_goal": {
+        "default": "mdi:target"
+      },
+      "weeks_in_a_row": {
+        "default": "mdi:fire"
+      },
+      "workouts_this_month": {
+        "default": "mdi:calendar-month"
+      },
+      "training_days_this_month": {
+        "default": "mdi:calendar-month"
+      },
+      "sets_this_month": {
+        "default": "mdi:check-all"
+      },
+      "reps_this_month": {
+        "default": "mdi:repeat"
+      },
+      "records_this_month": {
+        "default": "mdi:trophy-outline"
+      },
+      "workouts_all_time": {
+        "default": "mdi:counter"
+      },
+      "body_fat_pct": {
+        "default": "mdi:percent-outline"
+      },
+      "last_workout_effort": {
+        "default": "mdi:speedometer"
+      },
+      "last_workout_feeling": {
+        "default": "mdi:emoticon-outline"
+      }
+    }
+  }
+}

@@ -1,4 +1,4 @@
-"""RAW's binary sensors: training, resting, trained today, the weekly goal (contract 6)."""
+"""RAW's binary sensors: training, resting, trained today, the weekly goal (``entities.md``)."""
 
 from __future__ import annotations
 

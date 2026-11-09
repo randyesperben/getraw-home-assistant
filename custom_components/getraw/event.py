@@ -1,17 +1,16 @@
-"""RAW's one event entity: every workout event, for ``trigger: event.received`` (contract 6).
+"""RAW's one event entity: every workout event, for ``trigger: event.received`` (``entities.md``).
 
-An event's attributes are its ``data`` (contract 1) and its ``text``, never its
+An event's attributes are its ``data`` and its ``text``, never its
 ``health``: Home Assistant shows the last event's attributes until the next
 event and restores them after a restart, and has no way to clear them without
-firing one, so a switch turned off could not hide them (AUDIT-L2-3 C1). Each
+firing one, so a switch turned off could not hide them. Each
 health value has its own entity under its category instead.
 
 Its instants are moved onto Home Assistant's clock, as every sensor's are, so
-an automation on a rest's ``ends_at`` and one on Rest end agree (AUDIT-L2-3 M6).
+an automation on a rest's ``ends_at`` and one on Rest end agree.
 
 Home Assistant's own ``rest_ended`` and ``workout_abandoned`` are claimed here,
-when they fire, so one that comes due while no entity listens is never spent
-(AUDIT-L2-3 C2).
+when they fire, so one that comes due while no entity listens is never spent.
 """
 
 from __future__ import annotations

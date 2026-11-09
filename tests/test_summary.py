@@ -1,4 +1,4 @@
-"""The history summary's entities, its day turn, its units and the calendar (contract 6).
+"""The history summary's entities, its day turn, its units and the calendar (``entities.md``).
 
 The summary fixtures are Monday 9 November 2026 in Europe/Madrid, weeks from Monday.
 """
@@ -105,7 +105,7 @@ async def test_the_day_turns_at_the_phones_midnight_and_the_month_starts_at_zero
 async def test_a_week_from_sunday_starts_again_on_sunday(
     hass: HomeAssistant, raw_client: TestClient, freezer: FrozenDateTimeFactory
 ) -> None:
-    """AUDIT-L2-3 M4: the weekly totals restart on the person's first day of the week."""
+    """The weekly totals restart on the person's first day of the week."""
     freezer.move_to(datetime(2026, 11, 14, 11, 0, tzinfo=MADRID))  # a Saturday
     await _paired_with(hass, raw_client, "typical", first_day_of_week=7)
     week = entity_state(hass, "sensor", "workouts_this_week")
@@ -115,7 +115,7 @@ async def test_a_week_from_sunday_starts_again_on_sunday(
 async def test_a_new_zone_or_a_restart_never_starts_the_month_again(
     hass: HomeAssistant, raw_client: TestClient, freezer: FrozenDateTimeFactory
 ) -> None:
-    """AUDIT-L2-3 M5: the recorder counts the month again at any other last_reset."""
+    """The recorder counts the month again at any other last_reset."""
     freezer.move_to(MONDAY_MORNING)
     phone = await _paired_with(hass, raw_client, "typical")
     (entry,) = hass.config_entries.async_entries(DOMAIN)
@@ -135,7 +135,7 @@ async def test_a_new_zone_or_a_restart_never_starts_the_month_again(
 async def test_the_recorder_keeps_no_notes_or_titles(
     hass: HomeAssistant, raw_client: TestClient, freezer: FrozenDateTimeFactory
 ) -> None:
-    """AUDIT-L2-3 M3: the states table would keep them after their switch goes off."""
+    """The states table would keep them after their switch goes off."""
     freezer.move_to(MONDAY_MORNING)
     phone, _ = await pair(hass, raw_client)
     written: list[Event[EventStateChangedData]] = []
@@ -159,7 +159,7 @@ async def test_the_recorder_keeps_no_notes_or_titles(
 async def test_weights_and_lengths_are_suggested_in_the_persons_units(
     hass: HomeAssistant, raw_client: TestClient, freezer: FrozenDateTimeFactory
 ) -> None:
-    """S-I1: Home Assistant reads a suggested unit only when the entity is first made."""
+    """Home Assistant reads a suggested unit only when the entity is first made."""
     freezer.move_to(MONDAY_MORNING)
     phone, _ = await pair(hass, raw_client)
     registry = er.async_get(hass)
@@ -235,7 +235,7 @@ async def test_the_calendar_shows_past_workouts_and_planned_days(
 async def test_a_switch_turned_off_hides_the_summarys_figures_at_once(
     hass: HomeAssistant, raw_client: TestClient, freezer: FrozenDateTimeFactory
 ) -> None:
-    """AUDIT-L2-3 I2: the next state says it, before the next summary comes."""
+    """The next state says it, before the next summary comes."""
     freezer.move_to(MONDAY_MORNING)
     phone = await _paired_with(hass, raw_client, "typical")
     assert _value(hass, "body_weight") == "81.4"
@@ -254,7 +254,7 @@ async def test_health_a_body_does_not_share_never_reaches_the_disk(
     freezer: FrozenDateTimeFactory,
     hass_storage: dict[str, Any],
 ) -> None:
-    """AUDIT-L2-3 I1: the store goes into backups, so it keeps only the health the phone shares."""
+    """The store goes into backups, so it keeps only the health the phone shares."""
     freezer.move_to(MONDAY_MORNING)
     phone, entry = await pair(hass, raw_client)
     # Every value in both bodies; Saved volume on without Body weight shares nothing either.
@@ -314,7 +314,7 @@ async def _everything_shown(hass: HomeAssistant, entry: ConfigEntry) -> list[Any
 async def test_every_health_value_shows_only_while_its_switch_is_on(
     hass: HomeAssistant, raw_client: TestClient, freezer: FrozenDateTimeFactory
 ) -> None:
-    """AUDIT-L2-3 I3: every value is first seen somewhere, so nothing passes by absence."""
+    """Every value is first seen somewhere, so nothing passes by absence."""
     freezer.move_to(MONDAY_MORNING)
     phone, entry = await pair(hass, raw_client)
     typical = summary_fixture("typical")

@@ -1,4 +1,4 @@
-"""The seal (contract 3): the fixtures the phone's posters are held to."""
+"""The seal: the fixtures the phone's posters are held to."""
 
 from __future__ import annotations
 
@@ -82,7 +82,7 @@ def test_only_a_string_reaches_the_cipher(sealed: object) -> None:
 
 
 def test_a_seal_past_the_contracts_size_never_opens() -> None:
-    """A message is at most 64 KB (contract 1): a longer one is refused before the cipher."""
+    """A message is at most 64 KB: a longer one is refused before the cipher."""
     key = new_key()
     sealed = seal(key, Direction.TO_HOME_ASSISTANT, WEBHOOK_ID, b"x" * 65_600)
     assert len(sealed) > SEALED_TEXT_MAX

@@ -14,8 +14,8 @@ from homeassistant.core import HomeAssistant
 from homeassistant.setup import async_setup_component
 
 _HERE = Path(__file__).parent
-# The public repository carries a copy of contracts/home_assistant in tests/contracts
-# (tool/ha_publish.sh); in RAW's repository it is read where it lives.
+# The public repository carries a copy of contracts/home_assistant in tests/contracts,
+# made by RAW's publish script; in RAW's repository it is read where it lives.
 CONTRACTS = (
     _HERE / "contracts"
     if (_HERE / "contracts").is_dir()

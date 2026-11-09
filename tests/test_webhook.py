@@ -1,4 +1,4 @@
-"""The entry's webhook: replays, refusals, repairs, removal (contracts 1 to 3)."""
+"""The entry's webhook: replays, refusals, repairs, removal."""
 
 from __future__ import annotations
 
@@ -89,7 +89,7 @@ async def test_the_replay_guard_survives_a_reload(
     assert await hass.config_entries.async_reload(entry.entry_id)
     fired = _fired(hass, entry.entry_id)
     # The same sealed message, captured and sent again: the reloaded entry
-    # answers it (AUDIT-L2-2 M6) and applies nothing.
+    # answers it, so its handler survived the reload, and applies nothing.
     assert (await phone.post(replayed)).ack["ok"] is True
     assert fired == []
     assert runtime_of(hass).live == {"phase": "resting"}
@@ -102,8 +102,7 @@ async def test_refusals_tell_the_phone_why(
     issues = ir.async_get(hass)
     issue = (DOMAIN, f"unsupported_version_{entry.entry_id}")
 
-    # An older phone: RAW on the phone needs the update, never the integration
-    # (AUDIT-L2-2 M14).
+    # An older phone: RAW on the phone needs the update, never the integration.
     older = phone.state()
     older["schema_version"] = 0
     assert (await phone.post(older)).ack["reason"] == "unsupported_version"
@@ -114,7 +113,7 @@ async def test_refusals_tell_the_phone_why(
     assert (await phone.post(newer)).ack["reason"] == "unsupported_version"
     assert issues.async_get_issue(*issue) is not None
     assert runtime_of(hass).refused_version is True
-    # A replayed older message clears nothing and is not news (AUDIT-L2-2 M3).
+    # A replayed older message clears nothing and is not news.
     heard = runtime_of(hass).guard.heard_at
     replay = phone.state()
     replay["revision"] -= 1_000
@@ -149,7 +148,7 @@ async def test_a_body_that_does_not_open_gets_no_ack(
     oversized = await phone.post(b"x" * (MAX_BODY_BYTES + 1))
     assert (oversized.status, oversized.ack) == (413, None)
     # A revision past what every reader holds exactly would freeze its sequence
-    # until a re-pair (AUDIT-L2-2 M2).
+    # until a re-pair.
     huge = phone.state()
     huge["revision"] = 2**53
     answer = await phone.post(huge)
@@ -198,7 +197,7 @@ async def test_bye_and_silence_raise_repairs_except_after_a_pause(
 async def test_a_held_back_message_never_makes_its_events_young(
     hass: HomeAssistant, raw_client: TestClient
 ) -> None:
-    """AUDIT-L2-2 I1: HA never raises the offset, so holding a post only ages its events."""
+    """HA never raises the offset, so holding a post only ages its events."""
     phone, entry = await pair(hass, raw_client)
     fired = _fired(hass, entry.entry_id)
     await phone.post(phone.state("active"))
@@ -241,7 +240,7 @@ async def test_the_guard_is_on_disk_two_seconds_after_a_message(
     freezer: FrozenDateTimeFactory,
     hass_storage: dict[str, Any],
 ) -> None:
-    """A crash after that loses nothing a replay could use (the plan audit's A-M5)."""
+    """A crash after that loses nothing a replay could use, with no disk write per post."""
     phone, entry = await pair(hass, raw_client)
     state = phone.state("active")
     await phone.post(state)
@@ -286,7 +285,7 @@ def _held_post(
 async def test_a_post_held_across_a_key_promotion_cannot_use_the_old_key(
     hass: HomeAssistant, raw_client: TestClient
 ) -> None:
-    """AUDIT-L2-2 I3: the keys are read once the body is in."""
+    """The keys are read once the body is in."""
     phone, entry = await pair(hass, raw_client)
     held, gate = _held_post(raw_client, phone, phone.state("finishing"), entry.data[CONF_KEY])
     await asyncio.sleep(0.05)
@@ -315,7 +314,7 @@ async def test_a_post_held_across_an_unload_gets_no_answer(
 async def test_clocks_moved_apart_raise_a_repair_and_keep_the_offset(
     hass: HomeAssistant, raw_client: TestClient
 ) -> None:
-    """AUDIT-L2-3 M1: NTP fixes a phone that ran 5 minutes ahead; the offset stays (I1)."""
+    """NTP fixes a phone that ran 5 minutes ahead; the offset stays, so nothing fires late."""
     phone, entry = await pair(hass, raw_client, behind=timedelta(minutes=-5))
     await phone.post(phone.state("active"))
     offset = runtime_of(hass).guard.offset_ms
@@ -338,7 +337,7 @@ async def test_clocks_moved_apart_raise_a_repair_and_keep_the_offset(
 async def test_a_summary_held_on_its_zone_cannot_outlive_its_key(
     hass: HomeAssistant, raw_client: TestClient, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """AUDIT-L2-3 M2: the key is checked again once the summary's zone is read."""
+    """The key is checked again once the summary's zone is read."""
     phone, entry = await pair(hass, raw_client)
     entered, gate = asyncio.Event(), asyncio.Event()
     read_zone = webhook_module.zone_of

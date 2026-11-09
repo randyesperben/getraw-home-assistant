@@ -1,17 +1,17 @@
-"""The URLs the phone posts to, in the order to try them (contracts 2 and 4).
+"""The URLs the phone posts to, in the order to try them (an ack's ``urls``, a link's ``u``).
 
 Built from Home Assistant's own network settings every time, so an ack always
 carries today's: the internal URL; the instance's own IP address, which iOS
 reaches over plain HTTP where a qualified local name (``ha.fritz.box``) is
-blocked by App Transport Security (the plan audit's F-I4), and which is the
-only local route when Home Assistant serves TLS itself, pinned to its
-certificate (F-I3); the external URL; the Home Assistant Cloud webhook.
+blocked by App Transport Security, and which is the only local route when
+Home Assistant serves TLS itself, pinned to its certificate; the external
+URL; the Home Assistant Cloud webhook.
 
 Plain ``http://`` goes only where a post stays on the local network: a
 private or link-local IP address, a ``.local`` name or a name without a dot. A
 public name or address would carry the webhook id and every post's timing
-across the internet (AUDIT-L2-1 M9). No route is ever the loopback address,
-which Home Assistant falls back to with no network (AUDIT-L2-2 M8).
+across the internet. No route is ever the loopback address, which Home
+Assistant falls back to with no network.
 """
 
 from __future__ import annotations
@@ -58,7 +58,7 @@ async def async_certificate_pin(hass: HomeAssistant) -> str | None:
 
     Hashed from what the server hands out, never read from the file: Home
     Assistant loads its certificate once at start, so a file renewed since then
-    is not served until the next restart (AUDIT-L2-1 M8, AUDIT-L2-2 M4). The
+    is not served until the next restart. The
     server listens before any config entry is set up (the frontend, which
     starts it, is set up in bootstrap's stage 0), and the pin is kept for the
     run once read.

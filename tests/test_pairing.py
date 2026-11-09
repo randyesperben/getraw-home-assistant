@@ -1,4 +1,4 @@
-"""Pairing (plan «Pairing», the plan audit's F-C1, P-I3, P-M6, F-M8)."""
+"""Pairing: the code's hook, Continue before the phone, pairing again, a fresh code and key."""
 
 from __future__ import annotations
 
@@ -50,7 +50,7 @@ async def pair(
 async def test_the_entry_answers_on_the_codes_hook_after_the_flow_ends(
     hass: HomeAssistant, raw_client: TestClient
 ) -> None:
-    """The flow's cleanup runs after the entry's setup and must leave its handler (F-C1)."""
+    """The flow's cleanup runs after the entry's setup and must leave its handler."""
     result, phone = await _start(hass, raw_client)
     code_key = phone.key
 
@@ -126,7 +126,7 @@ async def test_closing_the_dialog_stops_the_codes_hook(
 async def test_a_known_account_pairs_again_into_its_entry(
     hass: HomeAssistant, raw_client: TestClient
 ) -> None:
-    """A new phone or a reinstall keeps the device; its clock may run behind (A-M4)."""
+    """A new phone or a reinstall keeps the device; its clock may run behind."""
     old_phone, entry = await pair(hass, raw_client)
     old_phone.revision += 10_000_000
     assert (await old_phone.post(old_phone.state("active"))).ack["ok"] is True
@@ -150,14 +150,14 @@ async def test_a_known_account_pairs_again_into_its_entry(
 async def test_show_the_code_again_answers_only_its_own_account(
     hass: HomeAssistant, raw_client: TestClient
 ) -> None:
-    """A fresh key on its own hook (F-M8); another account's scan is refused."""
+    """A fresh key on its own hook, never the one in use; another account's scan is refused."""
     _, entry = await pair(hass, raw_client)
     shown = await reconfigure(hass, entry, "show_code")
     assert shown["step_id"] == "show_code"
     link = shown["description_placeholders"]["link"]
 
     # Another account scans while the dialog waits: it says so at once, never
-    # after the 2-minute wait as «RAW didn't answer» (AUDIT-L2-2 M13).
+    # after the 2-minute wait as «RAW didn't answer».
     waiting = await hass.config_entries.flow.async_configure(shown["flow_id"], {})
     assert waiting["type"] is FlowResultType.SHOW_PROGRESS
     stranger = Phone.from_link(raw_client, link, account_ref=OTHER_ACCOUNT)
@@ -193,7 +193,7 @@ async def test_rotate_key_offers_a_fresh_key_in_the_next_ack(
 async def test_the_first_hello_keeps_the_code_for_its_account(
     hass: HomeAssistant, raw_client: TestClient
 ) -> None:
-    """AUDIT-L2-2 I2: someone who saw the code cannot take the pairing before Continue."""
+    """Someone who saw the code cannot take the pairing before Continue."""
     result, phone = await _start(hass, raw_client)
     assert (await phone.post(phone.state())).ack["reason"] == "invalid"  # only a hello
     assert (await phone.post(phone.hello())).ack["pending"] is True
@@ -213,7 +213,7 @@ async def test_the_first_hello_keeps_the_code_for_its_account(
 async def test_a_name_given_to_the_entry_stays(
     hass: HomeAssistant, raw_client: TestClient
 ) -> None:
-    """AUDIT-L2-2 M10: the phone renames the device and only the title RAW made."""
+    """The phone renames the device and only the title RAW made."""
     phone, entry = await pair(hass, raw_client)
     hass.config_entries.async_update_entry(entry, title="Gym phone")
 

@@ -1,6 +1,7 @@
-# The integration's test environment, pinned exactly (CLAUDE.md «nunca» 6, ADR 0173).
+# The integration's test environment, pinned exactly so every run tests the same code.
 # Core's own plugin for the Home Assistant release this integration targets: it pins
 # homeassistant, pytest and every plugin it needs to that release. Moved together with
 # hacs.json's `homeassistant` minimum, only when an integration release needs a newer
-# Home Assistant's API (S22a decision 14:3x); CI also runs the latest release.
+# Home Assistant's API, so the tests run on the oldest release a user may have; CI
+# also runs the latest release.
 pytest-homeassistant==2026.11.0

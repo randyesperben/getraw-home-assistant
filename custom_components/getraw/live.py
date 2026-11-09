@@ -1,4 +1,4 @@
-"""The live workout as Home Assistant shows it (contract 1's ``live``, ADR 0173).
+"""The live workout as Home Assistant shows it (``ha_state.schema.json``'s ``live``).
 
 The phone's ``state`` and ``event`` messages carry the whole ``live`` object; a
 lock-screen ``patch`` carries only what its tap moved and is merged into the
@@ -24,11 +24,11 @@ _SET_EFFORT: Final = ("target_rpe", "previous_rpe")
 
 
 def merged(kept: dict[str, Any], patch: dict[str, Any], events: list[Event]) -> dict[str, Any]:
-    """The live state after a lock-screen ``patch`` (contract 1, «The lock screen's patch»).
+    """The live state after a lock-screen ``patch`` (``ha_patch.schema.json``).
 
     The patch never carries a name, a target or a text (the card may be
     discreet), so the kept ones stay while they still describe the same
-    exercise and set, and go when the tap moved past them (AUDIT-L1-1 I10): HA
+    exercise and set, and go when the tap moved past them: HA
     then shows them unknown until Dart's next message, never the old set's.
     """
     if kept.get("started_at") != patch.get("started_at"):

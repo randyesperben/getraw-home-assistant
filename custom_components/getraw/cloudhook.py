@@ -1,4 +1,4 @@
-"""The Home Assistant Cloud route, kept as mobile_app keeps its own (the plan audit's F-I6).
+"""The Home Assistant Cloud route, kept as mobile_app keeps its own.
 
 Created at setup and on each reconnection when the person subscribes, updated
 when the cloud changes it, dropped at logout; pairing never waits for the cloud
@@ -82,7 +82,7 @@ async def _async_create(hass: HomeAssistant, entry: RawConfigEntry) -> None:
             )
         except Exception as err:  # noqa: BLE001
             # Any cloud failure, a bare TimeoutError from hass_nabucasa's own
-            # timeout included (AUDIT-L2-2 I5): the local and external routes
+            # timeout included: the local and external routes
             # still work and the next connection retries. Only the type is
             # logged, never a URL.
             _LOGGER.warning("Home Assistant Cloud route not set up: %s", type(err).__name__)

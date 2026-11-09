@@ -1,4 +1,4 @@
-"""The seal every RAW message and every ack travels under (contract 3, ADR 0173).
+"""The seal every RAW message and every ack travels under.
 
 A sealed body is ``{"sealed": "<base64>"}``: standard base64 with padding of
 nonce (12 bytes) ‖ ciphertext ‖ tag (16 bytes), AES-256-GCM under the pairing
@@ -26,7 +26,7 @@ from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 KEY_BYTES = 32
 NONCE_BYTES = 12
 TAG_BYTES = 16
-# base64 of the largest sealed message (contract 1 caps a message at 64 KB; here
+# base64 of the largest sealed message (the phone caps a message at 64 KB; here
 # 64 KiB) with its nonce and tag: 4 * ceil((65 536 + 28) / 3).
 SEALED_TEXT_MAX = 87_420
 

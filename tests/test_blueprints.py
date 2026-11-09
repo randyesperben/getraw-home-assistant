@@ -23,6 +23,7 @@ import pytest
 
 from homeassistant.components.automation.config import AUTOMATION_BLUEPRINT_SCHEMA
 from homeassistant.components.blueprint import models
+from homeassistant.components.sensor.recorder import DEFAULT_STATISTICS
 from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.setup import async_setup_component
 from homeassistant.util import dt as dt_util
@@ -30,6 +31,8 @@ from homeassistant.util import slugify
 from homeassistant.util.yaml import load_yaml_dict
 
 from pytest_homeassistant.common import async_fire_time_changed, async_mock_service
+
+from custom_components.getraw.sensor import DESCRIPTIONS
 
 _ROOT = Path(__file__).parent.parent
 BLUEPRINTS = _ROOT / "blueprints"
@@ -86,6 +89,40 @@ def test_the_sample_dashboard_names_only_entities_the_integration_makes() -> Non
     named = set(re.findall(r"\b[a-z_]+\.raw_alex_[a-z0-9_]+", text))
     assert named, "the dashboard names no RAW entity: not reading it"
     assert sorted(named - made) == []
+
+
+# The recorder statistic each type a statistics graph asks for is drawn from: `change` is the difference of `sum`,
+# and `state` is kept beside `sum` (the frontend's statistics chart).
+_DRAWN_FROM = {"mean": "mean", "min": "min", "max": "max", "sum": "sum", "change": "sum", "state": "sum"}
+
+
+def _cards(node: Any) -> list[dict[str, Any]]:
+    if isinstance(node, dict):
+        return [node, *(card for value in node.values() for card in _cards(value))]
+    if isinstance(node, list):
+        return [card for value in node for card in _cards(value)]
+    return []
+
+
+def test_the_sample_dashboard_charts_only_statistics_the_recorder_keeps() -> None:
+    """A statistics graph asking for a type the recorder does not keep for the entity's state class draws nothing."""
+    names = json.loads(
+        (_ROOT / "custom_components" / "getraw" / "translations" / "en.json").read_text(encoding="utf-8")
+    )["entity"]["sensor"]
+    by_id = {
+        f"sensor.{slugify(f'RAW Alex {names[d.key]["name"]}')}": d for d in DESCRIPTIONS if d.key in names
+    }
+    graphs = [
+        card
+        for card in _cards(load_yaml_dict(str(_ROOT / "dashboards" / "raw.yaml")))
+        if card.get("type") == "statistics-graph"
+    ]
+    assert graphs, "the dashboard has no statistics graph: not reading it"
+    for graph in graphs:
+        for entity in graph["entities"]:
+            kept = DEFAULT_STATISTICS[by_id[entity].state_class].types
+            for stat in graph["stat_types"]:
+                assert _DRAWN_FROM[stat] in kept, f"{graph['title']}: {stat} of {entity}, which keeps {sorted(kept)}"
 
 
 async def _automation(

@@ -1,7 +1,9 @@
 # Home Assistant's and HACS's own checks of the integration: hassfest (the manifest,
 # translations, config flow and services, as core checks its own) and the HACS action
 # (what the Marketplace's catalog asks of a repository). Weekly too, since both
-# checkers change with Home Assistant's releases.
+# checkers change with Home Assistant's releases. The actions are pinned by commit, and
+# the checkers they run (hassfest's image, the HACS action's) follow upstream on purpose:
+# they must judge the integration as Home Assistant and the Marketplace do today.
 name: Validate
 
 on:
@@ -30,9 +32,9 @@ jobs:
     name: HACS
     # The HACS action validates public repositories only («is private, the HACS action can
     # only validate public repositories», run 42654100758, 2026-11-09): it runs from the
-    # release that makes this repository public. `== false`, so an event without the field
-    # skips it rather than failing.
-    if: github.event.repository.private == false
+    # release that makes this repository public. Compared with 'public', so an event
+    # without the field skips it (in an expression a missing field equals `false`).
+    if: github.event.repository.visibility == 'public'
     runs-on: ubicloud-standard-2
     timeout-minutes: 10
     steps:

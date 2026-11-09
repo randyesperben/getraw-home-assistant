@@ -1,4 +1,4 @@
-"""The temporary hook a pairing flow listens on (plan «Pairing», the plan audit's F-C1).
+"""The temporary hook a pairing flow listens on.
 
 The flow mints the entry's webhook id and the pairing key, and listens on that id
 while its dialog is open: a ``hello`` under the key is kept and answered
@@ -46,7 +46,7 @@ class PairingHook:
         self._account_ref = account_ref
         self._routes = routes
         self.hello: dict[str, Any] | None = None
-        # A phone on another account scanned the code (AUDIT-L2-2 M13).
+        # A phone on another account scanned the code: the dialog says so at once.
         self._other_account = False
         self._answered = asyncio.Event()
         self._owned = False
@@ -101,7 +101,7 @@ class PairingHook:
                 self._answered.set()
             return answer(key, webhook_id, ack(message, reason=refused.reason))
         # The first hello pins the code to its account: someone else who saw the
-        # code gets wrong_account from then on (AUDIT-L2-2 I2).
+        # code gets wrong_account from then on.
         self._account_ref = message.body["account_ref"]
         if self.hello is None or message.revision >= self.hello["revision"]:
             self.hello = message.body
