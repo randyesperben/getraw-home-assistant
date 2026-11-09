@@ -1,0 +1,47 @@
+# The integration's tests on core's own pytest plugin, at three Home Assistant releases:
+# the minimum this release supports (requirements_test.txt, hacs.json's
+# `homeassistant`), the latest, and the next one's beta, so a change in Home Assistant
+# shows here before a person updates. Weekly too, for the beta.
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "17 5 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pytest:
+    name: Home Assistant ${{ matrix.release }}
+    runs-on: ubicloud-standard-2
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        release: [minimum, latest, beta]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # The Python Home Assistant requires, in one file.
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version-file: .python-version
+      - name: Install Home Assistant's test plugin
+        env:
+          RELEASE: ${{ matrix.release }}
+        run: |
+          case "$RELEASE" in
+            minimum) python -m pip install -r requirements_test.txt ;;
+            latest) python -m pip install --upgrade pytest-homeassistant ;;
+            beta) python -m pip install --upgrade --pre pytest-homeassistant ;;
+            *) echo "unknown release $RELEASE" >&2; exit 1 ;;
+          esac
+          python -m pip show homeassistant | grep '^Version:'
+      - name: pytest
+        run: python -m pytest

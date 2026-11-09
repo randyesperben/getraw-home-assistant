@@ -1,0 +1,33 @@
+{
+  "account_ref": "fdd0f8e35730fdd04cd0dd0505bbc0b02036a2e6b4e346ecaf6b3db49e2b241d",
+  "categories": [
+    "titles",
+    "effort",
+    "body_weight",
+    "measurements",
+    "saved_volume",
+    "notes"
+  ],
+  "events": [
+    {
+      "data": {
+        "duration_sec": 5300,
+        "exercises": 3,
+        "records": 2,
+        "sets": 9,
+        "started_at": "2026-10-20T09:00:00.000Z"
+      },
+      "event_id": "1:workout_finished:1792492100000",
+      "occurred_at": "2026-10-20T10:28:20.000Z",
+      "text": "Workout finished: 1 h 28 min, 9 sets",
+      "type": "workout_finished"
+    }
+  ],
+  "kind": "event",
+  "live": {
+    "phase": "idle"
+  },
+  "phone_now": "2026-10-20T10:28:20.100Z",
+  "revision": 1792492100000,
+  "schema_version": 1
+}

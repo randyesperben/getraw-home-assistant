@@ -1,0 +1,340 @@
+{
+  "account_ref": "fdd0f8e35730fdd04cd0dd0505bbc0b02036a2e6b4e346ecaf6b3db49e2b241d",
+  "all_time": {
+    "workouts": 214
+  },
+  "calendar": {
+    "workouts": [
+      {
+        "finished_at": "2026-11-07T10:14:40.000Z",
+        "id": "0f9e8d7c-6b5a-4c3d-8e2f-1a0b9c8d7e6f",
+        "started_at": "2026-11-07T09:02:11.000Z"
+      },
+      {
+        "finished_at": "2026-11-05T18:51:09.000Z",
+        "id": "1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d",
+        "started_at": "2026-11-05T17:40:00.000Z"
+      },
+      {
+        "finished_at": "2026-11-03T18:40:02.000Z",
+        "id": "2b3c4d5e-6f7a-4b8c-9d0e-1f2a3b4c5d6e",
+        "started_at": "2026-11-03T17:35:30.000Z"
+      }
+    ]
+  },
+  "categories": [
+    "titles",
+    "effort",
+    "measurements",
+    "saved_volume",
+    "notes"
+  ],
+  "days": [
+    {
+      "date": "2026-11-09",
+      "next_routine": {
+        "date": "2026-11-09",
+        "id": "3f2c9a10-5b7e-4c1d-9a8b-1e2f3a4b5c6d"
+      },
+      "plan": "due",
+      "reason": "scheduled_today",
+      "trained": false,
+      "week": {
+        "goal": 3,
+        "goal_met": false,
+        "training_days": 0,
+        "weeks_in_a_row": 6,
+        "workouts": 0
+      }
+    },
+    {
+      "date": "2026-11-10",
+      "next_routine": {
+        "date": "2026-11-11",
+        "id": "8b1d4e22-7c3f-4a9e-8d2c-2f3a4b5c6d7e"
+      },
+      "plan": "rest",
+      "reason": "next_scheduled",
+      "trained": false,
+      "week": {
+        "goal": 3,
+        "goal_met": false,
+        "training_days": 0,
+        "weeks_in_a_row": 6,
+        "workouts": 0
+      }
+    },
+    {
+      "date": "2026-11-11",
+      "next_routine": {
+        "date": "2026-11-11",
+        "id": "8b1d4e22-7c3f-4a9e-8d2c-2f3a4b5c6d7e"
+      },
+      "plan": "due",
+      "reason": "scheduled_today",
+      "trained": false,
+      "week": {
+        "goal": 3,
+        "goal_met": false,
+        "training_days": 0,
+        "weeks_in_a_row": 6,
+        "workouts": 0
+      }
+    },
+    {
+      "date": "2026-11-12",
+      "next_routine": {
+        "date": "2026-11-13",
+        "id": "c47e1f35-9d4a-4b8f-a1e3-3a4b5c6d7e8f"
+      },
+      "plan": "rest",
+      "reason": "next_scheduled",
+      "trained": false,
+      "week": {
+        "goal": 3,
+        "goal_met": false,
+        "training_days": 0,
+        "weeks_in_a_row": 6,
+        "workouts": 0
+      }
+    },
+    {
+      "date": "2026-11-13",
+      "next_routine": {
+        "date": "2026-11-13",
+        "id": "c47e1f35-9d4a-4b8f-a1e3-3a4b5c6d7e8f"
+      },
+      "plan": "due",
+      "reason": "scheduled_today",
+      "trained": false,
+      "week": {
+        "goal": 3,
+        "goal_met": false,
+        "training_days": 0,
+        "weeks_in_a_row": 6,
+        "workouts": 0
+      }
+    },
+    {
+      "date": "2026-11-14",
+      "next_routine": {
+        "date": "2026-11-16",
+        "id": "3f2c9a10-5b7e-4c1d-9a8b-1e2f3a4b5c6d"
+      },
+      "plan": "rest",
+      "reason": "next_scheduled",
+      "trained": false,
+      "week": {
+        "goal": 3,
+        "goal_met": false,
+        "training_days": 0,
+        "weeks_in_a_row": 6,
+        "workouts": 0
+      }
+    },
+    {
+      "date": "2026-11-15",
+      "next_routine": {
+        "date": "2026-11-16",
+        "id": "3f2c9a10-5b7e-4c1d-9a8b-1e2f3a4b5c6d"
+      },
+      "plan": "rest",
+      "reason": "next_scheduled",
+      "trained": false,
+      "week": {
+        "goal": 3,
+        "goal_met": false,
+        "training_days": 0,
+        "weeks_in_a_row": 6,
+        "workouts": 0
+      }
+    },
+    {
+      "date": "2026-11-16",
+      "next_routine": {
+        "date": "2026-11-16",
+        "id": "3f2c9a10-5b7e-4c1d-9a8b-1e2f3a4b5c6d"
+      },
+      "plan": "due",
+      "reason": "scheduled_today",
+      "trained": false,
+      "week": {
+        "goal": 3,
+        "goal_met": false,
+        "training_days": 0,
+        "weeks_in_a_row": 0,
+        "workouts": 0
+      }
+    },
+    {
+      "date": "2026-11-17",
+      "next_routine": {
+        "date": "2026-11-18",
+        "id": "8b1d4e22-7c3f-4a9e-8d2c-2f3a4b5c6d7e"
+      },
+      "plan": "rest",
+      "reason": "next_scheduled",
+      "trained": false,
+      "week": {
+        "goal": 3,
+        "goal_met": false,
+        "training_days": 0,
+        "weeks_in_a_row": 0,
+        "workouts": 0
+      }
+    },
+    {
+      "date": "2026-11-18",
+      "next_routine": {
+        "date": "2026-11-18",
+        "id": "8b1d4e22-7c3f-4a9e-8d2c-2f3a4b5c6d7e"
+      },
+      "plan": "due",
+      "reason": "scheduled_today",
+      "trained": false,
+      "week": {
+        "goal": 3,
+        "goal_met": false,
+        "training_days": 0,
+        "weeks_in_a_row": 0,
+        "workouts": 0
+      }
+    },
+    {
+      "date": "2026-11-19",
+      "next_routine": {
+        "date": "2026-11-20",
+        "id": "c47e1f35-9d4a-4b8f-a1e3-3a4b5c6d7e8f"
+      },
+      "plan": "rest",
+      "reason": "next_scheduled",
+      "trained": false,
+      "week": {
+        "goal": 3,
+        "goal_met": false,
+        "training_days": 0,
+        "weeks_in_a_row": 0,
+        "workouts": 0
+      }
+    },
+    {
+      "date": "2026-11-20",
+      "next_routine": {
+        "date": "2026-11-20",
+        "id": "c47e1f35-9d4a-4b8f-a1e3-3a4b5c6d7e8f"
+      },
+      "plan": "due",
+      "reason": "scheduled_today",
+      "trained": false,
+      "week": {
+        "goal": 3,
+        "goal_met": false,
+        "training_days": 0,
+        "weeks_in_a_row": 0,
+        "workouts": 0
+      }
+    },
+    {
+      "date": "2026-11-21",
+      "next_routine": {
+        "date": "2026-11-23",
+        "id": "3f2c9a10-5b7e-4c1d-9a8b-1e2f3a4b5c6d"
+      },
+      "plan": "rest",
+      "reason": "next_scheduled",
+      "trained": false,
+      "week": {
+        "goal": 3,
+        "goal_met": false,
+        "training_days": 0,
+        "weeks_in_a_row": 0,
+        "workouts": 0
+      }
+    },
+    {
+      "date": "2026-11-22",
+      "next_routine": {
+        "date": "2026-11-23",
+        "id": "3f2c9a10-5b7e-4c1d-9a8b-1e2f3a4b5c6d"
+      },
+      "plan": "rest",
+      "reason": "next_scheduled",
+      "trained": false,
+      "week": {
+        "goal": 3,
+        "goal_met": false,
+        "training_days": 0,
+        "weeks_in_a_row": 0,
+        "workouts": 0
+      }
+    }
+  ],
+  "distance_unit": "km",
+  "first_day_of_week": 1,
+  "health": {
+    "effort": {
+      "last_workout": {
+        "feeling": "good",
+        "session_rpe": 8
+      }
+    },
+    "measurements": {
+      "bicep_r": {
+        "measured_on": "2026-11-01",
+        "value_cm": 38
+      },
+      "body_fat_pct": {
+        "measured_on": "2026-11-01",
+        "value_pct": 17.8
+      },
+      "waist": {
+        "measured_on": "2026-11-01",
+        "value_cm": 84.5
+      }
+    },
+    "notes": {
+      "last_workout": "Hombro derecho algo cargado en las dominadas. Bajar el agarre la próxima vez."
+    },
+    "saved_volume": {
+      "last_workout_kg": 9235.5,
+      "month_kg": 41870
+    },
+    "titles": {
+      "routines": {
+        "3f2c9a10-5b7e-4c1d-9a8b-1e2f3a4b5c6d": "Pierna A",
+        "8b1d4e22-7c3f-4a9e-8d2c-2f3a4b5c6d7e": "Empuje",
+        "c47e1f35-9d4a-4b8f-a1e3-3a4b5c6d7e8f": "Tirón"
+      },
+      "workouts": {
+        "0f9e8d7c-6b5a-4c3d-8e2f-1a0b9c8d7e6f": "Tirón",
+        "1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d": "Empuje",
+        "2b3c4d5e-6f7a-4b8c-9d0e-1f2a3b4c5d6e": "Pierna A"
+      }
+    }
+  },
+  "kind": "summary",
+  "last_workout": {
+    "duration_sec": 4349,
+    "finished_at": "2026-11-07T10:14:40.000Z",
+    "id": "0f9e8d7c-6b5a-4c3d-8e2f-1a0b9c8d7e6f",
+    "records": 1,
+    "reps": 168,
+    "sets": 21,
+    "started_at": "2026-11-07T09:02:11.000Z"
+  },
+  "length_unit": "cm",
+  "month": {
+    "month": "2026-11",
+    "records": 3,
+    "reps": 812,
+    "sets": 96,
+    "training_days": 5,
+    "training_time_sec": 18900,
+    "workouts": 5
+  },
+  "phone_now": "2026-11-09T07:30:00.000Z",
+  "revision": 1792492100000,
+  "schema_version": 1,
+  "time_zone": "Europe/Madrid",
+  "weight_unit": "kg"
+}

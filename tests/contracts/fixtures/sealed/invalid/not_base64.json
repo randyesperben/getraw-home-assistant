@@ -1,0 +1,7 @@
+{
+  "description": "Not base64 at all.",
+  "key": "ZF6EJaC-_W2xBxaWSI5U_DULztmvezcemm7BXIaDin4",
+  "webhook_id": "27a67c17b95463bd8453ba2c580d5f870f19b02d4e6df7def5a5c7801d04bea9",
+  "direction": "p2h",
+  "sealed": "not a sealed body"
+}

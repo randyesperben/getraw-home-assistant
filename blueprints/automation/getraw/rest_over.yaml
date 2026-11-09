@@ -1,0 +1,111 @@
+blueprint:
+  name: "RAW: flash the lights when a rest ends"
+  description: >-
+    Blinks the lights you pick when a rest in RAW ends, then puts them back as
+    they were. Home Assistant rings the end of the rest itself, so it works with
+    the phone locked or RAW closed. A skipped rest rings nothing. Add a chime or
+    a speaker under «Also do».
+  domain: automation
+  author: RAW
+  source_url: https://github.com/randyesperben/getraw-home-assistant/blob/main/blueprints/automation/getraw/rest_over.yaml
+  homeassistant:
+    min_version: "2026.11.0"
+  input:
+    raw:
+      name: RAW
+      icon: mdi:dumbbell
+      input:
+        events:
+          name: Workout events
+          description: The Workout events entity of the person's RAW device.
+          selector:
+            entity:
+              filter:
+                - integration: getraw
+                  domain: event
+        person:
+          name: Person
+          description: Who trains with this RAW device.
+          selector:
+            entity:
+              filter:
+                - domain: person
+        only_at_home:
+          name: Only when at home
+          description: >-
+            RAW also reports workouts from a gym away from home. On, the lights
+            blink only while this person is at home.
+          default: true
+          selector:
+            boolean: {}
+    signal:
+      name: Signal
+      icon: mdi:lightbulb-on
+      input:
+        lights:
+          name: Lights
+          description: They blink, then go back to how they were.
+          selector:
+            entity:
+              multiple: true
+              filter:
+                - domain: light
+        blinks:
+          name: Blinks
+          default: 2
+          selector:
+            number:
+              min: 1
+              max: 5
+              mode: slider
+        also_do:
+          name: Also do
+          description: Anything else at the end of a rest, such as a chime on a speaker.
+          default: []
+          selector:
+            action: {}
+
+# Single: one rest ends at a time; a second end during the blinks is dropped quietly.
+mode: single
+max_exceeded: silent
+
+triggers:
+  - trigger: event.received
+    target:
+      entity_id: !input events
+    options:
+      event_type:
+        - rest_ended
+
+conditions:
+  - condition: state
+    entity_id: !input person
+    state: home
+    enabled: !input only_at_home
+
+variables:
+  # A scene of its own per automation, so two people's automations never share one.
+  snapshot: "raw_rest_over_{{ this.attributes.id }}"
+
+actions:
+  - action: scene.create
+    data:
+      scene_id: "{{ snapshot }}"
+      snapshot_entities: !input lights
+  - repeat:
+      count: !input blinks
+      sequence:
+        - action: light.toggle
+          target:
+            entity_id: !input lights
+        - delay:
+            milliseconds: 500
+        - action: light.toggle
+          target:
+            entity_id: !input lights
+        - delay:
+            milliseconds: 500
+  - action: scene.turn_on
+    target:
+      entity_id: "scene.{{ snapshot }}"
+  - sequence: !input also_do

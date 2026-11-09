@@ -1,0 +1,33 @@
+{
+  "account_ref": "fdd0f8e35730fdd04cd0dd0505bbc0b02036a2e6b4e346ecaf6b3db49e2b241d",
+  "events": [
+    {
+      "data": {
+        "rest_started_at": "2026-10-20T09:40:00.000Z"
+      },
+      "event_id": "1792486800000:rest_skipped:1792489290250",
+      "occurred_at": "2026-10-20T09:41:30.250Z",
+      "type": "rest_skipped"
+    }
+  ],
+  "kind": "patch",
+  "live": {
+    "completed_sets": 2,
+    "exercise": {
+      "id": "0199fd1c-8a40-7b2e-9c41-5d2a7e1f0e01",
+      "index": 1,
+      "total": 2
+    },
+    "phase": "active",
+    "set": {
+      "id": "0199fd1c-8a40-7b2e-9c41-5d2a7e1f0c12",
+      "index": 2,
+      "set_type": "normal",
+      "total": 3
+    },
+    "started_at": "2026-10-20T09:00:00.000Z"
+  },
+  "phone_now": "2026-10-20T09:41:30.260Z",
+  "revision": 1792489290252,
+  "schema_version": 1
+}

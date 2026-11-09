@@ -1,0 +1,198 @@
+{
+  "account_ref": "fdd0f8e35730fdd04cd0dd0505bbc0b02036a2e6b4e346ecaf6b3db49e2b241d",
+  "all_time": {
+    "workouts": 0
+  },
+  "calendar": {
+    "workouts": []
+  },
+  "categories": [
+    "titles",
+    "effort",
+    "body_weight",
+    "measurements",
+    "saved_volume",
+    "notes"
+  ],
+  "days": [
+    {
+      "date": "2026-11-09",
+      "plan": "no_plan",
+      "reason": "first_day",
+      "trained": false,
+      "week": {
+        "goal_met": false,
+        "training_days": 0,
+        "weeks_in_a_row": 0,
+        "workouts": 0
+      }
+    },
+    {
+      "date": "2026-11-10",
+      "plan": "no_plan",
+      "reason": "first_day",
+      "trained": false,
+      "week": {
+        "training_days": 0,
+        "weeks_in_a_row": 0,
+        "workouts": 0
+      }
+    },
+    {
+      "date": "2026-11-11",
+      "plan": "no_plan",
+      "reason": "first_day",
+      "trained": false,
+      "week": {
+        "training_days": 0,
+        "weeks_in_a_row": 0,
+        "workouts": 0
+      }
+    },
+    {
+      "date": "2026-11-12",
+      "plan": "no_plan",
+      "reason": "first_day",
+      "trained": false,
+      "week": {
+        "training_days": 0,
+        "weeks_in_a_row": 0,
+        "workouts": 0
+      }
+    },
+    {
+      "date": "2026-11-13",
+      "plan": "no_plan",
+      "reason": "first_day",
+      "trained": false,
+      "week": {
+        "training_days": 0,
+        "weeks_in_a_row": 0,
+        "workouts": 0
+      }
+    },
+    {
+      "date": "2026-11-14",
+      "plan": "no_plan",
+      "reason": "first_day",
+      "trained": false,
+      "week": {
+        "training_days": 0,
+        "weeks_in_a_row": 0,
+        "workouts": 0
+      }
+    },
+    {
+      "date": "2026-11-15",
+      "plan": "no_plan",
+      "reason": "first_day",
+      "trained": false,
+      "week": {
+        "training_days": 0,
+        "weeks_in_a_row": 0,
+        "workouts": 0
+      }
+    },
+    {
+      "date": "2026-11-16",
+      "plan": "no_plan",
+      "reason": "first_day",
+      "trained": false,
+      "week": {
+        "training_days": 0,
+        "weeks_in_a_row": 0,
+        "workouts": 0
+      }
+    },
+    {
+      "date": "2026-11-17",
+      "plan": "no_plan",
+      "reason": "first_day",
+      "trained": false,
+      "week": {
+        "training_days": 0,
+        "weeks_in_a_row": 0,
+        "workouts": 0
+      }
+    },
+    {
+      "date": "2026-11-18",
+      "plan": "no_plan",
+      "reason": "first_day",
+      "trained": false,
+      "week": {
+        "training_days": 0,
+        "weeks_in_a_row": 0,
+        "workouts": 0
+      }
+    },
+    {
+      "date": "2026-11-19",
+      "plan": "no_plan",
+      "reason": "first_day",
+      "trained": false,
+      "week": {
+        "training_days": 0,
+        "weeks_in_a_row": 0,
+        "workouts": 0
+      }
+    },
+    {
+      "date": "2026-11-20",
+      "plan": "no_plan",
+      "reason": "first_day",
+      "trained": false,
+      "week": {
+        "training_days": 0,
+        "weeks_in_a_row": 0,
+        "workouts": 0
+      }
+    },
+    {
+      "date": "2026-11-21",
+      "plan": "no_plan",
+      "reason": "first_day",
+      "trained": false,
+      "week": {
+        "training_days": 0,
+        "weeks_in_a_row": 0,
+        "workouts": 0
+      }
+    },
+    {
+      "date": "2026-11-22",
+      "plan": "no_plan",
+      "reason": "first_day",
+      "trained": false,
+      "week": {
+        "training_days": 0,
+        "weeks_in_a_row": 0,
+        "workouts": 0
+      }
+    }
+  ],
+  "distance_unit": "km",
+  "first_day_of_week": 1,
+  "health": {
+    "body_weight": {
+      "measured_on": "2026-11-09",
+      "weight_kg": 64
+    }
+  },
+  "kind": "summary",
+  "length_unit": "cm",
+  "month": {
+    "month": "2026-11",
+    "records": 0,
+    "reps": 0,
+    "sets": 0,
+    "training_days": 0,
+    "training_time_sec": 0,
+    "workouts": 0
+  },
+  "phone_now": "2026-11-09T19:05:00.000Z",
+  "revision": 1792492100001,
+  "schema_version": 1,
+  "time_zone": "America/Mexico_City",
+  "weight_unit": "kg"
+}

@@ -1,0 +1,16 @@
+{
+  "description": "An internal URL by name, then the LAN address; a name with spaces and accents.",
+  "link": "https://getraw.fit/ha#v=1&u=http%3A%2F%2Fhomeassistant.local%3A8123%2Fapi%2Fwebhook%2F27a67c17b95463bd8453ba2c580d5f870f19b02d4e6df7def5a5c7801d04bea9&u=http%3A%2F%2F192.168.1.20%3A8123%2Fapi%2Fwebhook%2F27a67c17b95463bd8453ba2c580d5f870f19b02d4e6df7def5a5c7801d04bea9&u=https%3A%2F%2Fcasa-randy.duckdns.org%3A8123%2Fapi%2Fwebhook%2F27a67c17b95463bd8453ba2c580d5f870f19b02d4e6df7def5a5c7801d04bea9&w=27a67c17b95463bd8453ba2c580d5f870f19b02d4e6df7def5a5c7801d04bea9&k=ZF6EJaC-_W2xBxaWSI5U_DULztmvezcemm7BXIaDin4&i=8a9b5c1d2e3f40718293a4b5c6d7e8f9&n=Caba%C3%B1a%20de%20Pe%C3%B1%C3%ADscola",
+  "fields": {
+    "version": 1,
+    "urls": [
+      "http://homeassistant.local:8123/api/webhook/27a67c17b95463bd8453ba2c580d5f870f19b02d4e6df7def5a5c7801d04bea9",
+      "http://192.168.1.20:8123/api/webhook/27a67c17b95463bd8453ba2c580d5f870f19b02d4e6df7def5a5c7801d04bea9",
+      "https://casa-randy.duckdns.org:8123/api/webhook/27a67c17b95463bd8453ba2c580d5f870f19b02d4e6df7def5a5c7801d04bea9"
+    ],
+    "webhook_id": "27a67c17b95463bd8453ba2c580d5f870f19b02d4e6df7def5a5c7801d04bea9",
+    "key": "ZF6EJaC-_W2xBxaWSI5U_DULztmvezcemm7BXIaDin4",
+    "instance_id": "8a9b5c1d2e3f40718293a4b5c6d7e8f9",
+    "name": "Cabaña de Peñíscola"
+  }
+}

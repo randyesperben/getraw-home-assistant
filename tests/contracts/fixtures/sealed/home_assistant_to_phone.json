@@ -1,0 +1,9 @@
+{
+  "description": "An ack, sealed by Home Assistant under the key the post came under: the first_key ack, compact.",
+  "key": "ZF6EJaC-_W2xBxaWSI5U_DULztmvezcemm7BXIaDin4",
+  "webhook_id": "27a67c17b95463bd8453ba2c580d5f870f19b02d4e6df7def5a5c7801d04bea9",
+  "direction": "h2p",
+  "nonce": "f0e1d2c3b4a5968778695a4b",
+  "plaintext": "{\"schema_version\":1,\"ok\":true,\"kind\":\"hello\",\"revision\":1762700000001,\"reads\":{\"hello\":[1],\"state\":[1],\"event\":[1],\"patch\":[1],\"summary\":[1],\"bye\":[1]},\"urls\":[{\"url\":\"http://homeassistant.local:8123/api/webhook/27a67c17b95463bd8453ba2c580d5f870f19b02d4e6df7def5a5c7801d04bea9\",\"route\":\"local\"},{\"url\":\"http://192.168.1.20:8123/api/webhook/27a67c17b95463bd8453ba2c580d5f870f19b02d4e6df7def5a5c7801d04bea9\",\"route\":\"local\"},{\"url\":\"https://casa-randy.duckdns.org:8123/api/webhook/27a67c17b95463bd8453ba2c580d5f870f19b02d4e6df7def5a5c7801d04bea9\",\"route\":\"remote\"}],\"key\":\"eJYAAS-5hgyyzk1ICjYLr-mG9mBMKPS_G7EsiepllZY\"}",
+  "sealed": "8OHSw7Sllod4aVpLtGsbXeI07XU1tPWtrp64J3/Z9MVFmqbqhYUiCIiv2FL1oeD3sphYpuBITkF2x0HtgLfayoocBdSVjfpfWkAz0ltqoJAMe3ekdqMH+FxJTXIuCX+dWlQ8/8e//XC4nz1HPPacgUhDudpQJ7BO/gJPhzibIBnTtoZ9hkxy6LxiOZfNwyHH0HmB38xGA8n7Zm2Rn3ltnyz2qsIAExzEZD5ipIVOrpwB3qFExrH7VlA0vuoxoCMsmLsdGn3ltky7hY9spmyge4DjuKvr9gM3waZdM2rNE7PcS2vNMCqHEGjshFb2E8HL82ACHsAaqO020rOReFwfIZREKvLv9N0FnEFaki++pscRZbae5KjZQXLCNrMk8p/eZRQvLLA59pJu1cZds8A6fwc+h3dg8eE/9sgmEnngkviv/4+ByPikxWYOGeg8OW9m7DMqaRsc3kCO7ire0r3A8hP/Wd+7vDz7ttkp2Js92yyOt2NdhNwFrjEVuAorCAV+2hNi88ws57S7oLt4GDdfspbiR86th5vFs/wpCNzpksX9tLc1ClD6Rp7o8bYUTph1hFH12CJuQcUTz8c9OuOr71vCEOqXMfb8IgJwHApRFOFsEHekPvT2QHfDCrpWnRX914EmPtX0XHBghjsEFJZ9BVGZyJkGG4mCSBPZnKoCAUZzG/T5J3eYvry0atlyIhOv/QfhzwH3miBLtZZuhi1mSFXoKcpqye7UGAtpQxjXDOQ+hjPpy50+0CfBeLEuioglWfTgKa4++9Tzd8aSOiQ+XTkyQ5Sslu5P6bCX+Micwvuirfwoe4sozKcIpxT1eyneQu2afSsr9q1obvUiwr91Hi7vkBs="
+}

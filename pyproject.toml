@@ -1,0 +1,10 @@
+[tool.pytest.ini_options]
+# pytest-homeassistant's configuration (its README at 2026.11.0). No cache folder in
+# the tree: an untracked .pytest_cache would make tool/check.sh --affected refuse the
+# worktree and block its cleanup.
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+# Home Assistant installs its httpx alias before respx is imported.
+addopts = "-p no:respx -p no:cacheprovider"
+pythonpath = ["."]
+testpaths = ["tests"]

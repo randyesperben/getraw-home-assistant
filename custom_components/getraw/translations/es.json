@@ -1,0 +1,483 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Conectar RAW",
+        "description": "Escanea este código con la cámara del teléfono y toca Conectar en RAW. Después, selecciona Continuar.\n\n¿Estás en el teléfono? [Abrir en RAW]({link})\n\nRAW llega a este Home Assistant en {address}. Si el teléfono no abre esa dirección, cambia Red local en Configuración › Sistema › Red.",
+        "data": {
+          "code": "Código QR"
+        },
+        "submit": "Continuar"
+      },
+      "show_code": {
+        "title": "Volver a conectar RAW",
+        "description": "Escanea este código con la cámara del teléfono y toca Conectar en RAW. Después, selecciona Continuar.\n\n¿Estás en el teléfono? [Abrir en RAW]({link})\n\nRAW llega a este Home Assistant en {address}. Si el teléfono no abre esa dirección, cambia Red local en Configuración › Sistema › Red.",
+        "data": {
+          "code": "Código QR"
+        },
+        "submit": "Continuar"
+      },
+      "reconfigure": {
+        "menu_options": {
+          "show_code": "Mostrar el código QR de nuevo",
+          "rotate_key": "Renovar la clave"
+        },
+        "menu_option_descriptions": {
+          "show_code": "Un código nuevo para otro teléfono, o después de reinstalar RAW.",
+          "rotate_key": "RAW pasa a una clave nueva con su próximo mensaje. Úsalo si alguien puede tener una copia de los datos de este Home Assistant, como una copia de seguridad. Si alguien ha podido ver el código QR, muestra el código QR de nuevo."
+        }
+      }
+    },
+    "progress": {
+      "wait_for_phone": "Esperando a RAW en el teléfono. Toca Conectar en RAW en los próximos 2 minutos."
+    },
+    "error": {
+      "no_answer": "RAW no ha respondido. Comprueba que el teléfono está en la misma wifi y que RAW puede usar la red local (iPhone: Ajustes › RAW › Red local).",
+      "other_account": "Ese teléfono tiene otra cuenta de RAW. Entra en RAW con la cuenta de este dispositivo, o vuelve a añadir RAW para la otra cuenta."
+    },
+    "abort": {
+      "reconnected": "RAW vuelve a estar conectado. Su dispositivo, sus entidades y su historial siguen igual.",
+      "key_rotated": "RAW recibirá la clave nueva con su próximo mensaje.",
+      "no_address": "Home Assistant no tiene ninguna dirección a la que RAW pueda llegar. Rellena Red local en Configuración › Sistema › Red."
+    }
+  },
+  "issues": {
+    "unsupported_version": {
+      "title": "Actualiza RAW en el Marketplace",
+      "description": "{name} envía mensajes que esta versión de la integración RAW no sabe leer. Actualiza RAW en el Marketplace."
+    },
+    "phone_disconnected": {
+      "title": "{name} se desconectó en el teléfono",
+      "description": "RAW dejó de enviar a Home Assistant desde el teléfono. Para volver a conectar, abre Ajustes › Home Assistant en RAW. Si ya no lo usas, elimina esta integración."
+    },
+    "silent": {
+      "title": "Sin noticias de {name} en 14 días",
+      "description": "Home Assistant no ha recibido nada de RAW en 14 días. Abre RAW en el teléfono. Si dice que Home Assistant no responde, selecciona Reconfigurar en esta integración y muestra el código QR de nuevo."
+    },
+    "clock": {
+      "title": "Los relojes de {name} y de Home Assistant no coinciden",
+      "description": "El reloj del teléfono y el de este Home Assistant se han separado más de 2 minutos desde que RAW se conectó. Hasta que vuelvas a conectarlo, Home Assistant se salta los eventos del entreno y muestra sus horas antes de las reales. Selecciona Reconfigurar en esta integración y muestra el código QR de nuevo."
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "workout": {
+        "name": "Entreno",
+        "state": {
+          "on": "En curso",
+          "off": "Sin entrenar"
+        }
+      },
+      "resting": {
+        "name": "Descansando",
+        "state": {
+          "on": "Sí",
+          "off": "No"
+        }
+      },
+      "trained_today": {
+        "name": "Entrenado hoy",
+        "state": {
+          "on": "Sí",
+          "off": "No"
+        }
+      },
+      "weekly_goal_met": {
+        "name": "Meta de la semana cumplida",
+        "state": {
+          "on": "Sí",
+          "off": "Todavía no"
+        }
+      }
+    },
+    "calendar": {
+      "workouts": {
+        "name": "Entrenos",
+        "state_attributes": {
+          "message": {
+            "name": "Evento",
+            "state": {
+              "workout": "Entreno",
+              "planned": "Entreno previsto"
+            }
+          }
+        }
+      }
+    },
+    "event": {
+      "events": {
+        "name": "Eventos del entreno",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "workout_started": "Entreno empezado",
+              "set_completed": "Serie completada",
+              "exercise_changed": "Cambio de ejercicio",
+              "rest_started": "Descanso empezado",
+              "rest_adjusted": "Descanso ajustado",
+              "rest_skipped": "Descanso saltado",
+              "rest_ended": "Descanso terminado",
+              "record": "Récord personal",
+              "workout_finishing": "Terminando el entreno",
+              "workout_discarded": "Entreno descartado",
+              "workout_finished": "Entreno terminado",
+              "workout_abandoned": "Entreno abandonado",
+              "test": "Prueba"
+            }
+          }
+        }
+      }
+    },
+    "sensor": {
+      "phase": {
+        "name": "Fase",
+        "state": {
+          "idle": "Sin entreno",
+          "active": "Entrenando",
+          "resting": "Descansando",
+          "finishing": "Terminando"
+        }
+      },
+      "workout_title": {
+        "name": "Título del entreno"
+      },
+      "workout_started": {
+        "name": "Inicio del entreno"
+      },
+      "current_exercise": {
+        "name": "Ejercicio actual",
+        "state_attributes": {
+          "index": {
+            "name": "Número de ejercicio"
+          },
+          "total": {
+            "name": "Ejercicios"
+          }
+        }
+      },
+      "current_set": {
+        "name": "Serie actual",
+        "state_attributes": {
+          "total": {
+            "name": "Series"
+          },
+          "set_type": {
+            "name": "Tipo de serie",
+            "state": {
+              "normal": "Normal",
+              "warmup": "Calentamiento",
+              "drop": "Descendente",
+              "failure": "Al fallo",
+              "rest_pause": "Rest-pause"
+            }
+          },
+          "target": {
+            "name": "Objetivo"
+          },
+          "dumbbells_in_play": {
+            "name": "Mancuernas"
+          },
+          "target_rpe": {
+            "name": "RPE objetivo"
+          },
+          "previous_rpe": {
+            "name": "RPE de la última vez"
+          }
+        }
+      },
+      "target_weight": {
+        "name": "Peso objetivo"
+      },
+      "target_reps": {
+        "name": "Repeticiones objetivo",
+        "state_attributes": {
+          "reps_max": {
+            "name": "Repeticiones máximas"
+          }
+        }
+      },
+      "last_time": {
+        "name": "La última vez"
+      },
+      "next_set": {
+        "name": "Siguiente serie"
+      },
+      "sets_done": {
+        "name": "Series hechas",
+        "state_attributes": {
+          "total": {
+            "name": "Series en total"
+          }
+        }
+      },
+      "rest_end": {
+        "name": "Fin del descanso"
+      },
+      "timed_set_started": {
+        "name": "Inicio de la serie cronometrada"
+      },
+      "workout_volume": {
+        "name": "Volumen del entreno"
+      },
+      "last_update": {
+        "name": "Última actualización"
+      },
+      "latest_record": {
+        "name": "Último récord",
+        "state_attributes": {
+          "exercise": {
+            "name": "Ejercicio"
+          },
+          "kind": {
+            "name": "Récord",
+            "state": {
+              "max_weight": "Mayor peso",
+              "max_external_load": "Mayor carga",
+              "best_e1rm": "1RM estimado",
+              "most_reps": "Más repeticiones",
+              "best_set_volume": "Mayor volumen en una serie",
+              "best_time": "Mejor tiempo",
+              "best_pace": "Mejor ritmo",
+              "max_distance": "Mayor distancia"
+            }
+          },
+          "value": {
+            "name": "Valor"
+          }
+        }
+      },
+      "records_this_month": {
+        "name": "Récords este mes"
+      },
+      "todays_plan": {
+        "name": "Hoy",
+        "state": {
+          "due": "Toca entrenar",
+          "done": "Entreno hecho",
+          "rest": "Descanso",
+          "no_plan": "Sin plan"
+        },
+        "state_attributes": {
+          "reason": {
+            "name": "Motivo",
+            "state": {
+              "scheduled_today": "Programada para hoy",
+              "plan_day": "Día del plan",
+              "pending": "Pendiente de esta semana",
+              "next_scheduled": "Próximo día programado",
+              "rotation": "Siguiente de la rotación",
+              "first_day": "Primer día",
+              "free": "Sin rutina"
+            }
+          }
+        }
+      },
+      "next_routine": {
+        "name": "Siguiente rutina"
+      },
+      "next_routine_date": {
+        "name": "Fecha de la siguiente rutina"
+      },
+      "training_days_this_week": {
+        "name": "Días entrenados esta semana"
+      },
+      "workouts_this_week": {
+        "name": "Entrenos esta semana"
+      },
+      "weekly_goal": {
+        "name": "Meta de la semana"
+      },
+      "weeks_in_a_row": {
+        "name": "Semanas seguidas"
+      },
+      "last_workout": {
+        "name": "Último entreno",
+        "state_attributes": {
+          "title": {
+            "name": "Título"
+          },
+          "sets": {
+            "name": "Series"
+          },
+          "reps": {
+            "name": "Repeticiones"
+          },
+          "records": {
+            "name": "Récords"
+          },
+          "notes": {
+            "name": "Notas"
+          }
+        }
+      },
+      "last_workout_duration": {
+        "name": "Duración del último entreno"
+      },
+      "workouts_this_month": {
+        "name": "Entrenos este mes"
+      },
+      "training_days_this_month": {
+        "name": "Días entrenados este mes"
+      },
+      "training_time_this_month": {
+        "name": "Tiempo entrenado este mes"
+      },
+      "sets_this_month": {
+        "name": "Series este mes"
+      },
+      "reps_this_month": {
+        "name": "Repeticiones este mes"
+      },
+      "workouts_all_time": {
+        "name": "Entrenos en total"
+      },
+      "body_weight": {
+        "name": "Peso corporal",
+        "state_attributes": {
+          "measured_on": {
+            "name": "Medido el"
+          }
+        }
+      },
+      "body_fat_pct": {
+        "name": "Porcentaje de grasa",
+        "state_attributes": {
+          "measured_on": {
+            "name": "Medido el"
+          }
+        }
+      },
+      "neck": {
+        "name": "Cuello",
+        "state_attributes": {
+          "measured_on": {
+            "name": "Medido el"
+          }
+        }
+      },
+      "shoulders": {
+        "name": "Hombros",
+        "state_attributes": {
+          "measured_on": {
+            "name": "Medido el"
+          }
+        }
+      },
+      "chest": {
+        "name": "Pecho",
+        "state_attributes": {
+          "measured_on": {
+            "name": "Medido el"
+          }
+        }
+      },
+      "abdomen": {
+        "name": "Abdomen",
+        "state_attributes": {
+          "measured_on": {
+            "name": "Medido el"
+          }
+        }
+      },
+      "waist": {
+        "name": "Cintura",
+        "state_attributes": {
+          "measured_on": {
+            "name": "Medido el"
+          }
+        }
+      },
+      "hips": {
+        "name": "Cadera",
+        "state_attributes": {
+          "measured_on": {
+            "name": "Medido el"
+          }
+        }
+      },
+      "bicep_l": {
+        "name": "Bíceps izquierdo",
+        "state_attributes": {
+          "measured_on": {
+            "name": "Medido el"
+          }
+        }
+      },
+      "bicep_r": {
+        "name": "Bíceps derecho",
+        "state_attributes": {
+          "measured_on": {
+            "name": "Medido el"
+          }
+        }
+      },
+      "forearm_l": {
+        "name": "Antebrazo izquierdo",
+        "state_attributes": {
+          "measured_on": {
+            "name": "Medido el"
+          }
+        }
+      },
+      "forearm_r": {
+        "name": "Antebrazo derecho",
+        "state_attributes": {
+          "measured_on": {
+            "name": "Medido el"
+          }
+        }
+      },
+      "thigh_l": {
+        "name": "Muslo izquierdo",
+        "state_attributes": {
+          "measured_on": {
+            "name": "Medido el"
+          }
+        }
+      },
+      "thigh_r": {
+        "name": "Muslo derecho",
+        "state_attributes": {
+          "measured_on": {
+            "name": "Medido el"
+          }
+        }
+      },
+      "calf_l": {
+        "name": "Gemelo izquierdo",
+        "state_attributes": {
+          "measured_on": {
+            "name": "Medido el"
+          }
+        }
+      },
+      "calf_r": {
+        "name": "Gemelo derecho",
+        "state_attributes": {
+          "measured_on": {
+            "name": "Medido el"
+          }
+        }
+      },
+      "last_workout_effort": {
+        "name": "Esfuerzo del último entreno"
+      },
+      "last_workout_feeling": {
+        "name": "Sensación del último entreno",
+        "state": {
+          "awful": "Fatal",
+          "bad": "Mal",
+          "okay": "Normal",
+          "good": "Bien",
+          "great": "Genial"
+        }
+      },
+      "last_workout_volume": {
+        "name": "Volumen del último entreno"
+      },
+      "volume_this_month": {
+        "name": "Volumen este mes"
+      }
+    }
+  }
+}

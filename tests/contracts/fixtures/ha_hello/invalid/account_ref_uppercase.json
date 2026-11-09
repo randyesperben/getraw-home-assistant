@@ -1,0 +1,33 @@
+{
+  "account_ref": "FDD0F8E35730FDD04CD0DD0505BBC0B02036A2E6B4E346ECAF6B3DB49E2B241D",
+  "app": {
+    "build": 140,
+    "version": "1.4.0"
+  },
+  "display_name": "Randy",
+  "kind": "hello",
+  "phone_now": "2026-10-21T18:00:00.000Z",
+  "platform": "ios",
+  "revision": 1792562400000,
+  "schema_version": 1,
+  "writes": {
+    "bye": [
+      1
+    ],
+    "event": [
+      1
+    ],
+    "hello": [
+      1
+    ],
+    "patch": [
+      1
+    ],
+    "state": [
+      1
+    ],
+    "summary": [
+      1
+    ]
+  }
+}

@@ -1,0 +1,37 @@
+# Home Assistant's and HACS's own checks of the integration: hassfest (the manifest,
+# translations, config flow and services, as core checks its own) and the HACS action
+# (what the Marketplace's catalog asks of a repository). Weekly too, since both
+# checkers change with Home Assistant's releases.
+name: Validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "17 5 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  hassfest:
+    name: hassfest
+    runs-on: ubicloud-standard-2
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: home-assistant/actions/hassfest@86d4564712fa02543c808e3a693dd04f9d3f8361 # master, 2026-10-26
+
+  hacs:
+    name: HACS
+    runs-on: ubicloud-standard-2
+    timeout-minutes: 10
+    steps:
+      - uses: hacs/action@1ebf01c408f29afcb6406bd431bc98fd8cbb15aa # main, 2026-06-08
+        with:
+          category: integration
+          comment: false

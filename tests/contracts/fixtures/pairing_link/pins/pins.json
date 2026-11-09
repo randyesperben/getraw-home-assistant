@@ -1,0 +1,8 @@
+{
+  "description": "Each certificate file and its pin: SHA-256 of the DER of the file's first (leaf) certificate, base64url without padding. Python, Swift and Kotlin compute the same from the same file.",
+  "pins": {
+    "rsa_2048.pem": "c9NocUliA-OniQnBySpeJtDEDuQXmvOzB6nZ0ALknKA",
+    "p256.pem": "FeCzi8widp0LWVVxPpt22KhyeFcrJTCIpamf9Zh-GfQ",
+    "full_chain.pem": "jL9Zy67IatgIZB4rwYzLhu-xf1nsuoKdFJUC7zUwQAg"
+  }
+}

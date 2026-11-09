@@ -1,0 +1,98 @@
+blueprint:
+  name: "RAW: a scene for the workout"
+  description: >-
+    Turns on one scene when a workout starts in RAW and another when it ends,
+    for example the gym lights on and then off. It follows the Workout sensor,
+    so a workout finished from the lock screen counts too, and a Home Assistant
+    restart starts neither scene.
+  domain: automation
+  author: RAW
+  source_url: https://github.com/randyesperben/getraw-home-assistant/blob/main/blueprints/automation/getraw/workout_scenes.yaml
+  homeassistant:
+    min_version: "2026.11.0"
+  input:
+    raw:
+      name: RAW
+      icon: mdi:dumbbell
+      input:
+        workout:
+          name: Workout
+          description: The Workout sensor of the person's RAW device.
+          selector:
+            entity:
+              filter:
+                - integration: getraw
+                  domain: binary_sensor
+                  device_class: running
+        person:
+          name: Person
+          description: Who trains with this RAW device.
+          selector:
+            entity:
+              filter:
+                - domain: person
+        only_at_home:
+          name: Only when at home
+          description: >-
+            RAW also reports workouts from a gym away from home. On, the scenes
+            run only while this person is at home.
+          default: true
+          selector:
+            boolean: {}
+    scenes:
+      name: Scenes
+      icon: mdi:palette
+      input:
+        start_scene:
+          name: When the workout starts
+          selector:
+            entity:
+              filter:
+                - domain: scene
+        end_scene:
+          name: When the workout ends
+          selector:
+            entity:
+              filter:
+                - domain: scene
+
+# Queued: a workout that starts and ends within a moment still gets both scenes, in order.
+mode: queued
+max_exceeded: silent
+
+# From off to on and back, never from unavailable or unknown, so a restart or a reload
+# of RAW's integration turns on no scene.
+triggers:
+  - trigger: state
+    entity_id: !input workout
+    from: "off"
+    to: "on"
+    id: started
+  - trigger: state
+    entity_id: !input workout
+    from: "on"
+    to: "off"
+    id: ended
+
+conditions:
+  - condition: state
+    entity_id: !input person
+    state: home
+    enabled: !input only_at_home
+
+actions:
+  - choose:
+      - conditions:
+          - condition: trigger
+            id: started
+        sequence:
+          - action: scene.turn_on
+            target:
+              entity_id: !input start_scene
+      - conditions:
+          - condition: trigger
+            id: ended
+        sequence:
+          - action: scene.turn_on
+            target:
+              entity_id: !input end_scene

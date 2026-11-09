@@ -1,0 +1,118 @@
+blueprint:
+  name: "RAW: weekly goal reminder"
+  description: >-
+    Sends a notification at the day and time you pick while this week's
+    training goal in RAW is not met yet. Without a weekly goal in RAW it sends
+    nothing.
+  domain: automation
+  author: RAW
+  source_url: https://github.com/randyesperben/getraw-home-assistant/blob/main/blueprints/automation/getraw/weekly_goal.yaml
+  homeassistant:
+    min_version: "2026.11.0"
+  input:
+    raw:
+      name: RAW
+      icon: mdi:dumbbell
+      input:
+        goal_met:
+          name: Weekly goal met
+          description: The Weekly goal met sensor of the person's RAW device.
+          selector:
+            entity:
+              filter:
+                - integration: getraw
+                  domain: binary_sensor
+        person:
+          name: Person
+          description: Who trains with this RAW device.
+          selector:
+            entity:
+              filter:
+                - domain: person
+        only_at_home:
+          name: Only when at home
+          description: On, the reminder comes only while this person is at home.
+          default: false
+          selector:
+            boolean: {}
+    when:
+      name: When
+      icon: mdi:calendar-clock
+      input:
+        days:
+          name: Days
+          default: [fri]
+          selector:
+            select:
+              multiple: true
+              options:
+                - label: Monday
+                  value: mon
+                - label: Tuesday
+                  value: tue
+                - label: Wednesday
+                  value: wed
+                - label: Thursday
+                  value: thu
+                - label: Friday
+                  value: fri
+                - label: Saturday
+                  value: sat
+                - label: Sunday
+                  value: sun
+        at:
+          name: Time
+          default: "18:00:00"
+          selector:
+            time: {}
+    message_section:
+      name: Notification
+      icon: mdi:message-badge
+      input:
+        notify:
+          name: Send to
+          description: One or more notification entities, such as your phone's.
+          selector:
+            entity:
+              multiple: true
+              filter:
+                - domain: notify
+        title:
+          name: Title
+          default: Weekly goal
+          selector:
+            text: {}
+        message:
+          name: Message
+          default: You have not met this week's training goal yet.
+          selector:
+            text:
+              multiline: true
+
+mode: single
+max_exceeded: silent
+
+triggers:
+  - trigger: time
+    at: !input at
+
+conditions:
+  - condition: time
+    weekday: !input days
+  # «off» only: «unknown» means there is no weekly goal in RAW, and «unavailable»
+  # that RAW has not sent its summary yet.
+  - condition: state
+    entity_id: !input goal_met
+    state: "off"
+  - condition: state
+    entity_id: !input person
+    state: home
+    enabled: !input only_at_home
+
+actions:
+  - action: notify.send_message
+    target:
+      entity_id: !input notify
+    data:
+      title: !input title
+      message: !input message

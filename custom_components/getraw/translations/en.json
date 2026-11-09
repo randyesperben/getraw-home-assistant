@@ -1,0 +1,483 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect RAW",
+        "description": "Scan this code with your phone's camera and tap Connect in RAW. Then select Continue.\n\nOn this phone? [Open in RAW]({link})\n\nRAW reaches this Home Assistant at {address}. If your phone can't open that address, change Local network in Settings › System › Network.",
+        "data": {
+          "code": "QR code"
+        },
+        "submit": "Continue"
+      },
+      "show_code": {
+        "title": "Connect RAW again",
+        "description": "Scan this code with your phone's camera and tap Connect in RAW. Then select Continue.\n\nOn this phone? [Open in RAW]({link})\n\nRAW reaches this Home Assistant at {address}. If your phone can't open that address, change Local network in Settings › System › Network.",
+        "data": {
+          "code": "QR code"
+        },
+        "submit": "Continue"
+      },
+      "reconfigure": {
+        "menu_options": {
+          "show_code": "Show the QR code again",
+          "rotate_key": "Rotate key"
+        },
+        "menu_option_descriptions": {
+          "show_code": "A new code for a new phone, or after you reinstall RAW.",
+          "rotate_key": "RAW switches to a fresh key with its next message. Use it if someone may have a copy of this Home Assistant's data, such as a backup. If someone may have seen the QR code, show the QR code again instead."
+        }
+      }
+    },
+    "progress": {
+      "wait_for_phone": "Waiting for RAW on your phone. Tap Connect in RAW within 2 minutes."
+    },
+    "error": {
+      "no_answer": "RAW didn't answer. Check that the phone is on the same Wi-Fi and that RAW is allowed to use the local network (iPhone: Settings › RAW › Local Network).",
+      "other_account": "That phone is signed in to another RAW account. In RAW, sign in with this device's account, or add RAW again for the other account."
+    },
+    "abort": {
+      "reconnected": "RAW is connected again. Its device, entities and history stay as they were.",
+      "key_rotated": "RAW gets the new key with its next message.",
+      "no_address": "Home Assistant has no address RAW can reach. Fill in Local network in Settings › System › Network."
+    }
+  },
+  "issues": {
+    "unsupported_version": {
+      "title": "Update RAW in the Marketplace",
+      "description": "{name} sends messages this version of the RAW integration can't read. Update RAW in the Marketplace."
+    },
+    "phone_disconnected": {
+      "title": "{name} disconnected on the phone",
+      "description": "RAW stopped sending to Home Assistant from the phone. To connect again, open Settings › Home Assistant in RAW. If you no longer use it, delete this integration."
+    },
+    "silent": {
+      "title": "No news from {name} in 14 days",
+      "description": "Home Assistant hasn't received anything from RAW in 14 days. Open RAW on the phone. If it says Home Assistant isn't answering, select Reconfigure on this integration and show the QR code again."
+    },
+    "clock": {
+      "title": "The clocks of {name} and Home Assistant disagree",
+      "description": "The phone's clock and this Home Assistant's moved more than 2 minutes apart after RAW connected. Until you connect it again, Home Assistant skips workout events and shows workout times earlier than they were. Select Reconfigure on this integration and show the QR code again."
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "workout": {
+        "name": "Workout",
+        "state": {
+          "on": "In progress",
+          "off": "Not training"
+        }
+      },
+      "resting": {
+        "name": "Resting",
+        "state": {
+          "on": "Yes",
+          "off": "No"
+        }
+      },
+      "trained_today": {
+        "name": "Trained today",
+        "state": {
+          "on": "Yes",
+          "off": "No"
+        }
+      },
+      "weekly_goal_met": {
+        "name": "Weekly goal met",
+        "state": {
+          "on": "Yes",
+          "off": "Not yet"
+        }
+      }
+    },
+    "calendar": {
+      "workouts": {
+        "name": "Workouts",
+        "state_attributes": {
+          "message": {
+            "name": "Event",
+            "state": {
+              "workout": "Workout",
+              "planned": "Planned workout"
+            }
+          }
+        }
+      }
+    },
+    "event": {
+      "events": {
+        "name": "Workout events",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "workout_started": "Workout started",
+              "set_completed": "Set completed",
+              "exercise_changed": "Exercise changed",
+              "rest_started": "Rest started",
+              "rest_adjusted": "Rest adjusted",
+              "rest_skipped": "Rest skipped",
+              "rest_ended": "Rest ended",
+              "record": "Personal record",
+              "workout_finishing": "Finishing workout",
+              "workout_discarded": "Workout discarded",
+              "workout_finished": "Workout finished",
+              "workout_abandoned": "Workout abandoned",
+              "test": "Test"
+            }
+          }
+        }
+      }
+    },
+    "sensor": {
+      "phase": {
+        "name": "Phase",
+        "state": {
+          "idle": "No workout",
+          "active": "Training",
+          "resting": "Resting",
+          "finishing": "Finishing"
+        }
+      },
+      "workout_title": {
+        "name": "Workout title"
+      },
+      "workout_started": {
+        "name": "Workout started"
+      },
+      "current_exercise": {
+        "name": "Current exercise",
+        "state_attributes": {
+          "index": {
+            "name": "Exercise number"
+          },
+          "total": {
+            "name": "Exercises"
+          }
+        }
+      },
+      "current_set": {
+        "name": "Current set",
+        "state_attributes": {
+          "total": {
+            "name": "Sets"
+          },
+          "set_type": {
+            "name": "Set type",
+            "state": {
+              "normal": "Normal",
+              "warmup": "Warm-up",
+              "drop": "Drop set",
+              "failure": "Failure set",
+              "rest_pause": "Rest-pause set"
+            }
+          },
+          "target": {
+            "name": "Target"
+          },
+          "dumbbells_in_play": {
+            "name": "Dumbbells"
+          },
+          "target_rpe": {
+            "name": "Target RPE"
+          },
+          "previous_rpe": {
+            "name": "Last time's RPE"
+          }
+        }
+      },
+      "target_weight": {
+        "name": "Target weight"
+      },
+      "target_reps": {
+        "name": "Target reps",
+        "state_attributes": {
+          "reps_max": {
+            "name": "Maximum reps"
+          }
+        }
+      },
+      "last_time": {
+        "name": "Last time"
+      },
+      "next_set": {
+        "name": "Next set"
+      },
+      "sets_done": {
+        "name": "Sets done",
+        "state_attributes": {
+          "total": {
+            "name": "Total sets"
+          }
+        }
+      },
+      "rest_end": {
+        "name": "Rest end"
+      },
+      "timed_set_started": {
+        "name": "Timed set started"
+      },
+      "workout_volume": {
+        "name": "Workout volume"
+      },
+      "last_update": {
+        "name": "Last update"
+      },
+      "latest_record": {
+        "name": "Latest record",
+        "state_attributes": {
+          "exercise": {
+            "name": "Exercise"
+          },
+          "kind": {
+            "name": "Record",
+            "state": {
+              "max_weight": "Heaviest weight",
+              "max_external_load": "Heaviest load",
+              "best_e1rm": "Estimated 1RM",
+              "most_reps": "Most reps",
+              "best_set_volume": "Best set volume",
+              "best_time": "Best time",
+              "best_pace": "Best pace",
+              "max_distance": "Longest distance"
+            }
+          },
+          "value": {
+            "name": "Value"
+          }
+        }
+      },
+      "records_this_month": {
+        "name": "Records this month"
+      },
+      "todays_plan": {
+        "name": "Today",
+        "state": {
+          "due": "Due",
+          "done": "Workout done",
+          "rest": "Rest day",
+          "no_plan": "No plan"
+        },
+        "state_attributes": {
+          "reason": {
+            "name": "Reason",
+            "state": {
+              "scheduled_today": "Scheduled for today",
+              "plan_day": "A plan day",
+              "pending": "Left from earlier this week",
+              "next_scheduled": "Next scheduled day",
+              "rotation": "Next in rotation",
+              "first_day": "First day",
+              "free": "No routine"
+            }
+          }
+        }
+      },
+      "next_routine": {
+        "name": "Next routine"
+      },
+      "next_routine_date": {
+        "name": "Next routine date"
+      },
+      "training_days_this_week": {
+        "name": "Training days this week"
+      },
+      "workouts_this_week": {
+        "name": "Workouts this week"
+      },
+      "weekly_goal": {
+        "name": "Weekly goal"
+      },
+      "weeks_in_a_row": {
+        "name": "Weeks in a row"
+      },
+      "last_workout": {
+        "name": "Last workout",
+        "state_attributes": {
+          "title": {
+            "name": "Title"
+          },
+          "sets": {
+            "name": "Sets"
+          },
+          "reps": {
+            "name": "Reps"
+          },
+          "records": {
+            "name": "Records"
+          },
+          "notes": {
+            "name": "Notes"
+          }
+        }
+      },
+      "last_workout_duration": {
+        "name": "Last workout duration"
+      },
+      "workouts_this_month": {
+        "name": "Workouts this month"
+      },
+      "training_days_this_month": {
+        "name": "Training days this month"
+      },
+      "training_time_this_month": {
+        "name": "Training time this month"
+      },
+      "sets_this_month": {
+        "name": "Sets this month"
+      },
+      "reps_this_month": {
+        "name": "Reps this month"
+      },
+      "workouts_all_time": {
+        "name": "Workouts all time"
+      },
+      "body_weight": {
+        "name": "Body weight",
+        "state_attributes": {
+          "measured_on": {
+            "name": "Measured on"
+          }
+        }
+      },
+      "body_fat_pct": {
+        "name": "Body fat",
+        "state_attributes": {
+          "measured_on": {
+            "name": "Measured on"
+          }
+        }
+      },
+      "neck": {
+        "name": "Neck",
+        "state_attributes": {
+          "measured_on": {
+            "name": "Measured on"
+          }
+        }
+      },
+      "shoulders": {
+        "name": "Shoulders",
+        "state_attributes": {
+          "measured_on": {
+            "name": "Measured on"
+          }
+        }
+      },
+      "chest": {
+        "name": "Chest",
+        "state_attributes": {
+          "measured_on": {
+            "name": "Measured on"
+          }
+        }
+      },
+      "abdomen": {
+        "name": "Abdomen",
+        "state_attributes": {
+          "measured_on": {
+            "name": "Measured on"
+          }
+        }
+      },
+      "waist": {
+        "name": "Waist",
+        "state_attributes": {
+          "measured_on": {
+            "name": "Measured on"
+          }
+        }
+      },
+      "hips": {
+        "name": "Hips",
+        "state_attributes": {
+          "measured_on": {
+            "name": "Measured on"
+          }
+        }
+      },
+      "bicep_l": {
+        "name": "Left biceps",
+        "state_attributes": {
+          "measured_on": {
+            "name": "Measured on"
+          }
+        }
+      },
+      "bicep_r": {
+        "name": "Right biceps",
+        "state_attributes": {
+          "measured_on": {
+            "name": "Measured on"
+          }
+        }
+      },
+      "forearm_l": {
+        "name": "Left forearm",
+        "state_attributes": {
+          "measured_on": {
+            "name": "Measured on"
+          }
+        }
+      },
+      "forearm_r": {
+        "name": "Right forearm",
+        "state_attributes": {
+          "measured_on": {
+            "name": "Measured on"
+          }
+        }
+      },
+      "thigh_l": {
+        "name": "Left thigh",
+        "state_attributes": {
+          "measured_on": {
+            "name": "Measured on"
+          }
+        }
+      },
+      "thigh_r": {
+        "name": "Right thigh",
+        "state_attributes": {
+          "measured_on": {
+            "name": "Measured on"
+          }
+        }
+      },
+      "calf_l": {
+        "name": "Left calf",
+        "state_attributes": {
+          "measured_on": {
+            "name": "Measured on"
+          }
+        }
+      },
+      "calf_r": {
+        "name": "Right calf",
+        "state_attributes": {
+          "measured_on": {
+            "name": "Measured on"
+          }
+        }
+      },
+      "last_workout_effort": {
+        "name": "Last workout effort"
+      },
+      "last_workout_feeling": {
+        "name": "Last workout feeling",
+        "state": {
+          "awful": "Awful",
+          "bad": "Bad",
+          "okay": "Okay",
+          "good": "Good",
+          "great": "Great"
+        }
+      },
+      "last_workout_volume": {
+        "name": "Last workout volume"
+      },
+      "volume_this_month": {
+        "name": "Volume this month"
+      }
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "description": "A post from the phone; the plaintext is opaque to the seal, multi-byte UTF-8 included.",
+  "key": "ZF6EJaC-_W2xBxaWSI5U_DULztmvezcemm7BXIaDin4",
+  "webhook_id": "27a67c17b95463bd8453ba2c580d5f870f19b02d4e6df7def5a5c7801d04bea9",
+  "direction": "p2h",
+  "nonce": "000102030405060708090a0b",
+  "plaintext": "{\"kind\":\"fixture\",\"text\":\"Sentadilla búlgara, 100 kg × 5 ✓\"}",
+  "sealed": "AAECAwQFBgcICQoLs/H/iOuh0y6KW+FFun66xVsOZ7i1drYayyZmu2+mqMT3qlCspiyrU+bpS9QPc9WzC6Ir9tAzGv3JfDdsnNixL8cWq2izS30Kbpnh1k3v0YM="
+}

@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "ok": true,
+  "kind": "state",
+  "revision": 1762700000123,
+  "reads": {
+    "hello": [
+      1
+    ],
+    "state": [
+      1
+    ],
+    "event": [
+      1
+    ],
+    "summary": [
+      1
+    ],
+    "bye": [
+      1
+    ]
+  },
+  "urls": [
+    {
+      "url": "http://192.168.1.20:8123/api/webhook/27a67c17b95463bd8453ba2c580d5f870f19b02d4e6df7def5a5c7801d04bea9",
+      "route": "local"
+    },
+    {
+      "url": "https://hooks.nabu.casa/gAAAAABnRAWfixtureCloudhookToken-only_for_tests0123456789==",
+      "route": "cloud"
+    }
+  ]
+}

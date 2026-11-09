@@ -1,0 +1,89 @@
+blueprint:
+  name: "RAW: rest timer"
+  description: >-
+    Mirrors RAW's rest on a Home Assistant timer helper, so a dashboard or a
+    tablet by the rack shows the rest counting down as m:ss. It follows the
+    Rest end sensor: a longer or shorter rest moves the timer, and a skipped
+    rest or the end of the workout cancels it. Create the timer helper first
+    (Settings › Devices & services › Helpers › Timer).
+  domain: automation
+  author: RAW
+  source_url: https://github.com/randyesperben/getraw-home-assistant/blob/main/blueprints/automation/getraw/rest_timer.yaml
+  homeassistant:
+    min_version: "2026.11.0"
+  input:
+    raw:
+      name: RAW
+      icon: mdi:dumbbell
+      input:
+        rest_end:
+          name: Rest end
+          description: The Rest end sensor of the person's RAW device.
+          selector:
+            entity:
+              filter:
+                - integration: getraw
+                  domain: sensor
+                  device_class: timestamp
+        person:
+          name: Person
+          description: Who trains with this RAW device.
+          selector:
+            entity:
+              filter:
+                - domain: person
+        only_at_home:
+          name: Only when at home
+          description: >-
+            RAW also reports workouts from a gym away from home. On, the timer
+            runs only while this person is at home.
+          default: true
+          selector:
+            boolean: {}
+    timer_section:
+      name: Timer
+      icon: mdi:timer-outline
+      input:
+        timer:
+          name: Timer helper
+          selector:
+            entity:
+              filter:
+                - domain: timer
+
+# Restart: the latest rest end always wins.
+mode: restart
+
+triggers:
+  - trigger: state
+    entity_id: !input rest_end
+    not_to:
+      - unavailable
+
+conditions:
+  - condition: state
+    entity_id: !input person
+    state: home
+    enabled: !input only_at_home
+
+variables:
+  # Whole seconds left until RAW's rest end; 0 once it has passed or with no rest.
+  seconds_left: >-
+    {% set ends = trigger.to_state.state | as_datetime %}
+    {{ (((ends - now()).total_seconds()) | round(0, 'ceil') | int)
+       if ends is not none and ends > now() else 0 }}
+
+actions:
+  - if:
+      - condition: template
+        value_template: "{{ seconds_left > 0 }}"
+    then:
+      - action: timer.start
+        target:
+          entity_id: !input timer
+        data:
+          duration: "{{ seconds_left }}"
+    else:
+      - action: timer.cancel
+        target:
+          entity_id: !input timer

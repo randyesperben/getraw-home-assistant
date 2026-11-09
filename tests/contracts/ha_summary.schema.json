@@ -1,0 +1,757 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://getraw.fit/contracts/home_assistant/ha_summary.schema.json",
+  "title": "HaSummary",
+  "description": "The history summary (L2): Home's today and the next 13 days, the month, the last workout, the calendar's past workouts and the health categories that are on. Written by HaSummarySync when its content changes, read by the integration, which picks the day whose date is today in time_zone, so Today's plan, the week and the streak turn at midnight without the phone, and show unknown past the last day. The envelope keys are contract 1's (README).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "kind",
+    "account_ref",
+    "revision",
+    "phone_now",
+    "categories",
+    "time_zone",
+    "weight_unit",
+    "distance_unit",
+    "length_unit",
+    "first_day_of_week",
+    "days",
+    "month",
+    "all_time",
+    "calendar"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "kind": {
+      "const": "summary"
+    },
+    "account_ref": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "phone_now": {
+      "$ref": "#/$defs/instant"
+    },
+    "categories": {
+      "description": "The health categories on for this destination (switch states, not health data).",
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 6,
+      "items": {
+        "enum": [
+          "titles",
+          "effort",
+          "body_weight",
+          "measurements",
+          "saved_volume",
+          "notes"
+        ]
+      }
+    },
+    "time_zone": {
+      "description": "The phone's IANA zone: the days below turn at its midnight.",
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9_+-]*(/[A-Za-z0-9_+-]+)*$",
+      "maxLength": 64
+    },
+    "weight_unit": {
+      "description": "The person's weight unit in RAW, for HA to suggest on weight sensors (S-I1).",
+      "enum": [
+        "kg",
+        "lb"
+      ]
+    },
+    "distance_unit": {
+      "description": "The person's distance unit in RAW.",
+      "enum": [
+        "km",
+        "mi"
+      ]
+    },
+    "length_unit": {
+      "description": "The person's body measurement unit in RAW (MeasurementUnit), for HA to suggest on the lengths.",
+      "enum": [
+        "cm",
+        "in"
+      ]
+    },
+    "first_day_of_week": {
+      "description": "The first day of the person's week in RAW (ISO weekday, 1 = Monday), the day Home counts each week from: HA starts the weekly totals again at its midnight.",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 7
+    },
+    "days": {
+      "description": "Today first, then each next day by Home's rules for that day (homeWidgetTimelineOf), counting what is trained by now.",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 14,
+      "items": {
+        "$ref": "#/$defs/day"
+      }
+    },
+    "month": {
+      "description": "The calendar month of days[0]. When the zone's clock enters the next month, HA counts these and health.saved_volume's month_kg as 0 until the next summary.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "month",
+        "workouts",
+        "training_days",
+        "training_time_sec",
+        "sets",
+        "reps",
+        "records"
+      ],
+      "properties": {
+        "month": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}$"
+        },
+        "workouts": {
+          "$ref": "#/$defs/count"
+        },
+        "training_days": {
+          "$ref": "#/$defs/count"
+        },
+        "training_time_sec": {
+          "$ref": "#/$defs/count"
+        },
+        "sets": {
+          "$ref": "#/$defs/count"
+        },
+        "reps": {
+          "$ref": "#/$defs/count"
+        },
+        "records": {
+          "description": "The monthly report's records (one per exercise and kind, never a bodyweight volume kind): the same rule, one copy.",
+          "$ref": "#/$defs/count"
+        }
+      }
+    },
+    "all_time": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "workouts"
+      ],
+      "properties": {
+        "workouts": {
+          "$ref": "#/$defs/count"
+        }
+      }
+    },
+    "last_workout": {
+      "description": "The last finished workout; absent before the first.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "started_at",
+        "finished_at",
+        "duration_sec",
+        "sets",
+        "reps",
+        "records"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "started_at": {
+          "$ref": "#/$defs/instant"
+        },
+        "finished_at": {
+          "$ref": "#/$defs/instant"
+        },
+        "duration_sec": {
+          "$ref": "#/$defs/count"
+        },
+        "sets": {
+          "$ref": "#/$defs/count"
+        },
+        "reps": {
+          "$ref": "#/$defs/count"
+        },
+        "records": {
+          "$ref": "#/$defs/count"
+        }
+      }
+    },
+    "calendar": {
+      "description": "The calendar's past workouts, newest first; planned days come from days.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "workouts"
+      ],
+      "properties": {
+        "workouts": {
+          "type": "array",
+          "maxItems": 30,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "started_at",
+              "finished_at"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/id"
+              },
+              "started_at": {
+                "$ref": "#/$defs/instant"
+              },
+              "finished_at": {
+                "$ref": "#/$defs/instant"
+              }
+            }
+          }
+        }
+      }
+    },
+    "health": {
+      "description": "Present only while a category is on and has something to say; each category only while on (the allOf below).",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "titles": {
+          "description": "Names by id: the routines days[] name and the workouts last_workout and calendar name. At most 14 routines (one a day) and 31 workouts (the calendar's 30 and the last), which with the 80-point names keeps a summary under the contract's 64 000 bytes.",
+          "type": "object",
+          "additionalProperties": false,
+          "minProperties": 1,
+          "properties": {
+            "routines": {
+              "$ref": "#/$defs/names",
+              "maxProperties": 14
+            },
+            "workouts": {
+              "$ref": "#/$defs/names",
+              "maxProperties": 31
+            }
+          }
+        },
+        "effort": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "last_workout"
+          ],
+          "properties": {
+            "last_workout": {
+              "type": "object",
+              "additionalProperties": false,
+              "minProperties": 1,
+              "properties": {
+                "session_rpe": {
+                  "type": "number",
+                  "minimum": 1,
+                  "maximum": 10
+                },
+                "feeling": {
+                  "enum": [
+                    "awful",
+                    "bad",
+                    "okay",
+                    "good",
+                    "great"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "body_weight": {
+          "description": "The latest body weight.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "weight_kg",
+            "measured_on"
+          ],
+          "properties": {
+            "weight_kg": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "maximum": 500
+            },
+            "measured_on": {
+              "$ref": "#/$defs/date"
+            }
+          }
+        },
+        "measurements": {
+          "description": "The latest of each measurement kind logged, body weight apart.",
+          "type": "object",
+          "additionalProperties": false,
+          "minProperties": 1,
+          "properties": {
+            "body_fat_pct": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value_pct",
+                "measured_on"
+              ],
+              "properties": {
+                "value_pct": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100
+                },
+                "measured_on": {
+                  "$ref": "#/$defs/date"
+                }
+              }
+            },
+            "neck": {
+              "$ref": "#/$defs/length"
+            },
+            "shoulders": {
+              "$ref": "#/$defs/length"
+            },
+            "chest": {
+              "$ref": "#/$defs/length"
+            },
+            "abdomen": {
+              "$ref": "#/$defs/length"
+            },
+            "waist": {
+              "$ref": "#/$defs/length"
+            },
+            "hips": {
+              "$ref": "#/$defs/length"
+            },
+            "bicep_l": {
+              "$ref": "#/$defs/length"
+            },
+            "bicep_r": {
+              "$ref": "#/$defs/length"
+            },
+            "forearm_l": {
+              "$ref": "#/$defs/length"
+            },
+            "forearm_r": {
+              "$ref": "#/$defs/length"
+            },
+            "thigh_l": {
+              "$ref": "#/$defs/length"
+            },
+            "thigh_r": {
+              "$ref": "#/$defs/length"
+            },
+            "calf_l": {
+              "$ref": "#/$defs/length"
+            },
+            "calf_r": {
+              "$ref": "#/$defs/length"
+            }
+          }
+        },
+        "saved_volume": {
+          "description": "Tonnage as saved: bodyweight sets count the body weight. Only while body_weight is on too.",
+          "type": "object",
+          "additionalProperties": false,
+          "minProperties": 1,
+          "properties": {
+            "last_workout_kg": {
+              "$ref": "#/$defs/kilograms"
+            },
+            "month_kg": {
+              "$ref": "#/$defs/kilograms"
+            }
+          }
+        },
+        "notes": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "last_workout"
+          ],
+          "properties": {
+            "last_workout": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2000
+            }
+          }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "categories": {
+            "not": {
+              "contains": {
+                "const": "titles"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "health": {
+            "properties": {
+              "titles": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "categories": {
+            "not": {
+              "contains": {
+                "const": "effort"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "health": {
+            "properties": {
+              "effort": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "categories": {
+            "not": {
+              "contains": {
+                "const": "body_weight"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "categories": {
+            "not": {
+              "contains": {
+                "const": "saved_volume"
+              }
+            }
+          },
+          "health": {
+            "properties": {
+              "body_weight": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "categories": {
+            "not": {
+              "contains": {
+                "const": "measurements"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "health": {
+            "properties": {
+              "measurements": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "categories": {
+            "not": {
+              "contains": {
+                "const": "saved_volume"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "health": {
+            "properties": {
+              "saved_volume": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "categories": {
+            "not": {
+              "contains": {
+                "const": "notes"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "health": {
+            "properties": {
+              "notes": false
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "instant": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+    },
+    "date": {
+      "description": "A local date in time_zone.",
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "count": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 2147483647
+    },
+    "kilograms": {
+      "type": "number",
+      "minimum": 0
+    },
+    "names": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "minLength": 1,
+        "maxLength": 64
+      },
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 80
+      },
+      "description": "Names by id, each cut as the live names are (liveCut, 80 code points), so HA shows one routine one way."
+    },
+    "length": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "value_cm",
+        "measured_on"
+      ],
+      "properties": {
+        "value_cm": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 500
+        },
+        "measured_on": {
+          "$ref": "#/$defs/date"
+        }
+      }
+    },
+    "day": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "date",
+        "plan",
+        "trained",
+        "week"
+      ],
+      "properties": {
+        "date": {
+          "$ref": "#/$defs/date"
+        },
+        "plan": {
+          "description": "Today's plan on that day: due (a routine is on, a catch-up included), done (trained, nothing more due), rest, no_plan (no routine).",
+          "enum": [
+            "due",
+            "done",
+            "rest",
+            "no_plan"
+          ]
+        },
+        "reason": {
+          "description": "Why: NextSessionReason's wire names, or first_day and free without a routine. Absent on done.",
+          "enum": [
+            "scheduled_today",
+            "plan_day",
+            "pending",
+            "next_scheduled",
+            "rotation",
+            "first_day",
+            "free"
+          ]
+        },
+        "trained": {
+          "description": "A workout finished on that day (always false ahead of today).",
+          "type": "boolean"
+        },
+        "next_routine": {
+          "description": "The routine on next and its day: that day itself when due. Its name is under health.titles.routines.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "date"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "date": {
+              "$ref": "#/$defs/date"
+            }
+          }
+        },
+        "week": {
+          "description": "That day's week, as Home counts it on that day.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "training_days",
+            "workouts",
+            "weeks_in_a_row"
+          ],
+          "properties": {
+            "training_days": {
+              "$ref": "#/$defs/count"
+            },
+            "workouts": {
+              "$ref": "#/$defs/count"
+            },
+            "goal": {
+              "description": "Training days a week; absent without a goal.",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 7
+            },
+            "goal_met": {
+              "description": "Only with a goal.",
+              "type": "boolean"
+            },
+            "weeks_in_a_row": {
+              "$ref": "#/$defs/count"
+            }
+          },
+          "dependentRequired": {
+            "goal": [
+              "goal_met"
+            ],
+            "goal_met": [
+              "goal"
+            ]
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "plan": {
+                "const": "done"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "reason": false
+            }
+          },
+          "else": {
+            "required": [
+              "reason"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "plan": {
+                "const": "no_plan"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "reason": {
+                "enum": [
+                  "first_day",
+                  "free"
+                ]
+              },
+              "next_routine": false
+            }
+          },
+          "else": {
+            "properties": {
+              "reason": {
+                "not": {
+                  "enum": [
+                    "first_day",
+                    "free"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "plan": {
+                "enum": [
+                  "due",
+                  "rest"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "next_routine"
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

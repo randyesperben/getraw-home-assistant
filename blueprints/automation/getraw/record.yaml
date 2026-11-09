@@ -1,0 +1,147 @@
+blueprint:
+  name: "RAW: celebrate a record"
+  description: >-
+    When RAW logs a personal record, lights the lights you pick in a colour for
+    a few seconds and says the record aloud on a speaker, as RAW says it on the
+    phone («Personal record in Bench Press: 82.5 kilograms, 8 reps»). Pick
+    lights, a speaker, or both.
+  domain: automation
+  author: RAW
+  source_url: https://github.com/randyesperben/getraw-home-assistant/blob/main/blueprints/automation/getraw/record.yaml
+  homeassistant:
+    min_version: "2026.11.0"
+  input:
+    raw:
+      name: RAW
+      icon: mdi:dumbbell
+      input:
+        events:
+          name: Workout events
+          description: The Workout events entity of the person's RAW device.
+          selector:
+            entity:
+              filter:
+                - integration: getraw
+                  domain: event
+        person:
+          name: Person
+          description: Who trains with this RAW device.
+          selector:
+            entity:
+              filter:
+                - domain: person
+        only_at_home:
+          name: Only when at home
+          description: >-
+            RAW also reports workouts from a gym away from home. On, the
+            celebration runs only while this person is at home.
+          default: true
+          selector:
+            boolean: {}
+    lights_section:
+      name: Lights
+      icon: mdi:lightbulb-on
+      input:
+        lights:
+          name: Lights
+          description: They take the colour, then go back to how they were.
+          default: []
+          selector:
+            entity:
+              multiple: true
+              filter:
+                - domain: light
+        colour:
+          name: Colour
+          default: [255, 176, 0]
+          selector:
+            color_rgb: {}
+        seconds:
+          name: How long
+          default: 5
+          selector:
+            number:
+              min: 1
+              max: 30
+              unit_of_measurement: s
+              mode: slider
+    speaker_section:
+      name: Speaker
+      icon: mdi:speaker
+      input:
+        speakers:
+          name: Speakers
+          default: []
+          selector:
+            entity:
+              multiple: true
+              filter:
+                - domain: media_player
+        voice:
+          name: Text-to-speech
+          description: The voice that reads the record on the speakers.
+          default: ""
+          selector:
+            entity:
+              filter:
+                - domain: tts
+
+# Queued: a set can beat several records, and each one is celebrated in turn.
+mode: queued
+max: 10
+max_exceeded: silent
+
+triggers:
+  - trigger: event.received
+    target:
+      entity_id: !input events
+    options:
+      event_type:
+        - record
+
+conditions:
+  - condition: state
+    entity_id: !input person
+    state: home
+    enabled: !input only_at_home
+
+variables:
+  lights: !input lights
+  speakers: !input speakers
+  voice: !input voice
+  # RAW's own sentence for the record, in the phone's language.
+  sentence: "{{ trigger.to_state.attributes.text | default('') }}"
+  # A scene of its own per automation, so two people's automations never share one.
+  snapshot: "raw_record_{{ this.attributes.id }}"
+
+actions:
+  - parallel:
+      - if:
+          - condition: template
+            value_template: "{{ lights | count > 0 }}"
+        then:
+          - action: scene.create
+            data:
+              scene_id: "{{ snapshot }}"
+              snapshot_entities: "{{ lights }}"
+          - action: light.turn_on
+            target:
+              entity_id: "{{ lights }}"
+            data:
+              rgb_color: !input colour
+              brightness_pct: 100
+          - delay:
+              seconds: !input seconds
+          - action: scene.turn_on
+            target:
+              entity_id: "scene.{{ snapshot }}"
+      - if:
+          - condition: template
+            value_template: "{{ speakers | count > 0 and voice != '' and sentence != '' }}"
+        then:
+          - action: tts.speak
+            target:
+              entity_id: "{{ voice }}"
+            data:
+              media_player_entity_id: "{{ speakers }}"
+              message: "{{ sentence }}"

@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "ok": false,
+  "kind": "state",
+  "revision": 1762700000123,
+  "reads": {
+    "hello": [
+      1
+    ],
+    "state": [
+      1
+    ],
+    "event": [
+      1
+    ],
+    "patch": [
+      1
+    ],
+    "summary": [
+      1
+    ],
+    "bye": [
+      1
+    ]
+  }
+}

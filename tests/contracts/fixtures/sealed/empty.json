@@ -1,0 +1,9 @@
+{
+  "description": "An empty plaintext: the shortest body that opens (nonce and tag only).",
+  "key": "eJYAAS-5hgyyzk1ICjYLr-mG9mBMKPS_G7EsiepllZY",
+  "webhook_id": "27a67c17b95463bd8453ba2c580d5f870f19b02d4e6df7def5a5c7801d04bea9",
+  "direction": "p2h",
+  "nonce": "a1a2a3a4a5a6a7a8a9aaabac",
+  "plaintext": "",
+  "sealed": "oaKjpKWmp6ipqqus2vNn6Z0Pz4uBFcWcdW1fEQ=="
+}

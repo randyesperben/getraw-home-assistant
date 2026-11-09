@@ -1,0 +1,14 @@
+{
+  "account_ref": "fdd0f8e35730fdd04cd0dd0505bbc0b02036a2e6b4e346ecaf6b3db49e2b241d",
+  "categories": [
+    "titles",
+    "saved_volume"
+  ],
+  "kind": "state",
+  "live": {
+    "phase": "idle"
+  },
+  "phone_now": "2026-10-20T10:28:20.000Z",
+  "revision": 1792492100000,
+  "schema_version": 1
+}

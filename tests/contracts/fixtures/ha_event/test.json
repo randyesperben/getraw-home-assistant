@@ -1,0 +1,19 @@
+{
+  "account_ref": "fdd0f8e35730fdd04cd0dd0505bbc0b02036a2e6b4e346ecaf6b3db49e2b241d",
+  "categories": [],
+  "events": [
+    {
+      "event_id": "0:test:1792605600000",
+      "occurred_at": "2026-10-21T18:00:00.000Z",
+      "text": "Test from RAW",
+      "type": "test"
+    }
+  ],
+  "kind": "event",
+  "live": {
+    "phase": "idle"
+  },
+  "phone_now": "2026-10-21T18:00:00.050Z",
+  "revision": 1792562400000,
+  "schema_version": 1
+}

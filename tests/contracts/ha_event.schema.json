@@ -1,0 +1,740 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://getraw.fit/contracts/home_assistant/ha_event.schema.json",
+  "title": "HaEvent",
+  "description": "What happened, written once (README «Events», «One writer per event»), then the live state after it. HA fires each event whose event_id it has not seen and whose occurred_at is under 2 minutes old on its corrected clock, and applies `live` only when `revision` (the live sequence) is above the last it applied. `live` is ha_state.schema.json's #/$defs/live, held to it by the Dart referee. `revision` (the live sequence) is stamped by the outbox when it queues the body and kept on every retry; `account_ref` and `phone_now` are stamped at each attempt (README «The envelope»). The Dart referee (test/support/ha_contracts.dart) adds what no schema says: a health category travels, in `live` only, while it is in `categories`, and a message is 64 000 UTF-8 bytes at most.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "kind",
+    "account_ref",
+    "revision",
+    "phone_now",
+    "categories",
+    "events",
+    "live"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "kind": {
+      "const": "event"
+    },
+    "account_ref": {
+      "$ref": "#/$defs/account_ref"
+    },
+    "revision": {
+      "$ref": "#/$defs/revision"
+    },
+    "phone_now": {
+      "$ref": "#/$defs/instant"
+    },
+    "categories": {
+      "description": "The health categories on for this destination (switch states, not health data): HA marks an off category's entities unavailable at once; `saved_volume` only while `body_weight` is on too (README «Health categories»).",
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 6,
+      "items": {
+        "enum": [
+          "titles",
+          "effort",
+          "body_weight",
+          "measurements",
+          "saved_volume",
+          "notes"
+        ]
+      }
+    },
+    "events": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 20,
+      "items": {
+        "$ref": "#/$defs/event"
+      }
+    },
+    "live": {
+      "description": "ha_state.schema.json's #/$defs/live (the Dart test holds it).",
+      "type": "object",
+      "required": [
+        "phase"
+      ]
+    }
+  },
+  "if": {
+    "properties": {
+      "categories": {
+        "not": {
+          "contains": {
+            "const": "body_weight"
+          }
+        }
+      }
+    }
+  },
+  "then": {
+    "properties": {
+      "categories": {
+        "not": {
+          "contains": {
+            "const": "saved_volume"
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "account_ref": {
+      "description": "HMAC-SHA256 of the RAW account id keyed by HA's instance id (the custom webhook's: keyed by its URL), lowercase hex.",
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "instant": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "position": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2147483647
+    },
+    "count": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 2147483647
+    },
+    "logging_type": {
+      "enum": [
+        "weight_reps",
+        "bodyweight",
+        "reps",
+        "duration",
+        "weight_duration",
+        "distance_duration",
+        "weight_distance"
+      ]
+    },
+    "set_type": {
+      "enum": [
+        "normal",
+        "warmup",
+        "drop",
+        "failure",
+        "rest_pause"
+      ]
+    },
+    "dumbbells_in_play": {
+      "description": "How many dumbbells the set's loads are shown per (contracts/live: display only; every value stays the total lifted). Absent: totals.",
+      "type": "integer",
+      "enum": [
+        1,
+        2
+      ]
+    },
+    "weight_unit": {
+      "enum": [
+        "kg",
+        "lb"
+      ]
+    },
+    "distance_unit": {
+      "enum": [
+        "km",
+        "mi"
+      ]
+    },
+    "values": {
+      "description": "A set's figures in canonical units, never an RPE: no event carries health data (README «Events»).",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "weight_kg": {
+          "type": "number",
+          "minimum": 0
+        },
+        "external_load_kg": {
+          "type": "number"
+        },
+        "reps": {
+          "$ref": "#/$defs/count"
+        },
+        "reps_max": {
+          "$ref": "#/$defs/count"
+        },
+        "duration_sec": {
+          "$ref": "#/$defs/count"
+        },
+        "distance_m": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "text": {
+      "description": "Dart-rendered, in the app's language and units (README «live»).",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "record_kind": {
+      "description": "RecordKind's per-set kinds (wire names); session kinds never travel live.",
+      "enum": [
+        "max_weight",
+        "max_external_load",
+        "best_e1rm",
+        "most_reps",
+        "best_set_volume",
+        "best_time",
+        "best_pace",
+        "max_distance"
+      ]
+    },
+    "event_id": {
+      "description": "<started_at epoch ms>:<type>:<occurred_at epoch ms> (README «Events»).",
+      "type": "string",
+      "pattern": "^[0-9]{1,15}:[a-z_]{1,32}:[0-9]{1,15}$"
+    },
+    "event": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "event_id",
+            "type",
+            "occurred_at",
+            "data"
+          ],
+          "properties": {
+            "event_id": {
+              "$ref": "#/$defs/event_id"
+            },
+            "type": {
+              "const": "workout_started"
+            },
+            "occurred_at": {
+              "$ref": "#/$defs/instant"
+            },
+            "data": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "started_at"
+              ],
+              "properties": {
+                "started_at": {
+                  "$ref": "#/$defs/instant"
+                }
+              }
+            },
+            "text": {
+              "$ref": "#/$defs/text"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "event_id",
+            "type",
+            "occurred_at",
+            "data"
+          ],
+          "properties": {
+            "event_id": {
+              "$ref": "#/$defs/event_id"
+            },
+            "type": {
+              "const": "set_completed"
+            },
+            "occurred_at": {
+              "$ref": "#/$defs/instant"
+            },
+            "data": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "set_id",
+                "exercise_id",
+                "set_index",
+                "set_total",
+                "set_type",
+                "weight_unit",
+                "distance_unit"
+              ],
+              "properties": {
+                "set_id": {
+                  "$ref": "#/$defs/id"
+                },
+                "exercise_id": {
+                  "$ref": "#/$defs/id"
+                },
+                "set_index": {
+                  "$ref": "#/$defs/position"
+                },
+                "set_total": {
+                  "$ref": "#/$defs/position"
+                },
+                "set_type": {
+                  "$ref": "#/$defs/set_type"
+                },
+                "values": {
+                  "description": "What the set recorded, without the effort; absent when it was completed with nothing typed (the logger marks the missing fields).",
+                  "$ref": "#/$defs/values"
+                },
+                "weight_unit": {
+                  "$ref": "#/$defs/weight_unit"
+                },
+                "distance_unit": {
+                  "$ref": "#/$defs/distance_unit"
+                },
+                "dumbbells_in_play": {
+                  "$ref": "#/$defs/dumbbells_in_play"
+                },
+                "exercise_name": {
+                  "$ref": "#/$defs/name"
+                }
+              }
+            },
+            "text": {
+              "$ref": "#/$defs/text"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "event_id",
+            "type",
+            "occurred_at",
+            "data"
+          ],
+          "properties": {
+            "event_id": {
+              "$ref": "#/$defs/event_id"
+            },
+            "type": {
+              "const": "exercise_changed"
+            },
+            "occurred_at": {
+              "$ref": "#/$defs/instant"
+            },
+            "data": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "exercise_id",
+                "index",
+                "total"
+              ],
+              "properties": {
+                "exercise_id": {
+                  "$ref": "#/$defs/id"
+                },
+                "index": {
+                  "$ref": "#/$defs/position"
+                },
+                "total": {
+                  "$ref": "#/$defs/position"
+                },
+                "exercise_name": {
+                  "$ref": "#/$defs/name"
+                }
+              }
+            },
+            "text": {
+              "$ref": "#/$defs/text"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "event_id",
+            "type",
+            "occurred_at",
+            "data"
+          ],
+          "properties": {
+            "event_id": {
+              "$ref": "#/$defs/event_id"
+            },
+            "type": {
+              "const": "rest_started"
+            },
+            "occurred_at": {
+              "$ref": "#/$defs/instant"
+            },
+            "data": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "rest_started_at",
+                "ends_at",
+                "seconds"
+              ],
+              "properties": {
+                "rest_started_at": {
+                  "$ref": "#/$defs/instant"
+                },
+                "ends_at": {
+                  "$ref": "#/$defs/instant"
+                },
+                "seconds": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 600
+                }
+              }
+            },
+            "text": {
+              "$ref": "#/$defs/text"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "event_id",
+            "type",
+            "occurred_at",
+            "data"
+          ],
+          "properties": {
+            "event_id": {
+              "$ref": "#/$defs/event_id"
+            },
+            "type": {
+              "const": "rest_adjusted"
+            },
+            "occurred_at": {
+              "$ref": "#/$defs/instant"
+            },
+            "data": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "rest_started_at",
+                "ends_at",
+                "seconds"
+              ],
+              "properties": {
+                "rest_started_at": {
+                  "$ref": "#/$defs/instant"
+                },
+                "ends_at": {
+                  "$ref": "#/$defs/instant"
+                },
+                "seconds": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 600
+                }
+              }
+            },
+            "text": {
+              "$ref": "#/$defs/text"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "event_id",
+            "type",
+            "occurred_at",
+            "data"
+          ],
+          "properties": {
+            "event_id": {
+              "$ref": "#/$defs/event_id"
+            },
+            "type": {
+              "const": "rest_skipped"
+            },
+            "occurred_at": {
+              "$ref": "#/$defs/instant"
+            },
+            "data": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "rest_started_at"
+              ],
+              "properties": {
+                "rest_started_at": {
+                  "$ref": "#/$defs/instant"
+                }
+              }
+            },
+            "text": {
+              "$ref": "#/$defs/text"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "event_id",
+            "type",
+            "occurred_at",
+            "data"
+          ],
+          "properties": {
+            "event_id": {
+              "$ref": "#/$defs/event_id"
+            },
+            "type": {
+              "const": "record"
+            },
+            "occurred_at": {
+              "$ref": "#/$defs/instant"
+            },
+            "data": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "set_id",
+                "exercise_id",
+                "exercise_name",
+                "logging_type",
+                "records",
+                "weight_unit",
+                "distance_unit"
+              ],
+              "properties": {
+                "set_id": {
+                  "$ref": "#/$defs/id"
+                },
+                "exercise_id": {
+                  "$ref": "#/$defs/id"
+                },
+                "exercise_name": {
+                  "$ref": "#/$defs/name"
+                },
+                "logging_type": {
+                  "$ref": "#/$defs/logging_type"
+                },
+                "records": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 8,
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "kind",
+                      "value"
+                    ],
+                    "properties": {
+                      "kind": {
+                        "$ref": "#/$defs/record_kind"
+                      },
+                      "value": {
+                        "type": "number",
+                        "description": "In the kind's unit (README «Events», «Record values»)."
+                      }
+                    }
+                  }
+                },
+                "weight_unit": {
+                  "$ref": "#/$defs/weight_unit"
+                },
+                "distance_unit": {
+                  "$ref": "#/$defs/distance_unit"
+                }
+              },
+              "if": {
+                "properties": {
+                  "logging_type": {
+                    "const": "bodyweight"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "records": {
+                    "items": {
+                      "properties": {
+                        "kind": {
+                          "not": {
+                            "const": "best_set_volume"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "text": {
+              "$ref": "#/$defs/text"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "event_id",
+            "type",
+            "occurred_at"
+          ],
+          "properties": {
+            "event_id": {
+              "$ref": "#/$defs/event_id"
+            },
+            "type": {
+              "const": "workout_finishing"
+            },
+            "occurred_at": {
+              "$ref": "#/$defs/instant"
+            },
+            "text": {
+              "$ref": "#/$defs/text"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "event_id",
+            "type",
+            "occurred_at",
+            "data"
+          ],
+          "properties": {
+            "event_id": {
+              "$ref": "#/$defs/event_id"
+            },
+            "type": {
+              "const": "workout_discarded"
+            },
+            "occurred_at": {
+              "$ref": "#/$defs/instant"
+            },
+            "data": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "started_at"
+              ],
+              "properties": {
+                "started_at": {
+                  "description": "The workout's start, which `event_id` begins with: this message's `live` is idle.",
+                  "$ref": "#/$defs/instant"
+                }
+              }
+            },
+            "text": {
+              "$ref": "#/$defs/text"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "event_id",
+            "type",
+            "occurred_at",
+            "data"
+          ],
+          "properties": {
+            "event_id": {
+              "$ref": "#/$defs/event_id"
+            },
+            "type": {
+              "const": "workout_finished"
+            },
+            "occurred_at": {
+              "$ref": "#/$defs/instant"
+            },
+            "data": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "started_at",
+                "duration_sec",
+                "sets",
+                "exercises",
+                "records"
+              ],
+              "properties": {
+                "started_at": {
+                  "description": "The workout's start, which `event_id` begins with: this message's `live` is idle.",
+                  "$ref": "#/$defs/instant"
+                },
+                "duration_sec": {
+                  "$ref": "#/$defs/count"
+                },
+                "sets": {
+                  "$ref": "#/$defs/count"
+                },
+                "exercises": {
+                  "$ref": "#/$defs/count"
+                },
+                "records": {
+                  "$ref": "#/$defs/count"
+                }
+              }
+            },
+            "text": {
+              "$ref": "#/$defs/text"
+            }
+          }
+        },
+        {
+          "description": "«Send a test» in Settings › Home Assistant: lets the person build an automation before a workout.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "event_id",
+            "type",
+            "occurred_at",
+            "text"
+          ],
+          "properties": {
+            "event_id": {
+              "$ref": "#/$defs/event_id"
+            },
+            "type": {
+              "const": "test"
+            },
+            "occurred_at": {
+              "$ref": "#/$defs/instant"
+            },
+            "text": {
+              "$ref": "#/$defs/text"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

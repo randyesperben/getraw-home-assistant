@@ -1,0 +1,134 @@
+# A sample RAW dashboard. Settings › Dashboards › Add dashboard › New dashboard from scratch,
+# open it, then ⋮ › Edit dashboard › ⋮ › Raw configuration editor, paste this file and save.
+# Every entity id below starts with raw_alex_: replace raw_alex with your RAW device's
+# (Settings › Devices & services › RAW: Strength Training › your device).
+title: Training
+views:
+  - title: Training
+    path: training
+    icon: mdi:dumbbell
+    type: sections
+    max_columns: 3
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            heading: Workout
+            icon: mdi:dumbbell
+            badges:
+              - type: entity
+                entity: sensor.raw_alex_phase
+                show_state: true
+          - type: tile
+            entity: binary_sensor.raw_alex_workout
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: sensor.raw_alex_current_exercise
+            visibility: &training
+              - condition: state
+                entity: binary_sensor.raw_alex_workout
+                state: "on"
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: sensor.raw_alex_current_set
+            visibility: *training
+          - type: tile
+            entity: sensor.raw_alex_sets_done
+            visibility: *training
+          - type: tile
+            entity: sensor.raw_alex_rest_end
+            visibility:
+              - condition: state
+                entity: binary_sensor.raw_alex_resting
+                state: "on"
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: sensor.raw_alex_workout_volume
+            visibility: *training
+          - type: tile
+            entity: sensor.raw_alex_latest_record
+            visibility: *training
+
+      - type: grid
+        cards:
+          - type: heading
+            heading: This week
+            icon: mdi:calendar-week
+          - type: tile
+            entity: sensor.raw_alex_today
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: sensor.raw_alex_next_routine
+          - type: tile
+            entity: sensor.raw_alex_next_routine_date
+          - type: tile
+            entity: sensor.raw_alex_training_days_this_week
+          - type: tile
+            entity: sensor.raw_alex_weekly_goal
+          - type: tile
+            entity: binary_sensor.raw_alex_weekly_goal_met
+          - type: tile
+            entity: sensor.raw_alex_weeks_in_a_row
+
+      - type: grid
+        cards:
+          - type: heading
+            heading: History
+            icon: mdi:history
+          - type: tile
+            entity: sensor.raw_alex_last_workout
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: sensor.raw_alex_last_workout_duration
+          - type: tile
+            entity: sensor.raw_alex_workouts_this_month
+          - type: tile
+            entity: sensor.raw_alex_records_this_month
+          - type: tile
+            entity: sensor.raw_alex_workouts_all_time
+          - type: statistics-graph
+            title: Workouts per month
+            entities:
+              - sensor.raw_alex_workouts_this_month
+            stat_types:
+              - max
+            period: month
+            days_to_show: 365
+            chart_type: bar
+            grid_options:
+              columns: 12
+
+      - type: grid
+        cards:
+          - type: heading
+            heading: Body
+            icon: mdi:human
+          - type: tile
+            entity: sensor.raw_alex_body_weight
+          - type: tile
+            entity: sensor.raw_alex_body_fat
+          - type: history-graph
+            title: Body weight
+            hours_to_show: 2160
+            entities:
+              - sensor.raw_alex_body_weight
+            grid_options:
+              columns: 12
+
+      - type: grid
+        column_span: 2
+        cards:
+          - type: heading
+            heading: Workouts
+            icon: mdi:calendar
+          - type: calendar
+            initial_view: listWeek
+            entities:
+              - calendar.raw_alex_workouts
+            grid_options:
+              columns: 12

@@ -1,0 +1,225 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://getraw.fit/contracts/home_assistant/ha_ack.schema.json",
+  "title": "HaAck",
+  "description": "Home Assistant's answer to every post it could open (contract 2, ADR 0173), sealed with direction h2p under the key that post came under (contract 3), as {\"sealed\": \"<base64>\"}. HA answers 200 to almost anything (an unknown hook, a raising handler, a remote post on a local hook), so only an ack that opens and echoes the post's kind and revision means delivered; any other answer is no ack, and the phone tries its next URL. HTTP: 200 with this ack for every post HA opened; 410 with this ack and reason removed when the entry was deleted and the integration still holds its key, which clears the pairing; a 410 with no body that opens only marks that URL (anyone at a LAN address can answer 410); 400 for a body that does not open, which the phone treats as no ack. Readers are tolerant, as HA is with the phone's messages: schema_version stays 1 forever and the ack only gains optional keys, kinds in reads, routes and reasons, as ha_hello only gains optional keys. The phone ignores an unknown key at any level and an unknown kind in reads, reads an unknown route as remote and an unknown reason as a refusal that keeps the pairing (fixtures/ha_ack/tolerated/: acks this schema refuses and every reader must accept). A body that opens but has no readable kind or revision gets 400 and no ack.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "ok",
+    "kind",
+    "revision",
+    "reads"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "ok": {
+      "description": "true: delivered, whether applied, a repeat, or older than what HA holds; the phone drops it from its outbox. false: refused for reason, and sending the same body again never helps.",
+      "type": "boolean"
+    },
+    "kind": {
+      "description": "The kind of the post this answers, echoed.",
+      "enum": [
+        "hello",
+        "state",
+        "event",
+        "patch",
+        "summary",
+        "bye"
+      ]
+    },
+    "revision": {
+      "description": "The revision of the post this answers, echoed. With kind, it is how the phone knows an ack is for the post it just sent and not an old one replayed.",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "reads": {
+      "description": "Per kind, the schema_versions this integration reads. The phone writes each kind at the highest version both read; if it writes none of them, RAW says which side to update.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "hello",
+        "state",
+        "event",
+        "patch",
+        "summary",
+        "bye"
+      ],
+      "properties": {
+        "hello": {
+          "$ref": "#/$defs/versions"
+        },
+        "state": {
+          "$ref": "#/$defs/versions"
+        },
+        "event": {
+          "$ref": "#/$defs/versions"
+        },
+        "patch": {
+          "$ref": "#/$defs/versions"
+        },
+        "summary": {
+          "$ref": "#/$defs/versions"
+        },
+        "bye": {
+          "$ref": "#/$defs/versions"
+        }
+      }
+    },
+    "urls": {
+      "description": "Every URL the phone may post to now, in the order to try them, replacing the pairing link's and every earlier ack's. In every ack with ok true.",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 4,
+      "items": {
+        "$ref": "#/$defs/url"
+      },
+      "uniqueItems": true
+    },
+    "key": {
+      "description": "The key the phone seals its next posts under. Repeated in every ack until a post sealed under it arrives; from then on HA refuses the key before it. Absent while no new key is due.",
+      "$ref": "#/$defs/key"
+    },
+    "pending": {
+      "description": "The setup dialog in HA is still open: HA kept this hello, and the entry exists only once the person continues there. The phone posts the hello again every 2 s, for up to 120 s, until an ack without pending. Only on a hello, never with a key.",
+      "const": true
+    },
+    "reason": {
+      "description": "Why ok is false, and what the phone does. unsupported_version: this integration reads none of the post's schema_version; the phone compares its writes with reads and shows update_integration when HA reads only older versions, update_app when it reads only newer ones. wrong_account: the post's account_ref is not this entry's (a pairing code another RAW account already used); the phone clears its pairing and asks to scan the code in Home Assistant again. invalid: it opened but breaks its schema; the phone drops that body and keeps the pairing. removed: the entry was deleted in Home Assistant (with HTTP 410); the phone clears its pairing.",
+      "enum": [
+        "unsupported_version",
+        "wrong_account",
+        "invalid",
+        "removed"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "ok": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "urls"
+        ],
+        "not": {
+          "required": [
+            "reason"
+          ]
+        }
+      },
+      "else": {
+        "required": [
+          "reason"
+        ],
+        "properties": {
+          "urls": false,
+          "key": false,
+          "pending": false
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "pending"
+        ]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "hello"
+          },
+          "key": false
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "versions": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "integer",
+        "minimum": 1
+      }
+    },
+    "key": {
+      "description": "32 bytes, base64url without padding (RFC 4648 section 5).",
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{42}[AEIMQUYcgkosw048]$"
+    },
+    "url": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "url",
+        "route"
+      ],
+      "properties": {
+        "url": {
+          "description": "The whole URL to post to: a webhook URL (/api/webhook/<webhook id>) or a Home Assistant Cloud cloudhook.",
+          "type": "string",
+          "pattern": "^https?://[^\\s/?#]+[^\\s]*$",
+          "maxLength": 512
+        },
+        "route": {
+          "description": "How it reaches HA, for what RAW shows: local (HA's own LAN address or internal URL), remote (its external URL), cloud (a Home Assistant Cloud cloudhook).",
+          "enum": [
+            "local",
+            "remote",
+            "cloud"
+          ]
+        },
+        "pin": {
+          "description": "SHA-256 of the DER of HA's own TLS leaf certificate, base64url without padding: checked instead of the system's trust on this URL, whose host is an IP address. Only on an https URL of route local or remote, never on a cloudhook, which Home Assistant Cloud's own certificate serves.",
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{42}[AEIMQUYcgkosw048]$"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "url": {
+                "pattern": "^http://"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "pin": false
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "route": {
+                "const": "cloud"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "url": {
+                "pattern": "^https://"
+              },
+              "pin": false
+            }
+          }
+        }
+      ]
+    }
+  }
+}

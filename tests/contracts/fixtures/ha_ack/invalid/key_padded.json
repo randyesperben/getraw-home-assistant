@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "ok": true,
+  "kind": "hello",
+  "revision": 1762700000001,
+  "reads": {
+    "hello": [
+      1
+    ],
+    "state": [
+      1
+    ],
+    "event": [
+      1
+    ],
+    "patch": [
+      1
+    ],
+    "summary": [
+      1
+    ],
+    "bye": [
+      1
+    ]
+  },
+  "urls": [
+    {
+      "url": "http://homeassistant.local:8123/api/webhook/27a67c17b95463bd8453ba2c580d5f870f19b02d4e6df7def5a5c7801d04bea9",
+      "route": "local"
+    },
+    {
+      "url": "http://192.168.1.20:8123/api/webhook/27a67c17b95463bd8453ba2c580d5f870f19b02d4e6df7def5a5c7801d04bea9",
+      "route": "local"
+    },
+    {
+      "url": "https://casa-randy.duckdns.org:8123/api/webhook/27a67c17b95463bd8453ba2c580d5f870f19b02d4e6df7def5a5c7801d04bea9",
+      "route": "remote"
+    }
+  ],
+  "key": "eJYAAS-5hgyyzk1ICjYLr-mG9mBMKPS_G7EsiepllZY="
+}
