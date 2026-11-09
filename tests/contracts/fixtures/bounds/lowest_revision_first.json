@@ -1,0 +1,39 @@
+{
+  "description": "The clock moved back between two queues: the summary queued last carries the lower revision of its own sequence, and the claim takes the lowest revision first, not the queue's order.",
+  "now": 1792489290250,
+  "pairing": {
+    "schema_version": 1,
+    "paused": false,
+    "home_assistant": {
+      "account_ref": "8d3b2f7c1e4a6b9d0c5f7e2a1b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e",
+      "webhook_id": "27a67c17b95463bd8453ba2c580d5f870f19b02d4e6df7def5a5c7801d04bea9",
+      "name": "Home",
+      "paired_at": 1792489000000
+    }
+  },
+  "lines": [
+    {
+      "id": "a",
+      "destination": "home_assistant",
+      "paired_at": 1792489000000,
+      "kind": "state",
+      "revision": 1792489260250,
+      "body": "{\"schema_version\":1,\"kind\":\"state\",\"categories\":[],\"live\":{\"phase\":\"idle\"}}",
+      "queued_at": 1792489260250
+    },
+    {
+      "id": "b",
+      "destination": "home_assistant",
+      "paired_at": 1792489000000,
+      "kind": "summary",
+      "revision": 1792489170250,
+      "body": "{\"schema_version\":1,\"kind\":\"summary\"}",
+      "queued_at": 1792489270250
+    }
+  ],
+  "left": {
+    "a": "state",
+    "b": "summary"
+  },
+  "next": "b"
+}

@@ -10,6 +10,7 @@ from __future__ import annotations
 from pathlib import Path
 import re
 from typing import Any
+import unicodedata
 from urllib.parse import unquote
 
 import pytest
@@ -26,7 +27,13 @@ from .conftest import FIXTURES, fixture_files, load
 _HEX64 = re.compile(r"[0-9a-f]{64}")
 _HEX32 = re.compile(r"[0-9a-f]{32}")
 _B64URL32 = re.compile(r"[A-Za-z0-9_-]{42}[AEIMQUYcgkosw048]")
-_URL = re.compile(r"https?://[^\s/?#]+\S*")
+# No user info, backslash, space or control character: the phone shows one
+# parser's host and posts with another's, which read those apart.
+_URL = re.compile(
+    r"https?://[^\x00-\x20\x7f/?#@\\]+(?:[/?#][^\x00-\x20\x7f\\]*)?"
+)
+# Direction controls, which could turn the text after them around.
+_DIRECTION = {0x061C, 0x200E, 0x200F, *range(0x202A, 0x202F), *range(0x2066, 0x206A)}
 # A % not followed by two hex digits: Python keeps it, Swift gives nil, Kotlin throws.
 _BAD_ESCAPE = re.compile(r"%(?![0-9A-Fa-f]{2})")
 
@@ -39,6 +46,14 @@ def _decoded(field: str, text: str) -> str:
         return unquote(text, errors="strict")
     except UnicodeDecodeError as err:
         raise ValueError(f"{field}: not UTF-8") from err
+
+
+def _draws_as_written(name: str) -> bool:
+    """No control character, line break or direction control; joiners stay."""
+    return not any(
+        unicodedata.category(c) in ("Cc", "Zl", "Zp") or ord(c) in _DIRECTION
+        for c in name
+    )
 
 
 def read_link(link: str) -> dict[str, Any]:
@@ -76,7 +91,8 @@ def read_link(link: str) -> dict[str, Any]:
         raise ValueError(f"k: {err}") from err
     if "p" in values and not _B64URL32.fullmatch(values["p"][0]):
         raise ValueError("p: out of form")
-    if not 1 <= len(values["n"][0]) <= NAME_MAX:
+    name = values["n"][0]
+    if not (1 <= len(name) <= NAME_MAX and name.strip() and _draws_as_written(name)):
         raise ValueError("n: out of form")
     fields: dict[str, Any] = {
         "version": 1,

@@ -1,0 +1,5 @@
+{
+  "description": "A u with user info before its host, which Home Assistant never writes.",
+  "field": "u",
+  "link": "https://getraw.fit/ha#v=1&u=https%3A%2F%2Fhome%40homeassistant.local%2Fapi%2Fwebhook%2F27a67c17b95463bd8453ba2c580d5f870f19b02d4e6df7def5a5c7801d04bea9&w=27a67c17b95463bd8453ba2c580d5f870f19b02d4e6df7def5a5c7801d04bea9&k=ZF6EJaC-_W2xBxaWSI5U_DULztmvezcemm7BXIaDin4&i=8a9b5c1d2e3f40718293a4b5c6d7e8f9&n=Home"
+}

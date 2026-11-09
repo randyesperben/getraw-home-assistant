@@ -1,0 +1,39 @@
+{
+  "description": "Two events past Home Assistant's 2 minutes: the unclaimed one becomes a state, the one under a live claim is sent as it was claimed.",
+  "now": 1792489290250,
+  "pairing": {
+    "schema_version": 1,
+    "paused": false,
+    "home_assistant": {
+      "account_ref": "8d3b2f7c1e4a6b9d0c5f7e2a1b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e",
+      "webhook_id": "27a67c17b95463bd8453ba2c580d5f870f19b02d4e6df7def5a5c7801d04bea9",
+      "name": "Home",
+      "paired_at": 1792489000000
+    }
+  },
+  "lines": [
+    {
+      "id": "a",
+      "destination": "home_assistant",
+      "paired_at": 1792489000000,
+      "kind": "event",
+      "revision": 1792489090250,
+      "body": "{\"schema_version\":1,\"kind\":\"event\",\"categories\":[],\"events\":[{\"event_id\":\"1792488690250:workout_started:1792489090250\",\"type\":\"workout_started\",\"occurred_at\":\"2026-10-20T09:38:10.250Z\",\"data\":{\"started_at\":\"2026-10-20T09:31:30.250Z\"}}],\"live\":{\"phase\":\"idle\"}}",
+      "queued_at": 1792489090250,
+      "claimed_until": 1792489330250
+    },
+    {
+      "id": "b",
+      "destination": "home_assistant",
+      "paired_at": 1792489000000,
+      "kind": "event",
+      "revision": 1792489110250,
+      "body": "{\"schema_version\":1,\"kind\":\"event\",\"categories\":[],\"events\":[{\"event_id\":\"1792488690250:workout_started:1792489110250\",\"type\":\"workout_started\",\"occurred_at\":\"2026-10-20T09:38:30.250Z\",\"data\":{\"started_at\":\"2026-10-20T09:31:30.250Z\"}}],\"live\":{\"phase\":\"idle\"}}",
+      "queued_at": 1792489110250
+    }
+  ],
+  "left": {
+    "a": "event",
+    "b": "state"
+  }
+}

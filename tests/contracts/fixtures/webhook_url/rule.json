@@ -1,0 +1,39 @@
+{
+  "description": "The custom webhook's URL rule: https anywhere, plain http only to a host on the person's own network, never the loopback, never with user info. Dart's form and both posters read every row, so the three cannot drift. A refused row's reason is the form's: needs_https (plain http that would leave the person's network) or not_a_url.",
+  "allowed": [
+    "https://example.com/x",
+    "https://203.0.113.9/hook",
+    "http://192.168.1.5:1880/x",
+    "http://10.0.0.2/x",
+    "http://172.20.1.1/x",
+    "http://169.254.1.1/x",
+    "http://100.100.1.1/x",
+    "http://nodered.local:1880/x",
+    "HTTP://NodeRed.Local./x",
+    "http://nodered/x",
+    "http://nas:5678/x",
+    "http://[fd12:3456::1]:1880/x",
+    "http://[fe80::1]/x"
+  ],
+  "refused": [
+    {"url": "http://example.com/x", "reason": "needs_https"},
+    {"url": "http://8.8.8.8/x", "reason": "needs_https"},
+    {"url": "http://127.0.0.1/x", "reason": "needs_https"},
+    {"url": "http://[::1]/x", "reason": "needs_https"},
+    {"url": "http://172.32.0.1/x", "reason": "needs_https"},
+    {"url": "http://100.128.0.1/x", "reason": "needs_https"},
+    {"url": "http://[2001:db8::1]/x", "reason": "needs_https"},
+    {"url": "http://010.0.0.1/x", "reason": "needs_https"},
+    {"url": "http://+10.0.0.1/x", "reason": "needs_https"},
+    {"url": "http://192.168.1.256/x", "reason": "needs_https"},
+    {"url": "http://localhost/x", "reason": "needs_https"},
+    {"url": "http://localhost./x", "reason": "needs_https"},
+    {"url": "http://134744072/x", "reason": "needs_https"},
+    {"url": "http://0x08080808/x", "reason": "needs_https"},
+    {"url": "https://user:pass@example.com/x", "reason": "not_a_url"},
+    {"url": "http://me@192.168.1.5/x", "reason": "not_a_url"},
+    {"url": "ftp://192.168.1.5/x", "reason": "not_a_url"},
+    {"url": "192.168.1.5/x", "reason": "not_a_url"},
+    {"url": "http:///x", "reason": "not_a_url"}
+  ]
+}
