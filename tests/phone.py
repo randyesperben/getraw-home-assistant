@@ -18,7 +18,7 @@ from custom_components.getraw.const import DOMAIN
 from custom_components.getraw.seal import Direction, decode_key, open_sealed, seal
 
 from .conftest import FIXTURES, load
-from .test_pairing_link import read_link
+from .test_pairing_link import link_fields
 
 ACCOUNT = "fdd0f8e35730fdd04cd0dd0505bbc0b02036a2e6b4e346ecaf6b3db49e2b241d"
 OTHER_ACCOUNT = "0" * 64
@@ -53,9 +53,9 @@ class Phone:
 
     @classmethod
     def from_link(cls, client: TestClient, link: str, **kwargs: Any) -> Phone:
-        fields = read_link(link)
-        path = urlsplit(fields["urls"][0]).path
-        return cls(client, fields["webhook_id"], path, fields["key"], **kwargs)
+        values = link_fields(link)
+        path = urlsplit(values["u"][0]).path
+        return cls(client, values["w"][0], path, values["k"][0], **kwargs)
 
     def body(self, kind: str, **extra: Any) -> dict[str, Any]:
         """An envelope as the poster stamps it, with the next live revision."""

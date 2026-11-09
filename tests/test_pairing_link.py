@@ -1,142 +1,85 @@
 """The pairing link: Home Assistant writes the fixtures byte for byte.
 
-The phone reads them. The reader below is the phone's reading rules in code,
-so every invalid fixture is proven invalid for the rule it names, and every
-valid one says what its fields claim.
+The phone reads them: its tests (Dart's ``readHaLink``) read every valid
+fixture to its fields and refuse every invalid one for the key it names, so
+the rules live in one reader and the fixtures' README. Here Home Assistant
+writes each valid link exactly, and refuses to write any URL, webhook id,
+instance id or pin an invalid fixture holds.
 """
 
 from __future__ import annotations
 
 from pathlib import Path
-import re
 from typing import Any
-import unicodedata
 from urllib.parse import unquote
 
 import pytest
 
-from custom_components.getraw.pairing_link import (
-    NAME_MAX,
-    build_link,
-    certificate_pin,
-)
+from custom_components.getraw.pairing_link import build_link, certificate_pin
 from custom_components.getraw.seal import decode_key
 
 from .conftest import FIXTURES, fixture_files, load
 
-_HEX64 = re.compile(r"[0-9a-f]{64}")
-_HEX32 = re.compile(r"[0-9a-f]{32}")
-_B64URL32 = re.compile(r"[A-Za-z0-9_-]{42}[AEIMQUYcgkosw048]")
-# No user info, backslash, space or control character: the phone shows one
-# parser's host and posts with another's, which read those apart.
-_URL = re.compile(
-    r"https?://[^\x00-\x20\x7f/?#@\\]+(?:[/?#][^\x00-\x20\x7f\\]*)?"
-)
-# Direction controls, which could turn the text after them around.
-_DIRECTION = {0x061C, 0x200E, 0x200F, *range(0x202A, 0x202F), *range(0x2066, 0x206A)}
-# A % not followed by two hex digits: Python keeps it, Swift gives nil, Kotlin throws.
-_BAD_ESCAPE = re.compile(r"%(?![0-9A-Fa-f]{2})")
 
+def link_fields(link: str) -> dict[str, list[str]]:
+    """Every value of a link's fragment, by key, decoded and never checked.
 
-def _decoded(field: str, text: str) -> str:
-    """``text`` percent-decoded as UTF-8, or ValueError about ``field``."""
-    if _BAD_ESCAPE.search(text):
-        raise ValueError(f"{field}: a bad percent escape")
-    try:
-        return unquote(text, errors="strict")
-    except UnicodeDecodeError as err:
-        raise ValueError(f"{field}: not UTF-8") from err
-
-
-def _draws_as_written(name: str) -> bool:
-    """No control character, line break or direction control; joiners stay."""
-    return not any(
-        unicodedata.category(c) in ("Cc", "Zl", "Zp") or ord(c) in _DIRECTION
-        for c in name
-    )
-
-
-def read_link(link: str) -> dict[str, Any]:
-    """The fields of a link, or ValueError, by the phone's reading rules.
-
-    Each error starts with the key it is about (``link`` for the link's own
-    form), as each invalid fixture's ``field`` names it.
+    The phone's reader is the one that checks; tests use this to take the
+    URLs and keys back out of a link Home Assistant wrote.
     """
-    head, hash_sign, fragment = link.partition("#")
-    if not hash_sign:
-        raise ValueError("link: no fragment")
-    if head != "https://getraw.fit/ha":
-        raise ValueError("link: not https://getraw.fit/ha")
     values: dict[str, list[str]] = {}
-    for pair in fragment.split("&"):
+    for pair in link.partition("#")[2].split("&"):
         key, _, value = pair.partition("=")
-        key = _decoded("link", key)
-        values.setdefault(key, []).append(_decoded(key, value))
-    counts = {"v": (1, 1), "u": (1, 4), "w": (1, 1), "k": (1, 1), "i": (1, 1)}
-    counts |= {"p": (0, 1), "n": (1, 1)}
-    for key, (low, high) in counts.items():
-        if not low <= len(values.get(key, [])) <= high:
-            raise ValueError(f"{key}: outside its count")
-    if values["v"] != ["1"]:
-        raise ValueError("v: a link version this app does not read")
-    if not all(_URL.fullmatch(url) for url in values["u"]):
-        raise ValueError("u: not an http or https URL")
-    if not _HEX64.fullmatch(values["w"][0]):
-        raise ValueError("w: out of form")
-    if not _HEX32.fullmatch(values["i"][0]):
-        raise ValueError("i: out of form")
-    try:
-        decode_key(values["k"][0])
-    except ValueError as err:
-        raise ValueError(f"k: {err}") from err
-    if "p" in values and not _B64URL32.fullmatch(values["p"][0]):
-        raise ValueError("p: out of form")
-    name = values["n"][0]
-    if not (1 <= len(name) <= NAME_MAX and name.strip() and _draws_as_written(name)):
-        raise ValueError("n: out of form")
-    fields: dict[str, Any] = {
-        "version": 1,
-        "urls": values["u"],
-        "webhook_id": values["w"][0],
-        "key": values["k"][0],
-        "instance_id": values["i"][0],
-    }
-    if "p" in values:
-        fields["pin"] = values["p"][0]
-    fields["name"] = values["n"][0]
-    return fields
+        values.setdefault(key, []).append(unquote(value))
+    return values
 
 
 @pytest.mark.parametrize("path", fixture_files("pairing_link"), ids=lambda p: p.stem)
-def test_home_assistant_writes_the_link_and_a_reader_gets_its_fields(
-    path: Path,
-) -> None:
+def test_home_assistant_writes_each_link_the_phone_reads(path: Path) -> None:
+    """``written_from``: what Home Assistant had, where the phone reads it otherwise."""
     case = load(path)
-    fields = case["fields"]
-    assert read_link(case["link"]) == fields
     if case.get("reader_only"):
         return  # a link Home Assistant never writes: read only
+    given = case["fields"] | case.get("written_from", {})
     assert (
         build_link(
-            urls=fields["urls"],
-            webhook_id=fields["webhook_id"],
-            key=decode_key(fields["key"]),
-            instance_id=fields["instance_id"],
-            name=fields["name"],
-            pin=fields.get("pin"),
+            urls=given["urls"],
+            webhook_id=given["webhook_id"],
+            key=decode_key(given["key"]),
+            instance_id=given["instance_id"],
+            name=given["name"],
+            pin=given.get("pin"),
         )
         == case["link"]
     )
 
 
 @pytest.mark.parametrize(
-    "path", fixture_files("pairing_link/invalid"), ids=lambda p: p.stem
+    "path",
+    [
+        path
+        for path in fixture_files("pairing_link/invalid")
+        if load(path)["field"] in ("u", "w", "i", "p")
+    ],
+    ids=lambda p: p.stem,
 )
-def test_every_invalid_link_is_refused_for_its_reason(path: Path) -> None:
-    """Refused for the key its fixture names, never for another."""
+def test_home_assistant_never_writes_a_value_the_phone_refuses(path: Path) -> None:
+    """A bad setting fails the flow, never a QR code every phone refuses.
+
+    The other keys are no setting: ``v`` is always 1, ``k`` is written from
+    32 bytes, and a name is made drawable (``name_drawn_on_one_line.json``).
+    """
     case = load(path)
+    values = link_fields(case["link"])
     with pytest.raises(ValueError, match=rf"^{case['field']}: "):
-        read_link(case["link"])
+        build_link(
+            urls=values.get("u", []),
+            webhook_id=values.get("w", [""])[0],
+            key=bytes(32),
+            instance_id=values.get("i", [""])[0],
+            name="Home",
+            pin=values.get("p", [None])[0],
+        )
 
 
 _GOOD: dict[str, Any] = {
@@ -152,20 +95,16 @@ _GOOD: dict[str, Any] = {
 @pytest.mark.parametrize(
     ("change", "field"),
     [
-        ({"urls": ["raw-live://open"]}, "u"),
         ({"urls": ["http://192.168.1.20:8123/" + "a" * 500]}, "u"),
-        ({"webhook_id": "A" * 64}, "w"),
-        ({"instance_id": "b" * 31}, "i"),
-        ({"pin": _GOOD["pin"] + "="}, "p"),
         ({"urls": ["https://homeassistant.local:8123/api/webhook/" + "a" * 64]}, "p"),
     ],
-    ids=["scheme", "too_long", "webhook_id", "instance_id", "pin_form", "pin_without_ip"],
+    ids=["longer_than_an_ack_carries", "pin_without_ip"],
 )
-def test_home_assistant_never_writes_a_link_no_phone_reads(
+def test_home_assistant_writes_only_what_an_ack_carries(
     change: dict[str, Any], field: str
 ) -> None:
-    """A bad setting fails the flow, never a QR code every phone refuses."""
-    read_link(build_link(**_GOOD))
+    """A URL the ack could not repeat, a pin no URL uses: refused too."""
+    build_link(**_GOOD)
     with pytest.raises(ValueError, match=rf"^{field}: "):
         build_link(**(_GOOD | change))
 
@@ -178,14 +117,15 @@ def test_the_name_is_trimmed_and_cut_to_64_characters() -> None:
         instance_id="b" * 32,
         name="  " + "ñ" * 70,
     )
-    assert read_link(link)["name"] == "ñ" * 64
+    assert link_fields(link)["n"] == ["ñ" * 64]
     blank = link.rsplit("&n=", 1)[0]
+    # Nothing left once the marks go: the phone refuses an empty name.
     assert build_link(
         urls=["http://192.168.1.20:8123/api/webhook/" + "a" * 64],
         webhook_id="a" * 64,
         key=bytes(32),
         instance_id="b" * 32,
-        name="   ",
+        name=" \u200f\ufeff\u2028 ",
     ) == f"{blank}&n=Home%20Assistant"
 
 

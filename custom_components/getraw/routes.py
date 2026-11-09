@@ -17,10 +17,16 @@ address Home Assistant picks for itself, as its own Network settings show it.
 Plain ``http://`` goes only where a post stays on the person's own network, the
 same hosts the phone allows a custom webhook over plain HTTP (the contracts'
 README): an RFC 1918, link-local or 100.64.0.0/10 (Tailscale) IPv4 address, a
-unique-local or link-local IPv6 one, a ``.local`` name or a name without a dot.
-The bodies are sealed, but a public name or address would carry the webhook id
-and every post's timing across the internet. No route is ever the loopback
-address, which Home Assistant falls back to with no network.
+unique-local or link-local IPv6 one, a ``.local`` name or a name without a dot
+other than ``localhost``, all digits or ``0x…`` (a resolver may read
+``134744072`` or ``0x08080808`` as a public address); the table both read is the
+contracts' ``fixtures/webhook_url/rule.json``. The bodies are sealed, but a public
+name or address would carry the webhook id and every post's timing across the
+internet. No route is ever the loopback address, which Home Assistant falls back
+to with no network.
+
+Every URL is in the form a URL parser writes back (no default port), the only
+form the phone takes in a pairing link.
 """
 
 from __future__ import annotations
@@ -30,6 +36,7 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta
 from ipaddress import IPv4Address, IPv6Address, ip_address, ip_network
 import logging
+import re
 import socket
 import ssl
 from typing import Final
@@ -39,6 +46,7 @@ from homeassistant.components.webhook import async_generate_path
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.network import NoURLAvailableError, get_url
 from homeassistant.util import dt as dt_util
+from homeassistant.util.network import normalize_url
 
 from .pairing_link import URLS_MAX, certificate_pin
 
@@ -66,6 +74,7 @@ _OWN_NETWORKS: Final = tuple(
     )
 )
 _HANDSHAKE_SECONDS: Final = 10
+_DIGITS: Final = re.compile(r"[0-9]+")
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -131,7 +140,8 @@ async def _own_address(hass: HomeAssistant, internal: str) -> str | None:
     if api.local_ip not in await _resolved(hass, host):
         return None
     address = f"[{api.local_ip}]" if ":" in api.local_ip else api.local_ip
-    return f"{'https' if api.use_ssl else 'http'}://{address}:{api.port}"
+    # Without a default port, as get_url writes the internal URL beside it.
+    return normalize_url(f"{'https' if api.use_ssl else 'http'}://{address}:{api.port}")
 
 
 async def _resolved(hass: HomeAssistant, host: str) -> set[str]:
@@ -170,7 +180,14 @@ def _offered(scheme: str, host: str | None) -> bool:
     if address is not None:
         return any(address in network for network in _OWN_NETWORKS)
     name = (host or "").rstrip(".").lower()
-    return bool(name) and ("." not in name or name.endswith(".local"))
+    if "." in name:
+        return name.endswith(".local")
+    return (
+        bool(name)
+        and name != "localhost"
+        and not name.startswith("0x")
+        and not _DIGITS.fullmatch(name)
+    )
 
 
 async def routes(

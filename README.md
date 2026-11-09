@@ -66,9 +66,9 @@ Send a test** fires `test`, so you can try an automation before a workout.
 goal met, Weeks in a row, Last workout, Workouts this month, Records this month, Workouts all
 time, and a **Workouts** calendar with your past workouts and planned days.
 
-**Your health data and titles, if you allow them:** workout and routine titles, body weight,
-body fat and measurements, the effort and feeling of your last workout, saved volume and workout
-notes. Each category is a switch in RAW
+**Your health data and names, if you allow them:** workout and routine names, body weight,
+body fat and measurements, the effort and feeling of your last workout, volume with your body
+weight, and workout notes. Each category is a switch in RAW
 under **Profile › Settings › Home Assistant**. While a switch is off, its entities show as unavailable.
 
 Weights and lengths come in kilograms and centimeters, shown in the units RAW used when you
@@ -150,7 +150,7 @@ words.
 - RAW sends your data from your phone to your Home Assistant, sealed with a key only the two of
   them hold. Nothing passes through RAW's servers.
 - Everyone who can open your Home Assistant sees your exercise names and your records, and your
-  routine names while Titles is on, even with discreet mode on in RAW.
+  routine names while **Workout and routine names** is on, even with discreet mode on in RAW.
 - Home Assistant keeps the history of each entity (10 days by default, longer for long-term
   statistics) and puts it in its backups. Deleting your RAW account does not delete what your
   Home Assistant already holds.
@@ -165,8 +165,8 @@ words.
   certificate. After a renewal, RAW keeps working through Home Assistant Cloud or your external
   URL; on your local network alone, show the QR code again.
 - **Stop sending for a while:** in RAW, turn off **Send to Home Assistant**.
-- **Remove it:** delete the integration in Home Assistant. RAW then says “Disconnected in Home
-  Assistant”.
+- **Remove it:** delete the integration in Home Assistant. RAW then says “Home Assistant no
+  longer has RAW”.
 
 ## Support
 

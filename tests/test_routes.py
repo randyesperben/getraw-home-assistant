@@ -10,6 +10,7 @@ import ssl
 import sys
 import types
 from unittest.mock import AsyncMock
+from urllib.parse import urlsplit
 
 from aiohttp.test_utils import TestClient
 from cryptography import x509
@@ -33,10 +34,10 @@ from custom_components.getraw import routes as routes_module
 from custom_components.getraw.const import CONF_CLOUDHOOK_URL, DOMAIN
 from custom_components.getraw.pairing_link import certificate_pin
 
-from .conftest import FIXTURES
+from .conftest import FIXTURES, load
 from .phone import Phone
 from .test_pairing import _start, pair
-from .test_pairing_link import read_link
+from .test_pairing_link import link_fields
 
 WEBHOOK = "/api/webhook/"
 CLOUDHOOK = "https://hooks.nabu.casa/fixture-cloudhook"
@@ -61,7 +62,7 @@ def _resolves(monkeypatch: pytest.MonkeyPatch, *addresses: str) -> list[str]:
 
 async def _code_urls(hass: HomeAssistant, client: TestClient) -> list[str]:
     result, _ = await _start(hass, client)
-    urls = read_link(result["description_placeholders"]["link"])["urls"]
+    urls = link_fields(result["description_placeholders"]["link"])["u"]
     return [url.split(WEBHOOK)[0] for url in urls]
 
 
@@ -128,18 +129,30 @@ async def test_a_container_without_host_networking_never_hands_out_its_own_addre
     assert await _code_urls(hass, raw_client) == ["http://homeassistant.local:8123"]
 
 
-async def test_plain_http_goes_to_the_same_own_network_the_phone_allows(
-    hass: HomeAssistant, raw_client: TestClient
+def test_plain_http_goes_only_where_the_phone_lets_a_webhook_go() -> None:
+    """The phone's table of the person's own network, the one both apps read."""
+    rule = load(FIXTURES / "webhook_url" / "rule.json")
+    needs_https = [row["url"] for row in rule["refused"] if row["reason"] == "needs_https"]
+    assert rule["allowed"] and needs_https, "an empty table holds nothing"
+    for url in rule["allowed"]:
+        parts = urlsplit(url)
+        assert routes_module._offered(parts.scheme, parts.hostname), url
+    for url in needs_https:
+        parts = urlsplit(url)
+        assert not routes_module._offered(parts.scheme, parts.hostname), url
+
+
+async def test_an_own_address_on_its_default_port_is_written_without_it(
+    hass: HomeAssistant, raw_client: TestClient, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """A Tailscale address is the person's own network; a reserved range is not."""
-    await async_process_ha_core_config(
-        hass,
-        {
-            "internal_url": "http://198.18.0.1:8123",
-            "external_url": "http://100.100.1.1:8123",
-        },
-    )
-    assert await _code_urls(hass, raw_client) == ["http://100.100.1.1:8123"]
+    """The phone reads a URL only as a parser writes it back, which drops :80."""
+    monkeypatch.setattr(hass.config.api, "port", 80)
+    _resolves(monkeypatch, hass.config.api.local_ip)
+    await async_process_ha_core_config(hass, {"internal_url": "http://homeassistant.local"})
+    assert await _code_urls(hass, raw_client) == [
+        "http://homeassistant.local",
+        f"http://{hass.config.api.local_ip}",
+    ]
 
 
 @pytest.fixture
