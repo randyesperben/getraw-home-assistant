@@ -164,7 +164,6 @@
                 "set_index",
                 "set_total",
                 "set_type",
-                "values",
                 "weight_unit",
                 "distance_unit"
               ],
@@ -363,7 +362,7 @@
       ]
     },
     "patch_live": {
-      "description": "Only the live fields a tap moves. HA keeps the rest (names, targets, volume, records) until Dart's next message, except what a moved id makes wrong, which it sets to unknown: when `set.id` moves, the set's target and dumbbells and the texts `set`, `target`, `previous` and `next`; when `exercise.id` moves, also the exercise's name and logging type and the text `exercise`. No `exercise` and `set`: none is due (README «The lock screen's patch»).",
+      "description": "Only the live fields a tap moves. The rest's two instants and the stopwatch are stated by every patch: present, set; absent, cleared. HA keeps the rest (names, targets, volume, records) until Dart's next message, except what a moved id makes wrong, which it sets to unknown: when `set.id` moves, the set's target and dumbbells and the texts `set`, `target`, `previous` and `next`; when `exercise.id` moves, also the exercise's name and logging type and the text `exercise`. No `exercise` and `set`: none is due (README «The lock screen's patch»).",
       "type": "object",
       "additionalProperties": false,
       "required": [
@@ -389,6 +388,10 @@
           "$ref": "#/$defs/instant"
         },
         "rest_ends_at": {
+          "$ref": "#/$defs/instant"
+        },
+        "stopwatch_started_at": {
+          "description": "A timed set's stopwatch while it runs after the tap, on any set; absent, none runs. HA sets it or clears it from every patch, as the rest's two instants.",
           "$ref": "#/$defs/instant"
         },
         "exercise": {

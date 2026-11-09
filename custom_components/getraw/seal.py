@@ -92,6 +92,11 @@ def open_sealed(
         raw = base64.b64decode(sealed, validate=True)
     except (binascii.Error, ValueError) as err:
         raise SealError from err
+    # Only the text an encoder writes: the platforms' decoders disagree on
+    # missing padding and stray bits, and encoding again is the one rule
+    # all three can apply.
+    if base64.b64encode(raw).decode("ascii") != sealed:
+        raise SealError
     if len(raw) < NONCE_BYTES + TAG_BYTES:
         raise SealError
     try:

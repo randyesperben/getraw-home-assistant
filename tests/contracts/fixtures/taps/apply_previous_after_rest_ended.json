@@ -1,0 +1,4 @@
+{
+  "patch": null,
+  "reducer": "apply_previous_after_rest_ended"
+}

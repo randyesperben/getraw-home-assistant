@@ -27,6 +27,18 @@ _HEX64 = re.compile(r"[0-9a-f]{64}")
 _HEX32 = re.compile(r"[0-9a-f]{32}")
 _B64URL32 = re.compile(r"[A-Za-z0-9_-]{42}[AEIMQUYcgkosw048]")
 _URL = re.compile(r"https?://[^\s/?#]+\S*")
+# A % not followed by two hex digits: Python keeps it, Swift gives nil, Kotlin throws.
+_BAD_ESCAPE = re.compile(r"%(?![0-9A-Fa-f]{2})")
+
+
+def _decoded(field: str, text: str) -> str:
+    """``text`` percent-decoded as UTF-8, or ValueError about ``field``."""
+    if _BAD_ESCAPE.search(text):
+        raise ValueError(f"{field}: a bad percent escape")
+    try:
+        return unquote(text, errors="strict")
+    except UnicodeDecodeError as err:
+        raise ValueError(f"{field}: not UTF-8") from err
 
 
 def read_link(link: str) -> dict[str, Any]:
@@ -43,9 +55,8 @@ def read_link(link: str) -> dict[str, Any]:
     values: dict[str, list[str]] = {}
     for pair in fragment.split("&"):
         key, _, value = pair.partition("=")
-        values.setdefault(unquote(key), []).append(
-            unquote(value, errors="strict")
-        )
+        key = _decoded("link", key)
+        values.setdefault(key, []).append(_decoded(key, value))
     counts = {"v": (1, 1), "u": (1, 4), "w": (1, 1), "k": (1, 1), "i": (1, 1)}
     counts |= {"p": (0, 1), "n": (1, 1)}
     for key, (low, high) in counts.items():
@@ -87,8 +98,8 @@ def test_home_assistant_writes_the_link_and_a_reader_gets_its_fields(
     case = load(path)
     fields = case["fields"]
     assert read_link(case["link"]) == fields
-    if path.stem == "unknown_key":
-        return  # a later release's key: this release never writes it
+    if case.get("reader_only"):
+        return  # a link Home Assistant never writes: read only
     assert (
         build_link(
             urls=fields["urls"],

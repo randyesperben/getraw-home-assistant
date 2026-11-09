@@ -1,0 +1,61 @@
+{
+  "description": "Answers that are no ack: a 200 with no seal, an ack for another revision. With no URL left, a miss; no_answer only from the third.",
+  "now": 1792489290250,
+  "destination": "home_assistant",
+  "link_before": {
+    "key": "ZF6EJaC-_W2xBxaWSI5U_DULztmvezcemm7BXIaDin4",
+    "urls": [
+      {"url": "http://192.168.1.20:8123/api/webhook/raw", "route": "local"},
+      {"url": "https://casa.example.org/api/webhook/raw", "route": "remote"}
+    ],
+    "ack_revision": 1,
+    "reads": {"hello": [1], "state": [1], "event": [1], "patch": [1], "summary": [1], "bye": [1]},
+    "misses": 0,
+    "status": "ok"
+  },
+  "queued": [
+    "{\"schema_version\":1,\"kind\":\"state\",\"categories\":[],\"live\":{\"phase\":\"idle\"}}"
+  ],
+  "home_keys": ["ZF6EJaC-_W2xBxaWSI5U_DULztmvezcemm7BXIaDin4"],
+  "answers": {
+    "http://192.168.1.20:8123/api/webhook/raw": {"status": 200, "body": "{}"},
+    "https://casa.example.org/api/webhook/raw": {
+      "ack": {
+        "ok": true,
+        "revision": 1,
+        "reads": {
+          "hello": [1],
+          "state": [1],
+          "event": [1],
+          "patch": [1],
+          "summary": [1],
+          "bye": [1]
+        }
+      }
+    }
+  },
+  "posts": [
+    {
+      "url": "http://192.168.1.20:8123/api/webhook/raw",
+      "key": "ZF6EJaC-_W2xBxaWSI5U_DULztmvezcemm7BXIaDin4"
+    },
+    {
+      "url": "https://casa.example.org/api/webhook/raw",
+      "key": "ZF6EJaC-_W2xBxaWSI5U_DULztmvezcemm7BXIaDin4"
+    }
+  ],
+  "link_after": {
+    "key": "ZF6EJaC-_W2xBxaWSI5U_DULztmvezcemm7BXIaDin4",
+    "urls": [
+      {"url": "http://192.168.1.20:8123/api/webhook/raw", "route": "local"},
+      {"url": "https://casa.example.org/api/webhook/raw", "route": "remote"}
+    ],
+    "ack_revision": 1,
+    "reads": {"hello": [1], "state": [1], "event": [1], "patch": [1], "summary": [1], "bye": [1]},
+    "failing_since": 1792489290250,
+    "misses": 1,
+    "status": "ok"
+  },
+  "left": [0],
+  "post": "queued"
+}

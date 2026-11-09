@@ -37,7 +37,8 @@ def merged(kept: dict[str, Any], patch: dict[str, Any], events: list[Event]) -> 
     for key in ("started_at", "phase", "completed_sets"):
         if key in patch:
             live[key] = patch[key]
-    for key in ("rest_started_at", "rest_ends_at"):
+    # Every patch states the rest and the stopwatch: what it leaves out has stopped.
+    for key in ("rest_started_at", "rest_ends_at", "stopwatch_started_at"):
         if key in patch:
             live[key] = patch[key]
         else:
@@ -51,7 +52,6 @@ def merged(kept: dict[str, Any], patch: dict[str, Any], events: list[Event]) -> 
             text.pop(key, None)
         for key in _SET_EFFORT:
             effort.pop(key, None)
-        live.pop("stopwatch_started_at", None)
     for key in ("exercise", "set"):
         if key not in patch:
             live.pop(key, None)

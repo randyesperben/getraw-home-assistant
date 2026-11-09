@@ -1,0 +1,49 @@
+{
+  "description": "unsupported_version, Home Assistant reads only a newer version of the kind: update_app, and its reads are taken.",
+  "now": 1792489290250,
+  "destination": "home_assistant",
+  "link_before": {
+    "key": "ZF6EJaC-_W2xBxaWSI5U_DULztmvezcemm7BXIaDin4",
+    "urls": [{"url": "http://192.168.1.20:8123/api/webhook/raw", "route": "local"}],
+    "route": "http://192.168.1.20:8123/api/webhook/raw",
+    "ack_revision": 1,
+    "reads": {"hello": [1], "state": [1], "event": [1], "patch": [1], "summary": [1], "bye": [1]},
+    "misses": 0,
+    "status": "ok"
+  },
+  "queued": ["{\"schema_version\":1,\"kind\":\"summary\",\"days\":[]}"],
+  "home_keys": ["ZF6EJaC-_W2xBxaWSI5U_DULztmvezcemm7BXIaDin4"],
+  "answers": {
+    "http://192.168.1.20:8123/api/webhook/raw": {
+      "ack": {
+        "ok": false,
+        "reason": "unsupported_version",
+        "reads": {
+          "hello": [1],
+          "state": [1],
+          "event": [1],
+          "patch": [1],
+          "summary": [2],
+          "bye": [1]
+        }
+      }
+    }
+  },
+  "posts": [
+    {
+      "url": "http://192.168.1.20:8123/api/webhook/raw",
+      "key": "ZF6EJaC-_W2xBxaWSI5U_DULztmvezcemm7BXIaDin4"
+    }
+  ],
+  "link_after": {
+    "key": "ZF6EJaC-_W2xBxaWSI5U_DULztmvezcemm7BXIaDin4",
+    "urls": [{"url": "http://192.168.1.20:8123/api/webhook/raw", "route": "local"}],
+    "route": "http://192.168.1.20:8123/api/webhook/raw",
+    "ack_revision": 1,
+    "reads": {"hello": [1], "state": [1], "event": [1], "patch": [1], "summary": [2], "bye": [1]},
+    "misses": 0,
+    "status": "update_app"
+  },
+  "left": [],
+  "post": "refused"
+}

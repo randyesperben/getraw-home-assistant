@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 from datetime import timedelta
+from pathlib import Path
 from typing import Any
 
 from aiohttp.test_utils import TestClient
@@ -19,7 +20,9 @@ from homeassistant.util import dt as dt_util
 
 from custom_components.getraw import event as event_platform
 from custom_components.getraw.const import DOMAIN
+from custom_components.getraw.live import merged
 
+from .conftest import fixture_files, load
 from .phone import (
     ACCOUNT,
     ALL_CATEGORIES,
@@ -247,6 +250,32 @@ async def test_a_lock_screen_patch_keeps_only_what_still_describes_the_set(
     async_fire_time_changed(hass)
     await hass.async_block_till_done()
     assert _value(hass, "binary_sensor", "workout") == "on"
+
+
+_TAPS = [path for path in fixture_files("taps") if load(path)["patch"] is not None]
+
+
+@pytest.mark.parametrize("path", _TAPS, ids=lambda p: p.stem)
+def test_every_tap_leaves_the_rest_and_the_stopwatch_as_its_patch_says(path: Path) -> None:
+    """A lock-screen tap sets or clears the rest's two instants and a timed set's stopwatch.
+
+    Whatever HA kept from before, on the same set or an older one, what it
+    shows after the tap is what the tap's patch carries: a stopwatch started
+    from the lock screen shows, and one the tap stopped goes.
+    """
+    patch = load(path)["patch"]["live"]
+    before = dt_util.parse_datetime(patch["started_at"]) + timedelta(minutes=1)
+    for set_id in (patch.get("set", {}).get("id"), "an-older-set"):
+        kept = workout(
+            started_at=patch["started_at"],
+            set={"id": set_id, "index": 1, "total": 3, "set_type": "normal"},
+            rest_started_at=instant(before),
+            rest_ends_at=instant(before + timedelta(minutes=2)),
+            stopwatch_started_at=instant(before),
+        )
+        shown = merged(kept, patch, [])
+        for key in ("rest_started_at", "rest_ends_at", "stopwatch_started_at"):
+            assert shown.get(key) == patch.get(key), (set_id, key)
 
 
 async def test_home_assistant_rings_the_rest_end_once_and_never_after_a_skip(

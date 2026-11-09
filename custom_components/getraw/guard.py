@@ -20,6 +20,7 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 from datetime import datetime, timedelta
+import logging
 from typing import Any, Final, NotRequired, TypedDict
 
 from homeassistant.core import HomeAssistant
@@ -28,6 +29,8 @@ from homeassistant.util import dt as dt_util
 
 from .const import DOMAIN
 from .messages import Event
+
+_LOGGER = logging.getLogger(__name__)
 
 STORAGE_VERSION: Final = 1
 SAVE_DELAY_SECONDS: Final = 2
@@ -170,11 +173,22 @@ class ReplayGuard:
         fresh: list[Event] = []
         for event in events:
             if event.event_id in self._seen:
+                _LOGGER.debug("event %s seen before, not fired", event.type)
                 continue
             self._seen[event.event_id] = now_ms
             age_ms = now_ms - (_ms(event.occurred_at) + offset)
-            if age_ms < EVENT_FRESH.total_seconds() * 1000:
+            fires = age_ms < EVENT_FRESH.total_seconds() * 1000
+            if fires:
                 fresh.append(event)
+            # The device pass reads this line (dev/devpass.py watch): how long after
+            # the phone's moment, on Home Assistant's clock, the event arrived. The
+            # type only: never an id, a name or a value.
+            _LOGGER.debug(
+                "event %s %s, %d ms after it happened",
+                event.type,
+                "fired" if fires else "too old, not fired",
+                age_ms,
+            )
         self._save()
         return fresh
 

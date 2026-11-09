@@ -1,0 +1,53 @@
+{
+  "description": "An ack older than ack_revision delivers its line but brings no URLs and no reads.",
+  "now": 1792489290250,
+  "destination": "home_assistant",
+  "link_before": {
+    "key": "ZF6EJaC-_W2xBxaWSI5U_DULztmvezcemm7BXIaDin4",
+    "urls": [{"url": "http://192.168.1.20:8123/api/webhook/raw", "route": "local"}],
+    "route": "http://192.168.1.20:8123/api/webhook/raw",
+    "ack_revision": 4102444800000,
+    "reads": {"state": [1]},
+    "misses": 0,
+    "status": "ok"
+  },
+  "queued": [
+    "{\"schema_version\":1,\"kind\":\"state\",\"categories\":[],\"live\":{\"phase\":\"idle\"}}"
+  ],
+  "home_keys": ["ZF6EJaC-_W2xBxaWSI5U_DULztmvezcemm7BXIaDin4"],
+  "answers": {
+    "http://192.168.1.20:8123/api/webhook/raw": {
+      "ack": {
+        "ok": true,
+        "urls": [{"url": "https://casa.example.org/api/webhook/raw", "route": "remote"}],
+        "reads": {
+          "hello": [1],
+          "state": [1],
+          "event": [1],
+          "patch": [1],
+          "summary": [1],
+          "bye": [1]
+        }
+      }
+    }
+  },
+  "posts": [
+    {
+      "url": "http://192.168.1.20:8123/api/webhook/raw",
+      "key": "ZF6EJaC-_W2xBxaWSI5U_DULztmvezcemm7BXIaDin4"
+    }
+  ],
+  "link_after": {
+    "key": "ZF6EJaC-_W2xBxaWSI5U_DULztmvezcemm7BXIaDin4",
+    "urls": [{"url": "http://192.168.1.20:8123/api/webhook/raw", "route": "local"}],
+    "route": "http://192.168.1.20:8123/api/webhook/raw",
+    "ack_revision": 4102444800000,
+    "reads": {"state": [1]},
+    "delivered_at": 1792489290250,
+    "delivered_route": "local",
+    "misses": 0,
+    "status": "ok"
+  },
+  "left": [],
+  "post": "delivered"
+}

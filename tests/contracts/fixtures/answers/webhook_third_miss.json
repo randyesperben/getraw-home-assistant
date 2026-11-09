@@ -1,0 +1,15 @@
+{
+  "description": "The custom webhook: anything but a 2xx is a miss, and the third in a row backs off as Home Assistant's does.",
+  "now": 1792489290250,
+  "destination": "webhook",
+  "webhook_url": "https://n8n.example.org/webhook/raw",
+  "link_before": {"failing_since": 1792489110250, "misses": 2},
+  "queued": [
+    "{\"schema_version\":1,\"kind\":\"state\",\"categories\":[],\"live\":{\"phase\":\"idle\"}}"
+  ],
+  "answers": {"https://n8n.example.org/webhook/raw": {"status": 500}},
+  "posts": [{"url": "https://n8n.example.org/webhook/raw"}],
+  "link_after": {"failing_since": 1792489110250, "misses": 3, "blocked_until": 1792489350250},
+  "left": [0],
+  "post": "queued"
+}

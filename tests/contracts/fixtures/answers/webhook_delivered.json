@@ -1,0 +1,20 @@
+{
+  "description": "The custom webhook: a 2xx is a delivery, which ends the run of misses and its back-off.",
+  "now": 1792489290250,
+  "destination": "webhook",
+  "webhook_url": "https://n8n.example.org/webhook/raw",
+  "link_before": {
+    "delivered_at": 1792487490250,
+    "failing_since": 1792489050250,
+    "misses": 3,
+    "blocked_until": 1792489290249
+  },
+  "queued": [
+    "{\"schema_version\":1,\"kind\":\"state\",\"categories\":[],\"live\":{\"phase\":\"idle\"}}"
+  ],
+  "answers": {"https://n8n.example.org/webhook/raw": {"status": 204}},
+  "posts": [{"url": "https://n8n.example.org/webhook/raw"}],
+  "link_after": {"delivered_at": 1792489290250, "misses": 0},
+  "left": [],
+  "post": "delivered"
+}

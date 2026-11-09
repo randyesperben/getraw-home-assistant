@@ -1,0 +1,93 @@
+{
+  "description": "Home Assistant lost the newest key: every URL is tried under key first, then only the URLs that answered under previous_key, which an ack under it keeps.",
+  "now": 1792489290250,
+  "destination": "home_assistant",
+  "link_before": {
+    "key": "eJYAAS-5hgyyzk1ICjYLr-mG9mBMKPS_G7EsiepllZY",
+    "previous_key": "ZF6EJaC-_W2xBxaWSI5U_DULztmvezcemm7BXIaDin4",
+    "urls": [
+      {"url": "http://192.168.1.20:8123/api/webhook/raw", "route": "local"},
+      {"url": "https://casa.example.org/api/webhook/raw", "route": "remote"},
+      {"url": "https://hooks.nabu.casa/token", "route": "cloud"}
+    ],
+    "ack_revision": 1,
+    "reads": {"hello": [1], "state": [1], "event": [1], "patch": [1], "summary": [1], "bye": [1]},
+    "misses": 0,
+    "status": "ok"
+  },
+  "queued": [
+    "{\"schema_version\":1,\"kind\":\"state\",\"categories\":[],\"live\":{\"phase\":\"idle\"}}"
+  ],
+  "home_keys": ["ZF6EJaC-_W2xBxaWSI5U_DULztmvezcemm7BXIaDin4"],
+  "answers": {
+    "http://192.168.1.20:8123/api/webhook/raw": {
+      "ack": {
+        "ok": true,
+        "urls": [
+          {"url": "http://192.168.1.20:8123/api/webhook/raw", "route": "local"},
+          {"url": "https://casa.example.org/api/webhook/raw", "route": "remote"},
+          {"url": "https://hooks.nabu.casa/token", "route": "cloud"}
+        ],
+        "reads": {
+          "hello": [1],
+          "state": [1],
+          "event": [1],
+          "patch": [1],
+          "summary": [1],
+          "bye": [1]
+        }
+      }
+    },
+    "https://casa.example.org/api/webhook/raw": {
+      "ack": {
+        "ok": true,
+        "urls": [
+          {"url": "http://192.168.1.20:8123/api/webhook/raw", "route": "local"},
+          {"url": "https://casa.example.org/api/webhook/raw", "route": "remote"},
+          {"url": "https://hooks.nabu.casa/token", "route": "cloud"}
+        ],
+        "reads": {
+          "hello": [1],
+          "state": [1],
+          "event": [1],
+          "patch": [1],
+          "summary": [1],
+          "bye": [1]
+        }
+      }
+    }
+  },
+  "posts": [
+    {
+      "url": "http://192.168.1.20:8123/api/webhook/raw",
+      "key": "eJYAAS-5hgyyzk1ICjYLr-mG9mBMKPS_G7EsiepllZY"
+    },
+    {
+      "url": "https://casa.example.org/api/webhook/raw",
+      "key": "eJYAAS-5hgyyzk1ICjYLr-mG9mBMKPS_G7EsiepllZY"
+    },
+    {"url": "https://hooks.nabu.casa/token", "key": "eJYAAS-5hgyyzk1ICjYLr-mG9mBMKPS_G7EsiepllZY"},
+    {
+      "url": "http://192.168.1.20:8123/api/webhook/raw",
+      "key": "ZF6EJaC-_W2xBxaWSI5U_DULztmvezcemm7BXIaDin4"
+    }
+  ],
+  "link_after": {
+    "key": "eJYAAS-5hgyyzk1ICjYLr-mG9mBMKPS_G7EsiepllZY",
+    "previous_key": "ZF6EJaC-_W2xBxaWSI5U_DULztmvezcemm7BXIaDin4",
+    "urls": [
+      {"url": "http://192.168.1.20:8123/api/webhook/raw", "route": "local"},
+      {"url": "https://casa.example.org/api/webhook/raw", "route": "remote"},
+      {"url": "https://hooks.nabu.casa/token", "route": "cloud"}
+    ],
+    "route": "http://192.168.1.20:8123/api/webhook/raw",
+    "ack_revision": 1792489290250,
+    "reads": {"hello": [1], "state": [1], "event": [1], "patch": [1], "summary": [1], "bye": [1]},
+    "delivered_at": 1792489290250,
+    "delivered_route": "local",
+    "misses": 0,
+    "status": "ok"
+  },
+  "left": [],
+  "post": "delivered"
+}

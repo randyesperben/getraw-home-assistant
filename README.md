@@ -93,7 +93,10 @@ and use it wherever you mean “anyone is training”.
 
 [dashboards/raw.yaml](dashboards/raw.yaml) is a dashboard with the workout, the week, your
 history, your body weight and the calendar. Create a new dashboard, open its raw configuration
-editor, paste the file, and replace `raw_alex` with the start of your own entity ids.
+editor and paste the file. Then replace each entity id with yours. Yours start with `raw_` and
+your device's name, and the rest follows the language Home Assistant had when you added RAW: in
+English the rest end is `sensor.raw_alex_rest_end`, in Spanish `sensor.raw_alex_fin_del_descanso`.
+**Settings › Devices & services › RAW: Strength Training** lists them.
 
 ## Voice
 

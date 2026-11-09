@@ -1,0 +1,39 @@
+{
+  "description": "The third miss in a row: no_answer, and no attempt to Home Assistant for 1 minute (blocked_until).",
+  "now": 1792489290250,
+  "destination": "home_assistant",
+  "link_before": {
+    "key": "ZF6EJaC-_W2xBxaWSI5U_DULztmvezcemm7BXIaDin4",
+    "urls": [{"url": "http://192.168.1.20:8123/api/webhook/raw", "route": "local"}],
+    "route": "http://192.168.1.20:8123/api/webhook/raw",
+    "ack_revision": 1,
+    "reads": {"hello": [1], "state": [1], "event": [1], "patch": [1], "summary": [1], "bye": [1]},
+    "failing_since": 1792489170250,
+    "misses": 2,
+    "status": "ok"
+  },
+  "queued": [
+    "{\"schema_version\":1,\"kind\":\"state\",\"categories\":[],\"live\":{\"phase\":\"idle\"}}"
+  ],
+  "home_keys": ["ZF6EJaC-_W2xBxaWSI5U_DULztmvezcemm7BXIaDin4"],
+  "answers": {},
+  "posts": [
+    {
+      "url": "http://192.168.1.20:8123/api/webhook/raw",
+      "key": "ZF6EJaC-_W2xBxaWSI5U_DULztmvezcemm7BXIaDin4"
+    }
+  ],
+  "link_after": {
+    "key": "ZF6EJaC-_W2xBxaWSI5U_DULztmvezcemm7BXIaDin4",
+    "urls": [{"url": "http://192.168.1.20:8123/api/webhook/raw", "route": "local"}],
+    "route": "http://192.168.1.20:8123/api/webhook/raw",
+    "ack_revision": 1,
+    "reads": {"hello": [1], "state": [1], "event": [1], "patch": [1], "summary": [1], "bye": [1]},
+    "failing_since": 1792489170250,
+    "misses": 3,
+    "blocked_until": 1792489350250,
+    "status": "no_answer"
+  },
+  "left": [0],
+  "post": "queued"
+}

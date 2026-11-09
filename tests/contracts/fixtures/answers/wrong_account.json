@@ -1,0 +1,58 @@
+{
+  "description": "wrong_account: every line to Home Assistant goes; key, previous_key, URLs, route and reads are dropped, so nothing is sealed until Dart pairs again.",
+  "now": 1792489290250,
+  "destination": "home_assistant",
+  "link_before": {
+    "key": "ZF6EJaC-_W2xBxaWSI5U_DULztmvezcemm7BXIaDin4",
+    "urls": [
+      {"url": "http://192.168.1.20:8123/api/webhook/raw", "route": "local"},
+      {"url": "https://casa.example.org/api/webhook/raw", "route": "remote"}
+    ],
+    "route": "https://casa.example.org/api/webhook/raw",
+    "ack_revision": 1,
+    "reads": {"hello": [1], "state": [1], "event": [1], "patch": [1], "summary": [1], "bye": [1]},
+    "delivered_at": 1792488690250,
+    "delivered_route": "remote",
+    "failing_since": 1792489285250,
+    "misses": 1,
+    "status": "ok"
+  },
+  "queued": [
+    "{\"schema_version\":1,\"kind\":\"state\",\"categories\":[],\"live\":{\"phase\":\"idle\"}}",
+    "{\"schema_version\":1,\"kind\":\"summary\",\"days\":[]}"
+  ],
+  "home_keys": ["ZF6EJaC-_W2xBxaWSI5U_DULztmvezcemm7BXIaDin4"],
+  "answers": {
+    "https://casa.example.org/api/webhook/raw": {
+      "ack": {
+        "ok": false,
+        "reason": "wrong_account",
+        "reads": {
+          "hello": [1],
+          "state": [1],
+          "event": [1],
+          "patch": [1],
+          "summary": [1],
+          "bye": [1]
+        }
+      }
+    }
+  },
+  "posts": [
+    {
+      "url": "https://casa.example.org/api/webhook/raw",
+      "key": "ZF6EJaC-_W2xBxaWSI5U_DULztmvezcemm7BXIaDin4"
+    }
+  ],
+  "link_after": {
+    "urls": [],
+    "ack_revision": 1,
+    "reads": {},
+    "delivered_at": 1792488690250,
+    "delivered_route": "remote",
+    "misses": 0,
+    "status": "wrong_account"
+  },
+  "left": [],
+  "post": "notPaired"
+}
