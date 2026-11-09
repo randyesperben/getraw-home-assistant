@@ -48,7 +48,7 @@
     },
     "phone_disconnected": {
       "title": "{name} disconnected on the phone",
-      "description": "RAW stopped sending to Home Assistant from the phone. To connect again, open Settings › Home Assistant in RAW. If you no longer use it, delete this integration."
+      "description": "RAW stopped sending to Home Assistant from the phone. To connect again, open Profile › Settings › Home Assistant in RAW. If you no longer use it, delete this integration."
     },
     "silent": {
       "title": "No news from {name} in 14 days",
@@ -252,7 +252,7 @@
       "todays_plan": {
         "name": "Today",
         "state": {
-          "due": "Due",
+          "due": "Training day",
           "done": "Workout done",
           "rest": "Rest day",
           "no_plan": "No plan"

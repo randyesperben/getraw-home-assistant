@@ -2,8 +2,8 @@ blueprint:
   name: "RAW: flash the lights when a rest ends"
   description: >-
     Blinks the lights you pick when a rest in RAW ends, then puts them back as
-    they were. Home Assistant rings the end of the rest itself, so it works with
-    the phone locked or RAW closed. A skipped rest rings nothing. Add a chime or
+    they were. Home Assistant times the end of the rest itself, so it works with
+    the phone locked or RAW closed. A skipped rest does nothing. Add a chime or
     a speaker under “Also do”.
   domain: automation
   author: RAW

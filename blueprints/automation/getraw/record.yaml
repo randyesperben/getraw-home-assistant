@@ -1,10 +1,10 @@
 blueprint:
   name: "RAW: celebrate a record"
   description: >-
-    When RAW logs a personal record, lights the lights you pick in a colour for
-    a few seconds and says the record aloud on a speaker, as RAW says it on the
-    phone (“Personal record in Bench Press: 82.5 kilograms, 8 reps”). Pick
-    lights, a speaker, or both.
+    When RAW logs a personal record, turns the lights you pick to a color for a
+    few seconds and says the record aloud on a speaker in RAW's own words
+    (“Personal record in Bench Press: 82.5 kilograms, 8 reps”). Pick lights, a
+    speaker, or both.
   domain: automation
   author: RAW
   source_url: https://github.com/randyesperben/getraw-home-assistant/blob/main/blueprints/automation/getraw/record.yaml
@@ -44,7 +44,7 @@ blueprint:
       input:
         lights:
           name: Lights
-          description: They take the colour, then go back to how they were.
+          description: They take the color, then go back to how they were.
           default: []
           selector:
             entity:
@@ -52,7 +52,7 @@ blueprint:
               filter:
                 - domain: light
         colour:
-          name: Colour
+          name: Color
           default: [255, 176, 0]
           selector:
             color_rgb: {}
@@ -86,7 +86,8 @@ blueprint:
               filter:
                 - domain: tts
 
-# Queued: a set can beat several records, and each one is celebrated in turn.
+# Queued: sets completed in quick succession, such as from the lock screen, can
+# each bring a record, and each one is celebrated in turn.
 mode: queued
 max: 10
 max_exceeded: silent

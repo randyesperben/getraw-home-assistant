@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Conectar RAW",
-        "description": "Escanea este código con la cámara del teléfono y toca Conectar en RAW. Después, selecciona Continuar.\n\n¿Estás en el teléfono? [Abrir en RAW]({link})\n\nRAW llega a este Home Assistant en {address}. Si el teléfono no abre esa dirección, cambia Red local en Configuración › Sistema › Red.",
+        "description": "Escanea este código con la cámara del teléfono y toca Conectar en RAW. Después, selecciona Continuar.\n\n¿Lo ves en el teléfono que tiene RAW? [Abrir en RAW]({link})\n\nRAW llega a este Home Assistant en {address}. Si el teléfono no abre esa dirección, cambia Red local en Configuración › Sistema › Red.",
         "data": {
           "code": "Código QR"
         },
@@ -11,7 +11,7 @@
       },
       "show_code": {
         "title": "Volver a conectar RAW",
-        "description": "Escanea este código con la cámara del teléfono y toca Conectar en RAW. Después, selecciona Continuar.\n\n¿Estás en el teléfono? [Abrir en RAW]({link})\n\nRAW llega a este Home Assistant en {address}. Si el teléfono no abre esa dirección, cambia Red local en Configuración › Sistema › Red.",
+        "description": "Escanea este código con la cámara del teléfono y toca Conectar en RAW. Después, selecciona Continuar.\n\n¿Lo ves en el teléfono que tiene RAW? [Abrir en RAW]({link})\n\nRAW llega a este Home Assistant en {address}. Si el teléfono no abre esa dirección, cambia Red local en Configuración › Sistema › Red.",
         "data": {
           "code": "Código QR"
         },
@@ -47,8 +47,8 @@
       "description": "{name} envía mensajes que esta versión de la integración RAW no sabe leer. Actualiza RAW en el Marketplace."
     },
     "phone_disconnected": {
-      "title": "{name} se desconectó en el teléfono",
-      "description": "RAW dejó de enviar a Home Assistant desde el teléfono. Para volver a conectar, abre Ajustes › Home Assistant en RAW. Si ya no lo usas, elimina esta integración."
+      "title": "{name} se ha desconectado en el teléfono",
+      "description": "RAW ha dejado de enviar a Home Assistant desde el teléfono. Para volver a conectar, abre Perfil › Ajustes › Home Assistant en RAW. Si ya no lo usas, elimina esta integración."
     },
     "silent": {
       "title": "Sin noticias de {name} en 14 días",
@@ -340,7 +340,7 @@
         }
       },
       "body_fat_pct": {
-        "name": "Porcentaje de grasa",
+        "name": "Grasa corporal",
         "state_attributes": {
           "measured_on": {
             "name": "Medido el"

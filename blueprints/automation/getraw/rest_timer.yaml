@@ -6,7 +6,7 @@ blueprint:
     Rest end sensor: a longer or shorter rest moves the timer, a skipped rest
     or the end of the workout cancels it, and a Home Assistant restart in the
     middle of a rest starts it again for what is left. Create the timer helper
-    first (Settings › Devices & services › Helpers › Timer).
+    first (Settings › Devices & services › Helpers › Create helper › Timer).
   domain: automation
   author: RAW
   source_url: https://github.com/randyesperben/getraw-home-assistant/blob/main/blueprints/automation/getraw/rest_timer.yaml

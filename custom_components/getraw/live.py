@@ -30,6 +30,9 @@ def merged(kept: dict[str, Any], patch: dict[str, Any], events: list[Event]) -> 
     discreet), so the kept ones stay while they still describe the same
     exercise and set, and go when the tap moved past them: HA
     then shows them unknown until Dart's next message, never the old set's.
+    A patch without ``set`` means no set is due; it leaves ``exercise`` out
+    then too, while the exercise is still the one Dart names, so HA keeps it:
+    a tap that moves to another exercise always carries it.
     """
     if kept.get("started_at") != patch.get("started_at"):
         kept = {}
@@ -45,7 +48,7 @@ def merged(kept: dict[str, Any], patch: dict[str, Any], events: list[Event]) -> 
             live.pop(key, None)
     text: dict[str, Any] = live.setdefault("text", {})
     effort: dict[str, Any] = live.get("health", {}).get("effort", {})
-    if not _same(live, patch, "exercise"):
+    if "exercise" in patch and not _same(live, patch, "exercise"):
         text.pop("exercise", None)
     if not _same(live, patch, "set"):
         for key in _SET_TEXTS:
@@ -54,7 +57,8 @@ def merged(kept: dict[str, Any], patch: dict[str, Any], events: list[Event]) -> 
             effort.pop(key, None)
     for key in ("exercise", "set"):
         if key not in patch:
-            live.pop(key, None)
+            if key == "set":
+                live.pop(key, None)
         elif _same(live, patch, key):
             live[key] = {**live[key], **patch[key]}
         else:

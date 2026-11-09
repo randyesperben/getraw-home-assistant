@@ -128,6 +128,20 @@ async def test_a_container_without_host_networking_never_hands_out_its_own_addre
     assert await _code_urls(hass, raw_client) == ["http://homeassistant.local:8123"]
 
 
+async def test_plain_http_goes_to_the_same_own_network_the_phone_allows(
+    hass: HomeAssistant, raw_client: TestClient
+) -> None:
+    """A Tailscale address is the person's own network; a reserved range is not."""
+    await async_process_ha_core_config(
+        hass,
+        {
+            "internal_url": "http://198.18.0.1:8123",
+            "external_url": "http://100.100.1.1:8123",
+        },
+    )
+    assert await _code_urls(hass, raw_client) == ["http://100.100.1.1:8123"]
+
+
 @pytest.fixture
 def served_tls(tmp_path: Path) -> tuple[bytes, ssl.SSLContext]:
     """A certificate and a server context holding it, as Home Assistant loads at start."""

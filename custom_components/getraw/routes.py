@@ -14,11 +14,13 @@ bridge in RAW's device pass; a NAS's Docker network alike), while the name the
 person set reaches the host. With no internal URL set, the local route is the
 address Home Assistant picks for itself, as its own Network settings show it.
 
-Plain ``http://`` goes only where a post stays on the local network: a
-private or link-local IP address, a ``.local`` name or a name without a dot. A
-public name or address would carry the webhook id and every post's timing
-across the internet. No route is ever the loopback address, which Home
-Assistant falls back to with no network.
+Plain ``http://`` goes only where a post stays on the person's own network, the
+same hosts the phone allows a custom webhook over plain HTTP (the contracts'
+README): an RFC 1918, link-local or 100.64.0.0/10 (Tailscale) IPv4 address, a
+unique-local or link-local IPv6 one, a ``.local`` name or a name without a dot.
+The bodies are sealed, but a public name or address would carry the webhook id
+and every post's timing across the internet. No route is ever the loopback
+address, which Home Assistant falls back to with no network.
 """
 
 from __future__ import annotations
@@ -26,7 +28,7 @@ from __future__ import annotations
 import asyncio
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from ipaddress import IPv4Address, IPv6Address, ip_address
+from ipaddress import IPv4Address, IPv6Address, ip_address, ip_network
 import logging
 import socket
 import ssl
@@ -50,6 +52,19 @@ _RESOLVE_SECONDS: Final = 2
 _RESOLVED_FOR: Final = timedelta(minutes=10)
 # A server bound to every address answers on the loopback one.
 _LOOPBACK: Final = {"0.0.0.0": "127.0.0.1", "::": "::1"}
+# The person's own network, as the phone reads it for a webhook over plain HTTP.
+_OWN_NETWORKS: Final = tuple(
+    ip_network(network)
+    for network in (
+        "10.0.0.0/8",
+        "172.16.0.0/12",
+        "192.168.0.0/16",
+        "169.254.0.0/16",
+        "100.64.0.0/10",
+        "fc00::/7",
+        "fe80::/10",
+    )
+)
 _HANDSHAKE_SECONDS: Final = 10
 
 _LOGGER = logging.getLogger(__name__)
@@ -153,7 +168,7 @@ def _offered(scheme: str, host: str | None) -> bool:
     if scheme != "http":
         return True
     if address is not None:
-        return address.is_private or address.is_link_local
+        return any(address in network for network in _OWN_NETWORKS)
     name = (host or "").rstrip(".").lower()
     return bool(name) and ("." not in name or name.endswith(".local"))
 

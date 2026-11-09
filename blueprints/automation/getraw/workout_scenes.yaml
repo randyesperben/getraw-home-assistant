@@ -2,9 +2,9 @@ blueprint:
   name: "RAW: a scene for the workout"
   description: >-
     Turns on one scene when a workout starts in RAW and another when it ends,
-    for example the gym lights on and then off. It follows the Workout sensor,
-    so a workout finished from the lock screen counts too, and a Home Assistant
-    restart starts neither scene.
+    for example the gym lights on and then off. A workout left untouched for 3
+    hours counts as ended too, and a Home Assistant restart starts neither
+    scene.
   domain: automation
   author: RAW
   source_url: https://github.com/randyesperben/getraw-home-assistant/blob/main/blueprints/automation/getraw/workout_scenes.yaml

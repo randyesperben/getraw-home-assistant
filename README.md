@@ -21,8 +21,9 @@ RAW's servers, and the integration is free.
 
 [![Open your Home Assistant and add this repository to the Marketplace.](https://my.home-assistant.io/badges/marketplace_repository.svg)](https://my.home-assistant.io/redirect/marketplace_repository/?owner=randyesperben&repository=getraw-home-assistant&category=integration)
 
-1. Select the button above, or in Home Assistant go to **Settings › Marketplace**, open the menu
-   and choose **Add from link** with `https://github.com/randyesperben/getraw-home-assistant`.
+1. Select the button above, or in Home Assistant go to **Settings › Marketplace**, select
+   **Add from link** and paste `https://github.com/randyesperben/getraw-home-assistant` as the
+   GitHub link.
    Until the Marketplace's catalog lists RAW, Home Assistant asks you to sign in to GitHub once,
    to read public repositories.
 2. Install **RAW: Strength Training**.
@@ -46,8 +47,8 @@ turn it on in the iPhone's **Settings › RAW › Local Network** and tap Connec
 
 RAW reaches Home Assistant at the address in **Settings › System › Network › Local network**.
 If Home Assistant runs in Docker without host networking, its own address is the container's,
-which your phone cannot reach: fill in Local network with your computer's address, such as
-`http://192.168.1.20:8123`, before you scan the code.
+which your phone cannot reach: fill in Local network with the address of the machine Docker runs
+on, such as `http://192.168.1.20:8123`, before you scan the code.
 
 ## What you get
 
@@ -70,8 +71,9 @@ body fat and measurements, the effort and feeling of your last workout, saved vo
 notes. Each category is a switch in RAW
 under **Profile › Settings › Home Assistant**. While a switch is off, its entities show as unavailable.
 
-Weights and lengths come in kilograms and centimetres, shown in the units you use in RAW. Some
-detailed entities start disabled; enable them on the device page. The full list, with each
+Weights and lengths come in kilograms and centimeters, shown in the units RAW used when you
+connected. To change them later, open the entity's settings in Home Assistant. Some detailed
+entities start disabled; enable them on the device page. The full list, with each
 entity's class and state: [entities.md](entities.md).
 
 ## Blueprints
@@ -84,7 +86,7 @@ gyms).
 |---|---|---|
 | A scene for the workout | One scene when a workout starts, another when it ends | [![Import](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Frandyesperben%2Fgetraw-home-assistant%2Fblob%2Fmain%2Fblueprints%2Fautomation%2Fgetraw%2Fworkout_scenes.yaml) |
 | Flash the lights when a rest ends | Blinks the lights, then puts them back as they were | [![Import](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Frandyesperben%2Fgetraw-home-assistant%2Fblob%2Fmain%2Fblueprints%2Fautomation%2Fgetraw%2Frest_over.yaml) |
-| Celebrate a record | Lights in a colour, and the record read aloud on a speaker | [![Import](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Frandyesperben%2Fgetraw-home-assistant%2Fblob%2Fmain%2Fblueprints%2Fautomation%2Fgetraw%2Frecord.yaml) |
+| Celebrate a record | Lights in a color, and the record read aloud on a speaker | [![Import](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Frandyesperben%2Fgetraw-home-assistant%2Fblob%2Fmain%2Fblueprints%2Fautomation%2Fgetraw%2Frecord.yaml) |
 | Weekly goal reminder | A notification on the day you pick while the week's goal is not met | [![Import](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Frandyesperben%2Fgetraw-home-assistant%2Fblob%2Fmain%2Fblueprints%2Fautomation%2Fgetraw%2Fweekly_goal.yaml) |
 | Rest timer | Mirrors your rest on a timer helper, counting down as m:ss | [![Import](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Frandyesperben%2Fgetraw-home-assistant%2Fblob%2Fmain%2Fblueprints%2Fautomation%2Fgetraw%2Frest_timer.yaml) |
 
@@ -135,6 +137,10 @@ intent_script:
           You are not resting.
         {% endif %}
 ```
+
+In another language, use its code in the folder name and in `language:`, such as
+`custom_sentences/es/raw.yaml` with `language: es`, and write the sentences and the answer in
+that language.
 
 A voice assistant built on a language model reads the exposed entities and answers in its own
 words.

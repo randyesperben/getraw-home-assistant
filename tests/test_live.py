@@ -278,6 +278,26 @@ def test_every_tap_leaves_the_rest_and_the_stopwatch_as_its_patch_says(path: Pat
             assert shown.get(key) == patch.get(key), (set_id, key)
 
 
+@pytest.mark.parametrize(
+    "path",
+    [path for path in _TAPS if "exercise" not in load(path)["patch"]["live"]],
+    ids=lambda p: p.stem,
+)
+def test_the_last_sets_tap_keeps_the_exercise_dart_still_names(path: Path) -> None:
+    """With no set due the tap's patch leaves the exercise out; it is still the current one.
+
+    Dart's next message names it again, so dropping it showed an automation
+    «Bench Press → unknown → Bench Press» within a few milliseconds (the iOS
+    pass, 37 ms).
+    """
+    patch = load(path)["patch"]["live"]
+    kept = workout(started_at=patch["started_at"])
+    shown = merged(kept, patch, [])
+    assert shown["exercise"] == kept["exercise"]
+    assert shown["text"]["exercise"] == kept["text"]["exercise"]
+    assert "set" not in shown
+
+
 async def test_home_assistant_rings_the_rest_end_once_and_never_after_a_skip(
     hass: HomeAssistant, raw_client: TestClient, freezer: FrozenDateTimeFactory
 ) -> None:
