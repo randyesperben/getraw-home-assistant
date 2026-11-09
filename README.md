@@ -44,6 +44,11 @@ Settings › Home Assistant**.
 On iPhone, RAW asks for permission to use the local network the first time. If you said no,
 turn it on in the iPhone's **Settings › RAW › Local Network** and tap Connect again.
 
+RAW reaches Home Assistant at the address in **Settings › System › Network › Local network**.
+If Home Assistant runs in Docker without host networking, its own address is the container's,
+which your phone cannot reach: fill in Local network with your computer's address, such as
+`http://192.168.1.20:8123`, before you scan the code.
+
 ## What you get
 
 **The workout in progress:** Workout, Resting, Phase, Workout title, Workout started, Current

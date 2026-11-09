@@ -104,7 +104,7 @@ class RawConfigFlow(ConfigFlow, domain=DOMAIN):
         )
         webhook_id = webhook.async_generate_id()
         pin = await async_certificate_pin(hass)
-        found = routes(hass, webhook_id, pin=pin, cloudhook_url=None)
+        found = await routes(hass, webhook_id, pin=pin, cloudhook_url=None)
         if not found:
             return self.async_abort(reason="no_address")
         key = new_key()

@@ -7,6 +7,13 @@ blocked by App Transport Security, and which is the only local route when
 Home Assistant serves TLS itself, pinned to its certificate; the external
 URL; the Home Assistant Cloud webhook.
 
+The own IP address goes beside an internal URL that is a name only when that
+name resolves to it. Inside a container without host networking, Home
+Assistant's own address is the container's, which no phone reaches (OrbStack's
+bridge in RAW's device pass; a NAS's Docker network alike), while the name the
+person set reaches the host. With no internal URL set, the local route is the
+address Home Assistant picks for itself, as its own Network settings show it.
+
 Plain ``http://`` goes only where a post stays on the local network: a
 private or link-local IP address, a ``.local`` name or a name without a dot. A
 public name or address would carry the webhook id and every post's timing
@@ -16,9 +23,12 @@ Assistant falls back to with no network.
 
 from __future__ import annotations
 
+import asyncio
 from dataclasses import dataclass
+from datetime import datetime, timedelta
 from ipaddress import IPv4Address, IPv6Address, ip_address
 import logging
+import socket
 import ssl
 from typing import Final
 from urllib.parse import urlsplit
@@ -26,6 +36,7 @@ from urllib.parse import urlsplit
 from homeassistant.components.webhook import async_generate_path
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.network import NoURLAvailableError, get_url
+from homeassistant.util import dt as dt_util
 
 from .pairing_link import URLS_MAX, certificate_pin
 
@@ -33,6 +44,10 @@ LOCAL: Final = "local"
 REMOTE: Final = "remote"
 CLOUD: Final = "cloud"
 _PIN: Final = "getraw_certificate_pin"
+_RESOLVED: Final = "getraw_resolved"
+# An ack waits for a name's lookup at most this long, at most once in this while.
+_RESOLVE_SECONDS: Final = 2
+_RESOLVED_FOR: Final = timedelta(minutes=10)
 # A server bound to every address answers on the loopback one.
 _LOOPBACK: Final = {"0.0.0.0": "127.0.0.1", "::": "::1"}
 _HANDSHAKE_SECONDS: Final = 10
@@ -92,6 +107,44 @@ def _ip(host: str | None) -> IPv4Address | IPv6Address | None:
         return None
 
 
+async def _own_address(hass: HomeAssistant, internal: str) -> str | None:
+    """Home Assistant's own IP route, when the internal URL is a name that resolves to it."""
+    api = hass.config.api
+    host = urlsplit(internal).hostname
+    if api is None or not api.local_ip or host is None or _ip(host) is not None:
+        return None
+    if api.local_ip not in await _resolved(hass, host):
+        return None
+    address = f"[{api.local_ip}]" if ":" in api.local_ip else api.local_ip
+    return f"{'https' if api.use_ssl else 'http'}://{address}:{api.port}"
+
+
+async def _resolved(hass: HomeAssistant, host: str) -> set[str]:
+    """The addresses ``host`` resolves to here, looked up at most once every ten minutes."""
+    cache: dict[str, tuple[datetime, set[str]]] = hass.data.setdefault(_RESOLVED, {})
+    now = dt_util.utcnow()
+    if (kept := cache.get(host)) is not None and kept[0] > now:
+        return kept[1]
+    try:
+        async with asyncio.timeout(_RESOLVE_SECONDS):
+            found = await _addresses_of(host)
+    except TimeoutError:
+        found = set()
+    cache[host] = (now + _RESOLVED_FOR, found)
+    return found
+
+
+async def _addresses_of(host: str) -> set[str]:
+    """Every address ``host`` resolves to on this machine; none when it does not."""
+    try:
+        infos = await asyncio.get_running_loop().getaddrinfo(
+            host, None, type=socket.SOCK_STREAM
+        )
+    except OSError:
+        return set()
+    return {str(info[4][0]) for info in infos}
+
+
 def _offered(scheme: str, host: str | None) -> bool:
     """Whether a phone may post to ``host``: see the module's rules for plain HTTP."""
     address = _ip(host)
@@ -105,7 +158,7 @@ def _offered(scheme: str, host: str | None) -> bool:
     return bool(name) and ("." not in name or name.endswith(".local"))
 
 
-def routes(
+async def routes(
     hass: HomeAssistant,
     webhook_id: str,
     *,
@@ -127,13 +180,13 @@ def routes(
         found.append(Route(url, route, pin if tls_ip else None))
 
     try:
-        add(get_url(hass, allow_external=False, allow_cloud=False, allow_ip=True), LOCAL)
+        internal = get_url(hass, allow_external=False, allow_cloud=False, allow_ip=True)
     except NoURLAvailableError:
-        pass
-    if (api := hass.config.api) is not None and api.local_ip:
-        host = f"[{api.local_ip}]" if ":" in api.local_ip else api.local_ip
-        scheme = "https" if api.use_ssl else "http"
-        add(f"{scheme}://{host}:{api.port}", LOCAL)
+        internal = None
+    if internal is not None:
+        add(internal, LOCAL)
+        if (own := await _own_address(hass, internal)) is not None:
+            add(own, LOCAL)
     try:
         add(get_url(hass, allow_internal=False, allow_cloud=False, allow_ip=True), REMOTE)
     except NoURLAvailableError:

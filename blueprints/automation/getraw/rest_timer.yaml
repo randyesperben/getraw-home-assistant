@@ -3,9 +3,10 @@ blueprint:
   description: >-
     Mirrors RAW's rest on a Home Assistant timer helper, so a dashboard or a
     tablet by the rack shows the rest counting down as m:ss. It follows the
-    Rest end sensor: a longer or shorter rest moves the timer, and a skipped
-    rest or the end of the workout cancels it. Create the timer helper first
-    (Settings › Devices & services › Helpers › Timer).
+    Rest end sensor: a longer or shorter rest moves the timer, a skipped rest
+    or the end of the workout cancels it, and a Home Assistant restart in the
+    middle of a rest starts it again for what is left. Create the timer helper
+    first (Settings › Devices & services › Helpers › Timer).
   domain: automation
   author: RAW
   source_url: https://github.com/randyesperben/getraw-home-assistant/blob/main/blueprints/automation/getraw/rest_timer.yaml
@@ -59,6 +60,11 @@ triggers:
     entity_id: !input rest_end
     not_to:
       - unavailable
+  # A restart mid-rest: RAW's integration restores Rest end before this
+  # automation listens, so no change comes, and a timer helper made without
+  # «Restore» comes back idle.
+  - trigger: homeassistant
+    event: start
 
 conditions:
   - condition: state
@@ -67,9 +73,10 @@ conditions:
     enabled: !input only_at_home
 
 variables:
+  rest_end: !input rest_end
   # Whole seconds left until RAW's rest end; 0 once it has passed or with no rest.
   seconds_left: >-
-    {% set ends = trigger.to_state.state | as_datetime %}
+    {% set ends = states(rest_end) | as_datetime %}
     {{ (((ends - now()).total_seconds()) | round(0, 'ceil') | int)
        if ends is not none and ends > now() else 0 }}
 

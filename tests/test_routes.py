@@ -29,6 +29,7 @@ from homeassistant.core_config import async_process_ha_core_config
 from homeassistant.data_entry_flow import FlowResultType
 from homeassistant.util import dt as dt_util
 
+from custom_components.getraw import routes as routes_module
 from custom_components.getraw.const import CONF_CLOUDHOOK_URL, DOMAIN
 from custom_components.getraw.pairing_link import certificate_pin
 
@@ -46,6 +47,18 @@ def _ip_route(hass: HomeAssistant, scheme: str) -> str:
     return f"{scheme}://{api.local_ip}:{api.port}"
 
 
+def _resolves(monkeypatch: pytest.MonkeyPatch, *addresses: str) -> list[str]:
+    """Every name resolves to ``addresses`` on Home Assistant's machine; the names looked up."""
+    looked_up: list[str] = []
+
+    async def addresses_of(host: str) -> set[str]:
+        looked_up.append(host)
+        return set(addresses)
+
+    monkeypatch.setattr(routes_module, "_addresses_of", addresses_of)
+    return looked_up
+
+
 async def _code_urls(hass: HomeAssistant, client: TestClient) -> list[str]:
     result, _ = await _start(hass, client)
     urls = read_link(result["description_placeholders"]["link"])["urls"]
@@ -53,9 +66,10 @@ async def _code_urls(hass: HomeAssistant, client: TestClient) -> list[str]:
 
 
 async def test_the_code_tries_the_internal_url_then_the_ip_address(
-    hass: HomeAssistant, raw_client: TestClient
+    hass: HomeAssistant, raw_client: TestClient, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """The IP route always follows the internal URL: a name may not resolve on the phone."""
+    """The IP route follows an internal URL that names it: the name may not resolve on the phone."""
+    looked_up = _resolves(monkeypatch, hass.config.api.local_ip)
     await async_process_ha_core_config(
         hass,
         {
@@ -68,12 +82,16 @@ async def test_the_code_tries_the_internal_url_then_the_ip_address(
         _ip_route(hass, "http"),
         "https://casa.duckdns.org",
     ]
+    # Every ack builds its routes: the name is looked up once in a while, not each time.
+    await _code_urls(hass, raw_client)
+    assert looked_up == ["homeassistant.local"]
 
 
 async def test_plain_http_stays_on_the_local_network(
     hass: HomeAssistant, raw_client: TestClient, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """Never a public host over HTTP, never the loopback."""
+    _resolves(monkeypatch, hass.config.api.local_ip)
     await async_process_ha_core_config(
         hass,
         {
@@ -88,6 +106,26 @@ async def test_plain_http_stays_on_the_local_network(
     await async_process_ha_core_config(hass, {"external_url": "http://1.2.3.4:8123"})
     result = await hass.config_entries.flow.async_init(DOMAIN, context={"source": SOURCE_USER})
     assert (result["type"], result["reason"]) == (FlowResultType.ABORT, "no_address")
+
+
+async def test_a_container_without_host_networking_never_hands_out_its_own_address(
+    hass: HomeAssistant, raw_client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The link carries the local address the person set, never one no phone reaches.
+
+    Inside Docker's bridge network Home Assistant's own address is the
+    container's (RAW's device pass: OrbStack's 192.168.215.2 beside the Mac's
+    10.0.0.31), while the internal URL, an address or a name, reaches the host.
+    """
+    monkeypatch.setattr(hass.config.api, "local_ip", "192.168.215.2")
+    _resolves(monkeypatch, "10.0.0.31")
+    await async_process_ha_core_config(hass, {"internal_url": "http://10.0.0.31:8123"})
+    assert await _code_urls(hass, raw_client) == ["http://10.0.0.31:8123"]
+
+    await async_process_ha_core_config(
+        hass, {"internal_url": "http://homeassistant.local:8123"}
+    )
+    assert await _code_urls(hass, raw_client) == ["http://homeassistant.local:8123"]
 
 
 @pytest.fixture
@@ -140,6 +178,7 @@ async def test_home_assistant_serving_tls_pins_the_certificate_it_serves(
     # Without raising=False: a rename in Home Assistant fails here.
     monkeypatch.setattr(hass.http, "server_host", ["0.0.0.0"])
     monkeypatch.setattr(hass.http, "ssl_certificate", str(renewed))
+    _resolves(monkeypatch, hass.config.api.local_ip)
     await async_process_ha_core_config(
         hass, {"internal_url": "https://homeassistant.local:8123"}
     )

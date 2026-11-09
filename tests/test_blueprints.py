@@ -24,6 +24,7 @@ import pytest
 from homeassistant.components.automation.config import AUTOMATION_BLUEPRINT_SCHEMA
 from homeassistant.components.blueprint import models
 from homeassistant.components.sensor.recorder import DEFAULT_STATISTICS
+from homeassistant.const import EVENT_HOMEASSISTANT_STARTED
 from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.setup import async_setup_component
 from homeassistant.util import dt as dt_util
@@ -378,3 +379,30 @@ async def test_rest_timer_counts_down_raws_rest_and_cancels_with_it(
     hass.states.async_set(REST_END, "unknown", {"device_class": "timestamp"})
     await hass.async_block_till_done()
     assert [call.data["entity_id"] for call in cancel] == [["timer.rest"]]
+
+
+async def test_rest_timer_counts_down_what_is_left_after_a_restart_mid_rest(
+    hass: HomeAssistant, caplog: pytest.LogCaptureFixture
+) -> None:
+    """Home Assistant restarted in the middle of a rest: the timer counts down what is left.
+
+    RAW's integration restores the Rest end sensor before automations listen, so
+    no state change reaches the blueprint, and a timer helper made without
+    «Restore» comes back idle.
+    """
+    start = async_mock_service(hass, "timer", "start")
+    hass.states.async_set(PERSON, "home")
+    ends = dt_util.utcnow() + timedelta(seconds=75, milliseconds=600)
+    hass.states.async_set(REST_END, ends.isoformat(), {"device_class": "timestamp"})
+    await _automation(
+        hass,
+        "rest_timer.yaml",
+        {"rest_end": REST_END, "person": PERSON, "timer": "timer.rest"},
+        caplog,
+    )
+
+    hass.bus.async_fire(EVENT_HOMEASSISTANT_STARTED)
+    await hass.async_block_till_done()
+    assert [(call.data["entity_id"], call.data["duration"]) for call in start] == [
+        (["timer.rest"], 76)
+    ]

@@ -211,7 +211,7 @@ async def _async_handle(
         message.kind, body if newer else None, events=events, fire=fresh, zone=zone
     )
 
-    urls = routes(
+    urls = await routes(
         hass,
         webhook_id,
         pin=await async_certificate_pin(hass),
