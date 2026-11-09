@@ -28,6 +28,11 @@ jobs:
 
   hacs:
     name: HACS
+    # The HACS action validates public repositories only («is private, the HACS action can
+    # only validate public repositories», run 42654100758, 2026-11-09): it runs from the
+    # release that makes this repository public. `== false`, so an event without the field
+    # skips it rather than failing.
+    if: github.event.repository.private == false
     runs-on: ubicloud-standard-2
     timeout-minutes: 10
     steps:
